@@ -1,0 +1,13 @@
+# AuthorizationPolicy to allow traffic in knative-eventing namespace
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-all-traffic
+  namespace: knative-eventing
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: knative-eventing
+  rules:
+    - {}
