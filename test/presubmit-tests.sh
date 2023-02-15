@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
-# TODO(approvers): replace with real tests
-true
+source $(dirname $0)/../vendor/knative.dev/hack/presubmit-tests.sh
+source $(dirname $0)/e2e-common.sh
+
+main $@

@@ -20,4 +20,43 @@ set -o pipefail
 
 source $(dirname "$0")/../vendor/knative.dev/hack/library.sh
 
+version=$(echo $@ | grep -o "\-\-release \S*" | awk '{print $2}' || echo "")
+upgrade=$(echo $@ | grep '\-\-upgrade' || echo "")
+
+function fetch_submodule() {
+  echo "Pulling branch main for submodule $(pwd)"
+  branch=${1}
+  git fetch origin -u "${branch}":"${branch}" || return $?
+  git checkout "origin/${branch}" || return $?
+}
+
+function update_submodule() {
+
+  if [ "${version}" = "" ] || [ "${version}" = "v9000.1" ]; then
+    if [ "${upgrade}" != "" ]; then
+      fetch_submodule "main" || return $?
+    fi
+  else
+    major_minor=${version:1} # Remove 'v' prefix
+    fetch_submodule "release-${major_minor}" || return $?
+  fi
+
+}
+
+function update_submodules() {
+  pushd $(dirname "$0")/../third_party/eventing
+  update_submodule
+  popd
+
+  pushd $(dirname "$0")/../third_party/eventing-kafka-broker
+  update_submodule
+  popd
+}
+
+git submodule update --init --recursive
+
+update_submodules || exit $?
+
+git submodule update --init --recursive
+
 go_update_deps "$@"

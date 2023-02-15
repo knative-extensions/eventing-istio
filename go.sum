@@ -178,10 +178,10 @@ k8s.io/klog/v2 v2.80.2-0.20221028030830-9ae4992afb54 h1:hWRbsoRWt44OEBnYUd4ceLy4
 k8s.io/klog/v2 v2.80.2-0.20221028030830-9ae4992afb54/go.mod h1:y1WjHnz7Dj687irZUWR/WLkLc5N1YHtjLdmgWjndZn0=
 k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1 h1:MQ8BAZPZlWk3S9K4a9NCkIFQtZShWqoha7snGixVgEA=
 k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1/go.mod h1:C/N6wCaBHeBHkHUesQOQy2/MZqGgMAFPqGsGQLdbZBU=
-knative.dev/hack v0.0.0-20230113013652-c7cfcb062de9 h1:CDa7s9KspEZqPhk7cN68ZypRLuAvSgr+knoOaXSsrHk=
-knative.dev/hack v0.0.0-20230113013652-c7cfcb062de9/go.mod h1:yk2OjGDsbEnQjfxdm0/HJKS2WqTLEFg/N6nUs6Rqx3Q=
-knative.dev/pkg v0.0.0-20230116014407-876c59d03903 h1:lJA2FQ8g9V/BlcQxpbz1YpS+Ter5nV4hDbe8KajD+dI=
-knative.dev/pkg v0.0.0-20230116014407-876c59d03903/go.mod h1:iSUj1sKTDQUFZMCy8pTfqlSqL9fhXV43aW6ZfeEacgA=
+knative.dev/hack v0.0.0-20230210215449-d71d569c4308 h1:zH5OedRfo9SB22o25VNQ+vygceTvOujsnLYaALb8jos=
+knative.dev/hack v0.0.0-20230210215449-d71d569c4308/go.mod h1:yk2OjGDsbEnQjfxdm0/HJKS2WqTLEFg/N6nUs6Rqx3Q=
+knative.dev/pkg v0.0.0-20230213131952-c889c5b7e128 h1:o+jUTPT+1YC6o4IImcJq5DeKZph1RN4m+oMZt23SF1s=
+knative.dev/pkg v0.0.0-20230213131952-c889c5b7e128/go.mod h1:YVKzsxts9YjMq9xbG1GrMWwwGmkJRpJxqCa6iIOKb28=
 sigs.k8s.io/yaml v1.2.0/go.mod h1:yfXDCHCao9+ENCvLSE62v9VSji2MKu5jeNfTrofGhJc=
 sigs.k8s.io/yaml v1.3.0 h1:a2VclLzOGrwOHDiV8EfBGhvjHvP46CtW5j6POvhYGGo=
 sigs.k8s.io/yaml v1.3.0/go.mod h1:GeOyir5tyXNByN85N/dRIT9es5UQNerPYEKK56eTBm8=
