@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
-export ISTIO_VERSION=1.16.1
+set -euo pipefail
 
-curl -L https://istio.io/downloadIstio | sh -
+function update_istio() {
+  version="$1"
+  target_dir="$2"
 
-mv "istio-${ISTIO_VERSION}" "third_party/istio"
+  export ISTIO_VERSION=${version}
+  curl -L https://istio.io/downloadIstio | sh -
+  rm -rf "${target_dir}"
+  mv "istio-${ISTIO_VERSION}" "${target_dir}"
+}
+
+update_istio "1.16.1" "third_party/istio"

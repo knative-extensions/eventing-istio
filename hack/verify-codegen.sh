@@ -42,6 +42,8 @@ DIRS=(
   "/third_party"
 )
 
+exclude="${REPO_ROOT_DIR}/third_party/istio/bin/*"
+
 for d in "${DIRS[@]}"; do
   if [[ -f "${REPO_ROOT_DIR}${d}" ]]; then
     mkdir -p "$(dirname "${TMP_DIFFROOT}${d}")"
@@ -58,7 +60,7 @@ echo "Diffing ${REPO_ROOT_DIR} against freshly generated codegen"
 ret=0
 
 for d in "${DIRS[@]}"; do
-  diff -Naupr --no-dereference "${REPO_ROOT_DIR}${d}" "${TMP_DIFFROOT}${d}" || ret=1
+  diff -Naupr --no-dereference --exclude="${exclude}" "${REPO_ROOT_DIR}${d}" "${TMP_DIFFROOT}${d}" || ret=1
 done
 
 # Restore working tree state
