@@ -59,4 +59,9 @@ update_submodules || exit $?
 
 git submodule update --init --recursive
 
+$(dirname $0)/update-istio.sh
+
+# Remove Istio binaries to avoid comparing them with verify-codegen.sh
+rm -rf $(dirname $0)/../third_party/istio/bin
+
 go_update_deps "$@"

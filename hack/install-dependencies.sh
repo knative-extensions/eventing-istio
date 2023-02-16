@@ -32,6 +32,8 @@ kubectl patch deployment \
 echo "Installing Istio"
 istioctl version
 
+istioctl x precheck
+
 istioctl install \
   -y \
   --set profile=default \
