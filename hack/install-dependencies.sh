@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+$(dirname $0)/update-istio.sh
+
 export REPO_ROOT_DIR=${REPO_ROOT_DIR:-$(git rev-parse --show-toplevel)}
 
 export EVENTING_CONFIG=${EVENTING_CONFIG:-"./third_party/eventing-latest/"}
