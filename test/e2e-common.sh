@@ -12,7 +12,7 @@ git submodule update --init --recursive
 function knative_setup() {
   "${REPO_ROOT_DIR}"/hack/update-istio.sh || return $?
   "${REPO_ROOT_DIR}"/hack/install-dependencies.sh || return $?
-  kubectl apply -Rf "${REPO_ROOT_DIR}"/test/config
+  kubectl apply -n "${SYSTEM_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
 }
 
 function run_eventing_core_tests() {
