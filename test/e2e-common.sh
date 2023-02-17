@@ -8,6 +8,9 @@ export SYSTEM_NAMESPACE=${SYSTEM_NAMESPACE:-"knative-eventing"}
 source "${REPO_ROOT_DIR}"/vendor/knative.dev/hack/e2e-tests.sh
 
 git submodule update --init --recursive
+pushd "${REPO_ROOT_DIR}/third_party/eventing" || exit 1
+git apply "${REPO_ROOT_DIR}/hack/eventing-patch/*"
+popd
 
 function knative_setup() {
   "${REPO_ROOT_DIR}"/hack/update-istio.sh || return $?

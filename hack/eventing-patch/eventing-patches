@@ -1,0 +1,26 @@
+diff --git a/vendor/knative.dev/reconciler-test/pkg/eventshub/103-pod.yaml b/vendor/knative.dev/reconciler-test/pkg/eventshub/103-pod.yaml
+index e683cc0ca..b49e07681 100644
+--- a/vendor/knative.dev/reconciler-test/pkg/eventshub/103-pod.yaml
++++ b/vendor/knative.dev/reconciler-test/pkg/eventshub/103-pod.yaml
+@@ -27,7 +27,7 @@ metadata:
+   {{ end }}
+ spec:
+   serviceAccountName: "{{ .namespace }}"
+-  restartPolicy: "Never"
++  restartPolicy: "OnFailure"
+   {{ if .podSecurityContext }}
+   securityContext:
+     runAsNonRoot: {{ .podSecurityContext.runAsNonRoot }}
+diff --git a/vendor/knative.dev/reconciler-test/pkg/k8s/wait.go b/vendor/knative.dev/reconciler-test/pkg/k8s/wait.go
+index 94249a68b..18dfea805 100644
+--- a/vendor/knative.dev/reconciler-test/pkg/k8s/wait.go
++++ b/vendor/knative.dev/reconciler-test/pkg/k8s/wait.go
+@@ -325,6 +325,8 @@ func WaitForServiceReady(ctx context.Context, t feature.T, name string, readines
+ 	curl := fmt.Sprintf("curl --max-time 2 "+
+ 		"--trace-ascii %% --trace-time "+
+ 		"--retry 6 --retry-connrefused %s", sinkURI)
++	mayBeQuitIstio := fmt.Sprintf("(curl -fsI -X POST http://localhost:15020/quitquitquit || echo no-istio)")
++	curl += fmt.Sprintf("%s && %s", curl, mayBeQuitIstio)
+ 	var one int32 = 1
+ 	job := &batchv1.Job{
+ 		ObjectMeta: metav1.ObjectMeta{Name: jobName, Namespace: ns},
