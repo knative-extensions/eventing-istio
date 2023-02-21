@@ -27,7 +27,7 @@ function fetch_submodule() {
   echo "Pulling branch main for submodule $(pwd)"
   branch=${1}
   git fetch origin -u "${branch}":"${branch}" || return $?
-  git checkout "origin/${branch}" || return $?
+  git merge "origin/${branch}" || return $?
 }
 
 function update_submodule() {
@@ -56,8 +56,6 @@ function update_submodules() {
 git submodule update --init --recursive
 
 update_submodules || exit $?
-
-git submodule update --init --recursive
 
 $(dirname $0)/update-istio.sh
 
