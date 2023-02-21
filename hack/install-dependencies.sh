@@ -9,7 +9,6 @@ export REPO_ROOT_DIR=${REPO_ROOT_DIR:-$(git rev-parse --show-toplevel)}
 export EVENTING_CONFIG=${EVENTING_CONFIG:-"./third_party/eventing-latest/"}
 export EVENTING_KAFKA_CONFIG=${EVENTING_KAFKA_CONFIG:-"./third_party/eventing-kafka-broker-latest/"}
 export ISTIO_CONFIG_DIR=${ISTIO_CONFIG_DIR:-"./third_party/istio"}
-export EVENTING_ISTIO_RESOURCES_CONFIG=${EVENTING_ISTIO_RESOURCES_CONFIG:-"./third_party/istio-resources/"}
 
 export PATH="third_party/istio/bin:$PATH"
 
@@ -42,8 +41,6 @@ istioctl install \
   --set meshConfig.outboundTrafficPolicy.mode=REGISTRY_ONLY
 
 kubectl apply -f "${ISTIO_CONFIG_DIR}/samples/addons"
-
-kubectl apply -Rf "${EVENTING_ISTIO_RESOURCES_CONFIG}"
 
 echo "Installing Eventing Kafka from ${EVENTING_KAFKA_CONFIG}"
 kubectl apply -Rf "${EVENTING_KAFKA_CONFIG}"
