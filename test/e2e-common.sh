@@ -25,7 +25,7 @@ function run_eventing_core_tests() {
   go_test_e2e \
     -timeout=1h \
     -run TestPingSource \
-    ./test/rekt/... \
+    ./test/rekt/ \
     --istio.enabled=true || return $?
 
   pod
