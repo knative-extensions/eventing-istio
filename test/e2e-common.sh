@@ -10,9 +10,8 @@ export ISTIO_NAMESPACE=${ISTIO_NAMESPACE:-"istio-system"}
 
 source "${REPO_ROOT_DIR}"/vendor/knative.dev/hack/e2e-tests.sh
 
-git submodule update --init --recursive
-
 function knative_setup() {
+  git submodule update --init --recursive
   "${REPO_ROOT_DIR}"/hack/update-istio.sh || return $?
   "${REPO_ROOT_DIR}"/hack/install-dependencies.sh || return $?
   kubectl apply -n "${ISTIO_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
