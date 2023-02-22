@@ -27,7 +27,7 @@ function run_eventing_core_tests() {
     ./test/rekt/ \
     --istio.enabled=true || return $?
 
-  pod
+  popd
 }
 
 function run_eventing_kafka_broker_tests() {
