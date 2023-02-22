@@ -26,23 +26,17 @@ function run_eventing_core_tests() {
     ./test/rekt/ \
     --istio.enabled=true || return $?
 
+  go_test_e2e \
+    -timeout=1h \
+    -run TestBrokerConformance \
+    ./test/rekt/ \
+    --istio.enabled=true || return $?
+
   popd
 }
 
 function run_eventing_kafka_broker_tests() {
   pushd "${REPO_ROOT_DIR}"/third_party/eventing-kafka-broker || return $?
-
-  BROKER_CLASS=Kafka go_test_e2e \
-    -timeout=1h \
-    -run TestBrokerConformance \
-    ./test/e2e_new/... \
-    --istio.enabled=true || return $?
-
-  BROKER_CLASS=KafkaNamespaced go_test_e2e \
-    -timeout=1h \
-    -run TestBrokerConformance \
-    ./test/e2e_new/... \
-    --istio.enabled=true || return $?
 
   BROKER_CLASS=Kafka go_test_e2e \
     -timeout=1h \
