@@ -12,14 +12,13 @@ source "${REPO_ROOT_DIR}"/vendor/knative.dev/hack/e2e-tests.sh
 
 function knative_setup() {
   git submodule update --init --recursive
-  "${REPO_ROOT_DIR}"/hack/update-istio.sh || return $?
   "${REPO_ROOT_DIR}"/hack/install-dependencies.sh || return $?
-  kubectl apply -n "${ISTIO_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
-  kubectl apply -n "${SYSTEM_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
 }
 
 function run_eventing_core_tests() {
   pushd "${REPO_ROOT_DIR}"/third_party/eventing || return $?
+
+  export BROKER_TEMPLATES="${REPO_ROOT_DIR}/test/e2e/templates/kafka-broker"
 
   go_test_e2e \
     -timeout=1h \

@@ -53,5 +53,5 @@ kubectl patch deployment \
 
 "${REPO_ROOT_DIR}"/third_party/kafka/kafka_setup.sh
 
-# curl -X POST -v -H "content-type: application/json" -H "ce-specversion: 1.0" -H "ce-source: my/curl/command" -H "ce-type: my.demo.event" -H "ce-id: 0815" -d '{"value":"Hello Knative"}' http://broker-ingress.knative-eventing.svc.cluster.local/test/default
-
+kubectl apply -n "${ISTIO_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
+kubectl apply -n "${SYSTEM_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
