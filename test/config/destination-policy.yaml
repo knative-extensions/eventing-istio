@@ -1,0 +1,10 @@
+# Disable mTLS for connections to the API server
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: knative-eventing-k8s-api-mtls-disable
+spec:
+  host: "kubernetes.default.svc"
+  trafficPolicy:
+    tls:
+      mode: DISABLE

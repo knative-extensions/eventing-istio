@@ -2,12 +2,13 @@
 
 set -euo pipefail
 
+$(dirname $0)/update-istio.sh
+
 export REPO_ROOT_DIR=${REPO_ROOT_DIR:-$(git rev-parse --show-toplevel)}
 
 export EVENTING_CONFIG=${EVENTING_CONFIG:-"./third_party/eventing-latest/"}
 export EVENTING_KAFKA_CONFIG=${EVENTING_KAFKA_CONFIG:-"./third_party/eventing-kafka-broker-latest/"}
 export ISTIO_CONFIG_DIR=${ISTIO_CONFIG_DIR:-"./third_party/istio"}
-export EVENTING_ISTIO_RESOURCES_CONFIG=${EVENTING_ISTIO_RESOURCES_CONFIG:-"./third_party/istio-resources/"}
 
 export PATH="third_party/istio/bin:$PATH"
 
@@ -41,8 +42,6 @@ istioctl install \
 
 kubectl apply -f "${ISTIO_CONFIG_DIR}/samples/addons"
 
-kubectl apply -Rf "${EVENTING_ISTIO_RESOURCES_CONFIG}"
-
 echo "Installing Eventing Kafka from ${EVENTING_KAFKA_CONFIG}"
 kubectl apply -Rf "${EVENTING_KAFKA_CONFIG}"
 
@@ -52,7 +51,12 @@ kubectl patch deployment \
   -n knative-eventing \
   --patch-file "${REPO_ROOT_DIR}/hack/eventing-injection-disabled.yaml"
 
-"${REPO_ROOT_DIR}"/third_party/kafka/kafka_setup.sh
+"${REPO_ROOT_DIR}"/third_party/eventing-kafka-broker/test/kafka/kafka_setup.sh
 
-# curl -X POST -v -H "content-type: application/json" -H "ce-specversion: 1.0" -H "ce-source: my/curl/command" -H "ce-type: my.demo.event" -H "ce-id: 0815" -d '{"value":"Hello Knative"}' http://broker-ingress.knative-eventing.svc.cluster.local/test/default
+kubectl apply -n "${ISTIO_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
+kubectl apply -n "${SYSTEM_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
 
+source "${REPO_ROOT_DIR}/third_party/eventing-kafka-broker/test/e2e-common.sh"
+
+create_sasl_secrets || exit 1
+create_tls_secrets || exit 1

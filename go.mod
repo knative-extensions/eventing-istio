@@ -3,8 +3,8 @@ module knative.dev/eventing-istio
 go 1.19
 
 require (
-	knative.dev/hack v0.0.0-20230210215449-d71d569c4308
-	knative.dev/pkg v0.0.0-20230213131952-c889c5b7e128
+	knative.dev/hack v0.0.0-20230217131352-f2f3107be156
+	knative.dev/pkg v0.0.0-20230222150228-2fdd6bf8be31
 )
 
 require (
