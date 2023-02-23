@@ -51,7 +51,12 @@ kubectl patch deployment \
   -n knative-eventing \
   --patch-file "${REPO_ROOT_DIR}/hack/eventing-injection-disabled.yaml"
 
-"${REPO_ROOT_DIR}"/third_party/kafka/kafka_setup.sh
+"${REPO_ROOT_DIR}"/third_party/eventing-kafka-broker/test/kafka/kafka_setup.sh
 
 kubectl apply -n "${ISTIO_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
 kubectl apply -n "${SYSTEM_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
+
+source "${REPO_ROOT_DIR}/third_party/eventing-kafka-broker/test/e2e-common.sh"
+
+create_sasl_secrets || exit 1
+create_tls_secrets || exit 1
