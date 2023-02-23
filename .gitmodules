@@ -1,7 +1,6 @@
 [submodule "third_party/eventing"]
 	path = third_party/eventing
-	url = https://github.com/pierDipi/eventing.git
-	branch = eventing-istio
+	url = https://github.com/knative/eventing.git
 [submodule "third_party/eventing-kafka-broker"]
 	path = third_party/eventing-kafka-broker
 	url = https://github.com/knative-sandbox/eventing-kafka-broker.git

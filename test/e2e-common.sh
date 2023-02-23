@@ -44,5 +44,5 @@ function run_eventing_kafka_broker_tests() {
     ./test/e2e_new/... \
     --istio.enabled=true || return $?
 
-  pod
+  popd
 }
