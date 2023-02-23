@@ -22,6 +22,7 @@ source $(dirname "$0")/../vendor/knative.dev/hack/library.sh
 
 version=$(echo $@ | grep -o "\-\-release \S*" | awk '{print $2}' || echo "")
 upgrade=$(echo $@ | grep '\-\-upgrade' || echo "")
+upgrade_artifacts=${UPGRADE_ARTIFACTS:-""}
 
 function fetch_submodule() {
   echo "Pulling branch main for submodule $(pwd)"
@@ -43,6 +44,12 @@ function update_submodule() {
 
 }
 
+function fetch_artifacts() {
+      url="https://storage.googleapis.com/knative-nightly/${1}"
+      echo "Fetch $url to ${2}"
+      curl "${url}" > "${2}"
+}
+
 function update_submodules() {
   pushd $(dirname "$0")/../third_party/eventing
   update_submodule
@@ -56,6 +63,26 @@ function update_submodules() {
 git submodule update --init --recursive
 
 update_submodules || exit $?
+
+if [ "${upgrade_artifacts}" != "" ]; then
+  # Eventing
+  e_dir="third_party/eventing-latest"
+  rm -rf "${e_dir}" && mkdir "${e_dir}"
+  e="eventing"
+  fetch_artifacts "${e}/latest/eventing-core.yaml" "${e_dir}/eventing-core.yaml"
+  fetch_artifacts "${e}/latest/eventing-crds.yaml" "${e_dir}/eventing-crds.yaml"
+  fetch_artifacts "${e}/latest/in-memory-channel.yaml" "${e_dir}/in-memory-channel.yaml"
+  fetch_artifacts "${e}/latest/mt-channel-broker.yaml" "${e_dir}/mt-channel-broker.yaml"
+  # Eventing Kafka Broker
+  ekb_dir="third_party/eventing-kafka-broker-latest"
+  ekb="eventing-kafka-broker"
+  rm -rf "${ekb_dir}" && mkdir "${ekb_dir}"
+  fetch_artifacts "${ekb}/latest/eventing-kafka-controller.yaml" "${ekb_dir}/eventing-kafka-controller.yaml"
+  fetch_artifacts "${ekb}/latest/eventing-kafka-broker.yaml" "${ekb_dir}/eventing-kafka-broker.yaml"
+  fetch_artifacts "${ekb}/latest/eventing-kafka-channel.yaml" "${ekb_dir}/eventing-kafka-channel.yaml"
+  fetch_artifacts "${ekb}/latest/eventing-kafka-sink.yaml" "${ekb_dir}/eventing-kafka-sink.yaml"
+  fetch_artifacts "${ekb}/latest/eventing-kafka-source.yaml" "${ekb_dir}/eventing-kafka-source.yaml"
+fi
 
 $(dirname $0)/update-istio.sh
 

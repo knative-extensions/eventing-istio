@@ -208,7 +208,7 @@ k8s.io/kube-openapi/pkg/validation/spec
 # knative.dev/hack v0.0.0-20230217131352-f2f3107be156
 ## explicit; go 1.18
 knative.dev/hack
-# knative.dev/pkg v0.0.0-20230220111620-f306c139ba1c
+# knative.dev/pkg v0.0.0-20230222150228-2fdd6bf8be31
 ## explicit; go 1.18
 knative.dev/pkg/codegen/cmd/injection-gen
 knative.dev/pkg/codegen/cmd/injection-gen/args
