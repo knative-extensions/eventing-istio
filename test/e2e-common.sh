@@ -18,16 +18,23 @@ function knative_setup() {
 function run_eventing_core_tests() {
   pushd "${REPO_ROOT_DIR}"/third_party/eventing || return $?
 
-  export BROKER_TEMPLATES="${REPO_ROOT_DIR}/test/e2e/templates/kafka-broker"
-
-  go_test_e2e \
+  BROKER_TEMPLATES="${REPO_ROOT_DIR}/test/e2e/templates/kafka-broker" go_test_e2e \
     -timeout=1h \
+    -parallel=12 \
     -run TestPingSource \
     ./test/rekt/ \
     --istio.enabled=true || return $?
 
-  go_test_e2e \
+  BROKER_TEMPLATES="${REPO_ROOT_DIR}/test/e2e/templates/kafka-broker" go_test_e2e \
     -timeout=1h \
+    -parallel=12 \
+    -run TestBrokerConformance \
+    ./test/rekt/ \
+    --istio.enabled=true || return $?
+
+  BROKER_TEMPLATES="${REPO_ROOT_DIR}/test/e2e/templates/kafka-namespaced-broker" go_test_e2e \
+    -timeout=1h \
+    -parallel=12 \
     -run TestBrokerConformance \
     ./test/rekt/ \
     --istio.enabled=true || return $?
@@ -40,7 +47,15 @@ function run_eventing_kafka_broker_tests() {
 
   BROKER_CLASS=Kafka go_test_e2e \
     -timeout=1h \
+    -parallel=12 \
     -run TestKafkaSource \
+    ./test/e2e_new/... \
+    --istio.enabled=true || return $?
+
+  BROKER_CLASS=Kafka go_test_e2e \
+    -timeout=1h \
+    -parallel=12 \
+    -run TestKafkaSink \
     ./test/e2e_new/... \
     --istio.enabled=true || return $?
 
