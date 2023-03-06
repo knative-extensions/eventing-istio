@@ -39,6 +39,13 @@ function run_eventing_core_tests() {
     ./test/rekt/ \
     --istio.enabled=true || return $?
 
+  BROKER_TEMPLATES="${REPO_ROOT_DIR}/test/e2e/templates/kafka-broker" go_test_e2e \
+    -timeout=1h \
+    -parallel=12 \
+    -run TestSinkBinding \
+    ./test/rekt/ \
+    --istio.enabled=true || return $?
+
   popd
 }
 
