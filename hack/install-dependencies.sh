@@ -9,6 +9,8 @@ export REPO_ROOT_DIR=${REPO_ROOT_DIR:-$(git rev-parse --show-toplevel)}
 export EVENTING_CONFIG=${EVENTING_CONFIG:-"./third_party/eventing-latest/"}
 export EVENTING_KAFKA_CONFIG=${EVENTING_KAFKA_CONFIG:-"./third_party/eventing-kafka-broker-latest/"}
 export ISTIO_CONFIG_DIR=${ISTIO_CONFIG_DIR:-"./third_party/istio"}
+export SYSTEM_NAMESPACE=${SYSTEM_NAMESPACE:-"knative-eventing"}
+export ISTIO_NAMESPACE=${SYSTEM_NAMESPACE:-"istio-system"}
 
 export PATH="third_party/istio/bin:$PATH"
 

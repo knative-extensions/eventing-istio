@@ -17,7 +17,7 @@ metadata:
   name: config-kafka-source-data-plane
   namespace: knative-eventing
   labels:
-    kafka.eventing.knative.dev/release: "b5c086d1230fdfa6fac5fc063d6a261ac2a0d6e5"
+    app.kubernetes.io/version: "f8737a4bac968d89290f63d26f7595a280e8d730"
   annotations:
     knative.dev/example-checksum: "8157ecb1"
 data:
@@ -178,7 +178,7 @@ kind: ClusterRole
 metadata:
   name: knative-kafka-source-data-plane
   labels:
-    kafka.eventing.knative.dev/release: "b5c086d1230fdfa6fac5fc063d6a261ac2a0d6e5"
+    app.kubernetes.io/version: "f8737a4bac968d89290f63d26f7595a280e8d730"
 rules:
   - apiGroups:
       - ""
@@ -209,7 +209,7 @@ metadata:
   name: knative-kafka-source-data-plane
   namespace: knative-eventing
   labels:
-    kafka.eventing.knative.dev/release: "b5c086d1230fdfa6fac5fc063d6a261ac2a0d6e5"
+    app.kubernetes.io/version: "f8737a4bac968d89290f63d26f7595a280e8d730"
 
 ---
 # Copyright 2021 The Knative Authors
@@ -230,7 +230,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-kafka-source-data-plane
   labels:
-    kafka.eventing.knative.dev/release: "b5c086d1230fdfa6fac5fc063d6a261ac2a0d6e5"
+    app.kubernetes.io/version: "f8737a4bac968d89290f63d26f7595a280e8d730"
 subjects:
   - kind: ServiceAccount
     name: knative-kafka-source-data-plane
@@ -261,7 +261,9 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-source-dispatcher
-    kafka.eventing.knative.dev/release: "b5c086d1230fdfa6fac5fc063d6a261ac2a0d6e5"
+    app.kubernetes.io/version: "f8737a4bac968d89290f63d26f7595a280e8d730"
+    app.kubernetes.io/component: kafka-source-dispatcher
+    app.kubernetes.io/name: knative-eventing
 spec:
   serviceName: kafka-source-dispatcher
   podManagementPolicy: "Parallel"
@@ -273,8 +275,10 @@ spec:
       name: kafka-source-dispatcher
       labels:
         app: kafka-source-dispatcher
-        app.kubernetes.io/component: kafka-dispatcher
-        kafka.eventing.knative.dev/release: "b5c086d1230fdfa6fac5fc063d6a261ac2a0d6e5"
+        app.kubernetes.io/version: "f8737a4bac968d89290f63d26f7595a280e8d730"
+        app.kubernetes.io/component: kafka-channel-dispatcher
+        app.kubernetes.io/name: knative-eventing
+        app.kubernetes.io/kind: kafka-dispatcher
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes and zones.
       topologySpreadConstraints:
@@ -298,7 +302,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: kafka-source-dispatcher
-          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher:v20230221-b5c086d1
+          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher:v20230310-f8737a4b
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
