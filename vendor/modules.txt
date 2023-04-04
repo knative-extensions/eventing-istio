@@ -205,10 +205,10 @@ k8s.io/kube-openapi/pkg/schemamutation
 k8s.io/kube-openapi/pkg/spec3
 k8s.io/kube-openapi/pkg/util/sets
 k8s.io/kube-openapi/pkg/validation/spec
-# knative.dev/hack v0.0.0-20230309131425-1eebfb3184f8
+# knative.dev/hack v0.0.0-20230330174700-1421f120c36b
 ## explicit; go 1.18
 knative.dev/hack
-# knative.dev/pkg v0.0.0-20230309013522-c5dd1d1264ba
+# knative.dev/pkg v0.0.0-20230403151233-b7f277446167
 ## explicit; go 1.18
 knative.dev/pkg/codegen/cmd/injection-gen
 knative.dev/pkg/codegen/cmd/injection-gen/args
