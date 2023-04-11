@@ -40,6 +40,8 @@ DIRS=(
   "/go.sum"
   "/vendor"
   "/third_party"
+  "/pkg/apis"
+  "/pkg/client"
 )
 
 exclude="${REPO_ROOT_DIR}/third_party/istio/bin/*"

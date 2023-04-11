@@ -1,1 +1,2 @@
-third_party/istio/bin
+/third_party/istio/bin
+/eventing-istio.yaml
