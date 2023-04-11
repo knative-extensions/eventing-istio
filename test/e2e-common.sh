@@ -64,6 +64,24 @@ function run_eventing_core_tests() {
     ./test/rekt/ \
     --istio.enabled=true || return $?
 
+  CHANNEL_GROUP_KIND="InMemoryChannel.messaging.knative.dev" \
+  CHANNEL_VERSION="v1" \
+  go_test_e2e \
+    -timeout=1h \
+    -parallel=12 \
+    -run TestChannel \
+    ./test/rekt/ \
+    --istio.enabled=true || return $?
+
+  CHANNEL_GROUP_KIND="KafkaChannel.messaging.knative.dev" \
+  CHANNEL_VERSION="v1beta1" \
+  go_test_e2e \
+    -timeout=1h \
+    -parallel=12 \
+    -run TestChannel \
+    ./test/rekt/ \
+    --istio.enabled=true || return $?
+
   popd
 }
 
