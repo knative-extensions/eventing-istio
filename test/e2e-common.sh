@@ -15,6 +15,15 @@ source "${REPO_ROOT_DIR}"/vendor/knative.dev/hack/e2e-tests.sh
 function knative_setup() {
   git submodule update --init --recursive
   "${REPO_ROOT_DIR}"/hack/install-dependencies.sh || return $?
+  knative_eventing_istio_setup || return $?
+}
+
+function eventing_istio_setup() {
+  "${REPO_ROOT_DIR}"/hack/build-from-source.sh || return $?
+
+  kubectl apply -f "${REPO_ROOT_DIR}"/eventing-istio.yaml || return $?
+
+  wait_until_pods_running "knative-eventing" || return $?
 }
 
 function run_eventing_core_tests() {
