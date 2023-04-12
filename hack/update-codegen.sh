@@ -38,14 +38,14 @@ K8S_TYPES=$(find ./vendor/k8s.io/api -type d -path '*/*/*/*/*/*' | cut -d'/' -f 
   grep -v "admission:" | grep -v "imagepolicy:" | grep -v "abac:" | grep -v "componentconfig:")
 
 OUTPUT_PKG="knative.dev/eventing-istio/pkg/client/injection/kube" \
-VERSIONED_CLIENTSET_PKG="k8s.io/client-go/kubernetes" \
-EXTERNAL_INFORMER_PKG="k8s.io/client-go/informers" \
+  VERSIONED_CLIENTSET_PKG="k8s.io/client-go/kubernetes" \
+  EXTERNAL_INFORMER_PKG="k8s.io/client-go/informers" \
   "${KNATIVE_CODEGEN_PKG}"/hack/generate-knative.sh "injection" \
-    k8s.io/client-go \
-    k8s.io/api \
-    "${K8S_TYPES}" \
-    --go-header-file "${REPO_ROOT_DIR}"/hack/boilerplate/boilerplate.go.txt \
-    --force-genreconciler-kinds "Service"
+  k8s.io/client-go \
+  k8s.io/api \
+  "${K8S_TYPES}" \
+  --go-header-file "${REPO_ROOT_DIR}"/hack/boilerplate/boilerplate.go.txt \
+  --force-genreconciler-kinds "Service"
 
 # Generate our own client for istio (otherwise injection won't work)
 "${CODEGEN_PKG}"/generate-groups.sh "client,informer,lister" \
@@ -56,17 +56,15 @@ EXTERNAL_INFORMER_PKG="k8s.io/client-go/informers" \
 group "Knative Codegen"
 
 # Knative Injection (for istio)
-${KNATIVE_CODEGEN_PKG}/hack/generate-knative.sh "injection" \
+"${KNATIVE_CODEGEN_PKG}"/hack/generate-knative.sh "injection" \
   knative.dev/eventing-istio/pkg/client/istio istio.io/client-go/pkg/apis \
   "networking:v1beta1" \
   --lister-has-pointer-elem=true \
   --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt
 
 # Depends on generate-groups.sh to install bin/deepcopy-gen
-go run k8s.io/code-generator/cmd/deepcopy-gen  --input-dirs \
-  $(echo \
-  knative.dev/pkg/apis \
-  | sed "s/ /,/g") \
+go run k8s.io/code-generator/cmd/deepcopy-gen --input-dirs \
+  $(echo knative.dev/pkg/apis | sed "s/ /,/g") \
   -O zz_generated.deepcopy \
   --go-header-file "${REPO_ROOT_DIR}"/hack/boilerplate/boilerplate.go.txt
 
