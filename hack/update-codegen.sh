@@ -62,12 +62,6 @@ group "Knative Codegen"
   --lister-has-pointer-elem=true \
   --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt
 
-# Depends on generate-groups.sh to install bin/deepcopy-gen
-go run k8s.io/code-generator/cmd/deepcopy-gen --input-dirs \
-  $(echo knative.dev/pkg/apis | sed "s/ /,/g") \
-  -O zz_generated.deepcopy \
-  --go-header-file "${REPO_ROOT_DIR}"/hack/boilerplate/boilerplate.go.txt
-
 # This is an extension file to be able to satisfy some interfaces but it is mostly there to
 # make the code compile, so it's not functional code.
 cp "${REPO_ROOT_DIR}"/vendor/knative.dev/pkg/client/injection/kube/client/client_expansion.go "${REPO_ROOT_DIR}"/pkg/client/injection/kube/client
