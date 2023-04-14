@@ -20,11 +20,13 @@ import (
 	"context"
 	"fmt"
 
+	"go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/equality"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"knative.dev/pkg/controller"
+	"knative.dev/pkg/logging"
 	"knative.dev/pkg/reconciler"
 	"knative.dev/pkg/tracker"
 
@@ -50,6 +52,7 @@ var (
 func (r *Reconciler) ReconcileKind(ctx context.Context, svc *corev1.Service) reconciler.Event {
 	cfg := r.GetConfig(ctx, svc)
 	if !cfg.IsEnabled() {
+		logging.FromContext(ctx).Desugar().Debug("Istio is disabled", zap.Any("config", cfg))
 		// If the flag was disabled after being enabled finalize resources
 		return r.finalizeDestinationRule(ctx, svc)
 	}

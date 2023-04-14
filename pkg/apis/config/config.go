@@ -35,8 +35,7 @@ const (
 )
 
 type Config struct {
-	istio                  feature.Flag
-	destinationRuleTLSMode string
+	istio feature.Flag
 }
 
 func (c Config) IsEnabled() bool {
