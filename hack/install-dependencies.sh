@@ -14,6 +14,18 @@ export ISTIO_NAMESPACE=${SYSTEM_NAMESPACE:-"istio-system"}
 
 export PATH="third_party/istio/bin:$PATH"
 
+echo "Installing Istio"
+istioctl version
+
+istioctl x precheck
+
+istioctl install \
+  -y \
+  --set profile=default \
+  --set meshConfig.outboundTrafficPolicy.mode=REGISTRY_ONLY
+
+kubectl apply -f "${ISTIO_CONFIG_DIR}/samples/addons"
+
 kubectl create namespace knative-eventing --dry-run=client -oyaml | kubectl apply -f -
 kubectl label namespace knative-eventing istio-injection=enabled
 
@@ -31,18 +43,6 @@ kubectl patch deployment \
   --type merge \
   -n knative-eventing \
   --patch-file "${REPO_ROOT_DIR}/hack/eventing-injection-disabled.yaml"
-
-echo "Installing Istio"
-istioctl version
-
-istioctl x precheck
-
-istioctl install \
-  -y \
-  --set profile=default \
-  --set meshConfig.outboundTrafficPolicy.mode=REGISTRY_ONLY
-
-kubectl apply -f "${ISTIO_CONFIG_DIR}/samples/addons"
 
 echo "Installing Eventing Kafka from ${EVENTING_KAFKA_CONFIG}"
 kubectl apply -Rf "${EVENTING_KAFKA_CONFIG}"
