@@ -49,3 +49,10 @@ rules:
     resources:
       - "leases"
     verbs: *everything
+
+  # For creating events and reporting errors
+  - apiGroups:
+      - ""
+    resources:
+      - "events"
+    verbs: *everything

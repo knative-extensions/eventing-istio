@@ -28,18 +28,25 @@ import (
 )
 
 const (
-	// IstioConfig is the name of config map for the istio config features.
+	// IstioConfig is the name of config map for the Istio config features.
 	IstioConfig = "config-features"
 
+	// IstioConfigKey is the key in IstioConfig ConfigMap for the feature flag enabled or disable.
 	IstioConfigKey = "istio"
 )
 
 type Config struct {
-	istio feature.Flag
+	Istio feature.Flag
+}
+
+func NewDefaultConfig() *Config {
+	return &Config{
+		Istio: feature.Disabled,
+	}
 }
 
 func (c Config) IsEnabled() bool {
-	return strings.EqualFold(string(c.istio), string(feature.Enabled))
+	return strings.EqualFold(string(c.Istio), string(feature.Enabled))
 }
 
 // Store is a typed wrapper around configmap.Untyped store to handle our configmaps.
@@ -70,8 +77,8 @@ func newIstioConfig(config *corev1.ConfigMap) (*Config, error) {
 }
 
 func newIstioConfigFromMap(data map[string]string) (*Config, error) {
-	c := &Config{}
-	if err := configmap.Parse(data, asFlag(IstioConfigKey, &c.istio)); err != nil {
+	c := NewDefaultConfig()
+	if err := configmap.Parse(data, asFlag(IstioConfigKey, &c.Istio)); err != nil {
 		return c, fmt.Errorf("failed to parse flag %s: %w", IstioConfigKey, err)
 	}
 	return c, nil

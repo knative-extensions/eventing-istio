@@ -22,6 +22,7 @@ import (
 	istionetworking "istio.io/client-go/pkg/apis/networking/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"knative.dev/pkg/network"
 )
 
@@ -44,7 +45,11 @@ func DestinationRule(cfg DestinationRuleConfig) *istionetworking.DestinationRule
 			Labels:      cfg.Service.Labels,
 			Annotations: cfg.Service.Annotations,
 			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(cfg.Service, cfg.Service.GroupVersionKind()),
+				*metav1.NewControllerRef(cfg.Service, schema.GroupVersionKind{
+					Group:   corev1.SchemeGroupVersion.Group,
+					Version: corev1.SchemeGroupVersion.Version,
+					Kind:    "Service",
+				}),
 			},
 		},
 		Spec: v1beta1.DestinationRule{

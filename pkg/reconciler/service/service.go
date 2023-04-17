@@ -34,15 +34,17 @@ import (
 
 	"knative.dev/eventing-istio/pkg/apis/config"
 	servicereconciler "knative.dev/eventing-istio/pkg/client/injection/kube/reconciler/core/v1/service"
-	"knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
+	istioclientset "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
 	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
 )
 
 type Reconciler struct {
-	Tracker               tracker.Interface
-	GetConfig             func(ctx context.Context, svc *corev1.Service) *config.Config
-	IstioClient           versioned.Interface
+	GetConfig func(ctx context.Context, svc *corev1.Service) *config.Config
+
+	IstioClient           istioclientset.Interface
 	DestinationRuleLister networkingv1beta1.DestinationRuleLister
+
+	Tracker tracker.Interface
 }
 
 var (
@@ -51,10 +53,21 @@ var (
 
 func (r *Reconciler) ReconcileKind(ctx context.Context, svc *corev1.Service) reconciler.Event {
 	cfg := r.GetConfig(ctx, svc)
+
+	logger := logging.FromContext(ctx).Desugar().With(zap.Any("config", cfg))
+
 	if !cfg.IsEnabled() {
-		logging.FromContext(ctx).Desugar().Debug("Istio is disabled", zap.Any("config", cfg))
+		logger.Debug("Istio is disabled")
 		// If the flag was disabled after being enabled finalize resources
 		return r.finalizeDestinationRule(ctx, svc)
+	}
+
+	// Only external name services should be reconciled since other services are already working
+	if svc.Spec.ExternalName == "" {
+		logger.Debug("Service is not an external name service",
+			zap.String("service", fmt.Sprintf("%s/%s", svc.GetNamespace(), svc.GetName())),
+		)
+		return nil
 	}
 
 	if err := r.reconcileDestinationRule(ctx, svc); err != nil {

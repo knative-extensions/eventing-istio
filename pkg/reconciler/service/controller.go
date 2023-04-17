@@ -19,33 +19,36 @@ package service
 import (
 	"context"
 
+	"go.uber.org/zap"
+	istionetworking "istio.io/client-go/pkg/apis/networking/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	serviceinformer "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/tools/cache"
-	kubeclient "knative.dev/pkg/client/injection/kube/client"
+	serviceinformer "knative.dev/pkg/client/injection/kube/informers/core/v1/service"
 	"knative.dev/pkg/configmap"
 	"knative.dev/pkg/controller"
-
-	istionetworking "istio.io/client-go/pkg/apis/networking/v1beta1"
+	"knative.dev/pkg/logging"
 
 	"knative.dev/eventing-istio/pkg/apis/config"
 	"knative.dev/eventing-istio/pkg/client/injection/kube/reconciler/core/v1/service"
-	istioclient "knative.dev/eventing-istio/pkg/client/istio/injection/client"
+	istioclientset "knative.dev/eventing-istio/pkg/client/istio/injection/client"
 	istionetworkinginformer "knative.dev/eventing-istio/pkg/client/istio/injection/informers/networking/v1beta1/destinationrule/filtered"
 )
 
 func NewController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
 
-	store := config.NewStore(ctx)
+	store := config.NewStore(ctx, func(name string, value interface{}) {
+
+	})
 	store.WatchConfigs(cmw)
 
-	// Get a filtered informer
+	// Get a filtered informer for destination rules
 	drInformer := istionetworkinginformer.Get(ctx, IstioResourceSelector)
 
-	ic := istioclient.Get(ctx)
+	ic := istioclientset.Get(ctx)
+	serviceInformer := serviceinformer.Get(ctx).Informer()
 
 	r := &Reconciler{
 		IstioClient:           ic,
@@ -55,36 +58,18 @@ func NewController(ctx context.Context, cmw configmap.Watcher) *controller.Impl 
 		},
 	}
 
-	imcLabels := map[string]string{
-		"messaging.knative.dev/channel": "in-memory-channel",
-		"messaging.knative.dev/role":    "dispatcher",
-	}
-	kcLabels := map[string]string{
-		"messaging.knative.dev/role": "kafka-channel",
-	}
-
-	filterServices := func(obj interface{}) bool {
-		svc, ok := obj.(metav1.Object)
-		if !ok {
-			return false
-		}
-		l := labels.SelectorFromSet(svc.GetLabels())
-
-		imcSelector := labels.Set(imcLabels)
-		kcSelector := labels.Set(kcLabels)
-
-		return l.Matches(imcSelector) || l.Matches(kcSelector)
-	}
-
 	impl := service.NewImpl(ctx, r, func(impl *controller.Impl) controller.Options {
 		return controller.Options{
 			SkipStatusUpdates: true,
-			PromoteFilterFunc: filterServices,
+			PromoteFilterFunc: filterServices(ctx),
 		}
 	})
+	r.Tracker = impl.Tracker
 
-	handleServices(ctx, metav1.LabelSelector{MatchLabels: imcLabels}, impl)
-	handleServices(ctx, metav1.LabelSelector{MatchLabels: kcLabels}, impl)
+	serviceInformer.AddEventHandler(cache.FilteringResourceEventHandler{
+		FilterFunc: filterServices(ctx),
+		Handler:    controller.HandleAll(impl.Enqueue),
+	})
 
 	// Notify the tracker that a destination rule we're tracking changed.
 	drInformer.Informer().AddEventHandler(controller.HandleAll(controller.EnsureTypeMeta(
@@ -99,22 +84,33 @@ func NewController(ctx context.Context, cmw configmap.Watcher) *controller.Impl 
 	return impl
 }
 
-func handleServices(ctx context.Context, labelSelector metav1.LabelSelector, impl *controller.Impl) {
-	imcSelector, err := metav1.LabelSelectorAsSelector(&labelSelector)
-	if err != nil {
-		panic(err)
+func filterServices(ctx context.Context) func(obj interface{}) bool {
+	logger := logging.FromContext(ctx).Desugar()
+
+	return func(obj interface{}) bool {
+		imcLabels := map[string]string{
+			"messaging.knative.dev/role": "in-memory-channel",
+		}
+		kcLabels := map[string]string{
+			"messaging.knative.dev/role": "kafka-channel",
+		}
+
+		svc, ok := obj.(metav1.Object)
+		if !ok {
+			return false
+		}
+
+		logger.Debug("Filtering Service",
+			zap.String("namespace", svc.GetNamespace()),
+			zap.String("name", svc.GetName()),
+			zap.Any("labels", svc.GetLabels()),
+		)
+
+		l := labels.SelectorFromSet(svc.GetLabels())
+
+		imcSelector := labels.Set(imcLabels)
+		kcSelector := labels.Set(kcLabels)
+
+		return l.Matches(imcSelector) || l.Matches(kcSelector)
 	}
-	informer := serviceinformer.NewFilteredServiceInformer(
-		kubeclient.Get(ctx),
-		corev1.NamespaceAll,
-		controller.GetResyncPeriod(ctx),
-		nil,
-		func(options *metav1.ListOptions) {
-			options.LabelSelector = imcSelector.String()
-		},
-	)
-	informer.AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc:    impl.Enqueue,
-		UpdateFunc: controller.PassNew(impl.Enqueue),
-	})
 }
