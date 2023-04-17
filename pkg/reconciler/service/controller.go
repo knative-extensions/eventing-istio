@@ -106,11 +106,11 @@ func filterServices(ctx context.Context) func(obj interface{}) bool {
 			zap.Any("labels", svc.GetLabels()),
 		)
 
-		l := labels.SelectorFromSet(svc.GetLabels())
+		l := labels.Set(svc.GetLabels())
 
-		imcSelector := labels.Set(imcLabels)
-		kcSelector := labels.Set(kcLabels)
+		imcSelector := labels.SelectorFromSet(imcLabels)
+		kcSelector := labels.SelectorFromSet(kcLabels)
 
-		return l.Matches(imcSelector) || l.Matches(kcSelector)
+		return imcSelector.Matches(l) || kcSelector.Matches(l)
 	}
 }

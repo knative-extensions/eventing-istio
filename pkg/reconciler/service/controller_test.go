@@ -41,8 +41,8 @@ func TestFilterServices(t *testing.T) {
 			obj: &corev1.Service{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"messaging.knative.dev/channel": "in-memory-channel",
-						"messaging.knative.dev/role":    "dispatcher",
+						"messaging.knative.dev/role":  "in-memory-channel",
+						"messaging.knative.dev/role1": "dispatcher",
 					},
 				},
 			},
@@ -53,8 +53,7 @@ func TestFilterServices(t *testing.T) {
 			obj: &corev1.Service{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"messaging.knative.dev/channel": "in-memory-channel",
-						"messaging.knative.dev/role":    "dispatcher1",
+						"messaging.knative.dev/channel": "in-memory-channel2",
 					},
 				},
 			},
@@ -65,7 +64,8 @@ func TestFilterServices(t *testing.T) {
 			obj: &corev1.Service{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"messaging.knative.dev/role": "kafka-channel",
+						"messaging.knative.dev/role":  "kafka-channel",
+						"messaging.knative.dev/role2": "kafka-channel",
 					},
 				},
 			},
