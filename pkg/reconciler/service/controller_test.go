@@ -20,14 +20,14 @@ import (
 	"context"
 	"testing"
 
-	"github.com/blendle/zapdriver"
+	"go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"knative.dev/pkg/logging"
 )
 
 func TestFilterServices(t *testing.T) {
-	logger, _ := zapdriver.NewDevelopment()
+	logger, _ := zap.NewDevelopment()
 
 	ctx := logging.WithLogger(context.Background(), logger.Sugar())
 
