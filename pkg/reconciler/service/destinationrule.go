@@ -17,13 +17,11 @@ limitations under the License.
 package service
 
 import (
-	"istio.io/api/networking/v1beta1"
 	istionetworkingapi "istio.io/api/networking/v1beta1"
 	istionetworking "istio.io/client-go/pkg/apis/networking/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"knative.dev/pkg/network"
 )
 
 const (
@@ -52,8 +50,8 @@ func DestinationRule(cfg DestinationRuleConfig) *istionetworking.DestinationRule
 				}),
 			},
 		},
-		Spec: v1beta1.DestinationRule{
-			Host: network.GetServiceHostname(cfg.Service.Name, cfg.Service.Namespace),
+		Spec: istionetworkingapi.DestinationRule{
+			Host: cfg.Service.Spec.ExternalName,
 			TrafficPolicy: &istionetworkingapi.TrafficPolicy{
 				Tls: &istionetworkingapi.ClientTLSSettings{
 					Mode: istionetworkingapi.ClientTLSSettings_ISTIO_MUTUAL,

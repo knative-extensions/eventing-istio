@@ -20,9 +20,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/go-cmp/cmp"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/testing/protocmp"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/equality"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"knative.dev/pkg/controller"
@@ -35,14 +36,14 @@ import (
 	"knative.dev/eventing-istio/pkg/apis/config"
 	servicereconciler "knative.dev/eventing-istio/pkg/client/injection/kube/reconciler/core/v1/service"
 	istioclientset "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
-	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
+	istionetworkinglisters "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
 )
 
 type Reconciler struct {
 	GetConfig func(ctx context.Context, svc *corev1.Service) *config.Config
 
 	IstioClient           istioclientset.Interface
-	DestinationRuleLister networkingv1beta1.DestinationRuleLister
+	DestinationRuleLister istionetworkinglisters.DestinationRuleLister
 
 	Tracker tracker.Interface
 }
@@ -60,14 +61,6 @@ func (r *Reconciler) ReconcileKind(ctx context.Context, svc *corev1.Service) rec
 		logger.Debug("Istio is disabled")
 		// If the flag was disabled after being enabled finalize resources
 		return r.finalizeDestinationRule(ctx, svc)
-	}
-
-	// Only external name services should be reconciled since other services are already working
-	if svc.Spec.ExternalName == "" {
-		logger.Debug("Service is not an external name service",
-			zap.String("service", fmt.Sprintf("%s/%s", svc.GetNamespace(), svc.GetName())),
-		)
-		return nil
 	}
 
 	if err := r.reconcileDestinationRule(ctx, svc); err != nil {
@@ -88,7 +81,7 @@ func (r *Reconciler) reconcileDestinationRule(ctx context.Context, svc *corev1.S
 		return fmt.Errorf("failed to get DestinationRule %s/%s: %w", svc.Namespace, svc.Name, err)
 	}
 	if apierrors.IsNotFound(err) {
-		return r.createDestinationRule(ctx, expected)
+		return r.createDestinationRule(ctx, svc, expected)
 	}
 
 	_ = r.Tracker.TrackReference(tracker.Reference{
@@ -98,7 +91,7 @@ func (r *Reconciler) reconcileDestinationRule(ctx context.Context, svc *corev1.S
 		Name:       got.Name,
 	}, svc)
 
-	if equality.Semantic.DeepDerivative(expected, got) {
+	if !isDestinationRuleDifferent(got, expected) {
 		return nil
 	}
 
@@ -114,7 +107,7 @@ func (r *Reconciler) reconcileDestinationRule(ctx context.Context, svc *corev1.S
 	return r.updateDestinationRule(ctx, svc, updated)
 }
 
-func (r *Reconciler) createDestinationRule(ctx context.Context, expected *istionetworking.DestinationRule) error {
+func (r *Reconciler) createDestinationRule(ctx context.Context, svc *corev1.Service, expected *istionetworking.DestinationRule) error {
 	_, err := r.IstioClient.NetworkingV1beta1().
 		DestinationRules(expected.GetNamespace()).
 		Create(ctx, expected, metav1.CreateOptions{})
@@ -123,7 +116,7 @@ func (r *Reconciler) createDestinationRule(ctx context.Context, expected *istion
 	}
 
 	controller.GetEventRecorder(ctx).
-		Event(expected, corev1.EventTypeNormal, "Created", fmt.Sprintf("Created DestinationRule %s/%s", expected.Namespace, expected.Name))
+		Event(svc, corev1.EventTypeNormal, "Created", fmt.Sprintf("Created DestinationRule %s/%s", expected.Namespace, expected.Name))
 
 	return nil
 }
@@ -141,7 +134,7 @@ func (r *Reconciler) updateDestinationRule(ctx context.Context, svc *corev1.Serv
 	}
 
 	controller.GetEventRecorder(ctx).
-		Event(expected, corev1.EventTypeNormal, "Updated", fmt.Sprintf("Updated DestinationRule %s/%s", expected.Namespace, expected.Name))
+		Event(svc, corev1.EventTypeNormal, "Updated", fmt.Sprintf("Updated DestinationRule %s/%s", expected.Namespace, expected.Name))
 
 	return nil
 }
@@ -149,7 +142,7 @@ func (r *Reconciler) updateDestinationRule(ctx context.Context, svc *corev1.Serv
 func (r *Reconciler) finalizeDestinationRule(ctx context.Context, svc *corev1.Service) error {
 	dr, err := r.DestinationRuleLister.DestinationRules(svc.Namespace).Get(svc.Name)
 	if err != nil && !apierrors.IsNotFound(err) {
-		return fmt.Errorf("failed to get ")
+		return fmt.Errorf("failed to get DestinationRule %s/%s: %w", svc.Namespace, svc.Name, err)
 	}
 	if apierrors.IsNotFound(err) {
 		return nil
@@ -162,10 +155,23 @@ func (r *Reconciler) finalizeDestinationRule(ctx context.Context, svc *corev1.Se
 	err = r.IstioClient.
 		NetworkingV1beta1().
 		DestinationRules(svc.Namespace).
-		Delete(ctx, svc.Name, metav1.DeleteOptions{})
+		Delete(ctx, svc.Name, metav1.DeleteOptions{
+			Preconditions: &metav1.Preconditions{
+				UID: &dr.UID,
+			},
+		})
 	if err != nil && !apierrors.IsNotFound(err) {
 		return fmt.Errorf("failed to delete DestinationRule %s/%s: %w", svc.Namespace, svc.Name, err)
 	}
 
+	controller.GetEventRecorder(ctx).
+		Event(svc, corev1.EventTypeNormal, "Deleted", fmt.Sprintf("Deleted DestinationRule %s/%s", dr.Namespace, dr.Name))
+
 	return nil
+}
+
+func isDestinationRuleDifferent(current, desired *istionetworking.DestinationRule) bool {
+	return !cmp.Equal(&current.Spec, &desired.Spec, protocmp.Transform()) ||
+		!cmp.Equal(current.Labels, desired.Labels) ||
+		!cmp.Equal(current.Annotations, desired.Annotations)
 }

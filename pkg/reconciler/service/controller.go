@@ -22,16 +22,15 @@ import (
 	"go.uber.org/zap"
 	istionetworking "istio.io/client-go/pkg/apis/networking/v1beta1"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/tools/cache"
-	serviceinformer "knative.dev/pkg/client/injection/kube/informers/core/v1/service"
 	"knative.dev/pkg/configmap"
 	"knative.dev/pkg/controller"
 	"knative.dev/pkg/logging"
 
 	"knative.dev/eventing-istio/pkg/apis/config"
+	serviceinformer "knative.dev/eventing-istio/pkg/client/injection/kube/informers/core/v1/service"
 	"knative.dev/eventing-istio/pkg/client/injection/kube/reconciler/core/v1/service"
 	istioclientset "knative.dev/eventing-istio/pkg/client/istio/injection/client"
 	istionetworkinginformer "knative.dev/eventing-istio/pkg/client/istio/injection/informers/networking/v1beta1/destinationrule/filtered"
@@ -39,9 +38,7 @@ import (
 
 func NewController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
 
-	store := config.NewStore(ctx, func(name string, value interface{}) {
-
-	})
+	store := config.NewStore(ctx)
 	store.WatchConfigs(cmw)
 
 	// Get a filtered informer for destination rules
@@ -68,7 +65,14 @@ func NewController(ctx context.Context, cmw configmap.Watcher) *controller.Impl 
 
 	serviceInformer.AddEventHandler(cache.FilteringResourceEventHandler{
 		FilterFunc: filterServices(ctx),
-		Handler:    controller.HandleAll(impl.Enqueue),
+		Handler: controller.HandleAll(controller.EnsureTypeMeta(
+			impl.Enqueue,
+			schema.GroupVersionKind{
+				Group:   corev1.SchemeGroupVersion.Group,
+				Version: corev1.SchemeGroupVersion.Version,
+				Kind:    "Service",
+			},
+		)),
 	})
 
 	// Notify the tracker that a destination rule we're tracking changed.
@@ -95,7 +99,7 @@ func filterServices(ctx context.Context) func(obj interface{}) bool {
 			"messaging.knative.dev/role": "kafka-channel",
 		}
 
-		svc, ok := obj.(metav1.Object)
+		svc, ok := obj.(*corev1.Service)
 		if !ok {
 			return false
 		}
@@ -105,6 +109,10 @@ func filterServices(ctx context.Context) func(obj interface{}) bool {
 			zap.String("name", svc.GetName()),
 			zap.Any("labels", svc.GetLabels()),
 		)
+
+		if svc.Spec.ExternalName == "" {
+			return false
+		}
 
 		l := labels.Set(svc.GetLabels())
 

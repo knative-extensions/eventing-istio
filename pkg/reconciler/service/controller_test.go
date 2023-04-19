@@ -23,12 +23,23 @@ import (
 	"go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/rest"
+	"knative.dev/pkg/configmap"
+	"knative.dev/pkg/injection"
 	"knative.dev/pkg/logging"
+
+	_ "knative.dev/pkg/client/injection/kube/client/fake"
+
+	_ "knative.dev/eventing-istio/pkg/client/injection/kube/informers/core/v1/service/fake"
+	_ "knative.dev/eventing-istio/pkg/client/istio/injection/client/fake"
+	istiofilteredfactory "knative.dev/eventing-istio/pkg/client/istio/injection/informers/factory/filtered"
+	_ "knative.dev/eventing-istio/pkg/client/istio/injection/informers/factory/filtered/fake"
+	_ "knative.dev/eventing-istio/pkg/client/istio/injection/informers/networking/v1beta1/destinationrule/filtered/fake"
 )
 
 func TestFilterServices(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-
 	ctx := logging.WithLogger(context.Background(), logger.Sugar())
 
 	tt := []struct {
@@ -45,6 +56,9 @@ func TestFilterServices(t *testing.T) {
 						"messaging.knative.dev/role1": "dispatcher",
 					},
 				},
+				Spec: corev1.ServiceSpec{
+					ExternalName: "example.com",
+				},
 			},
 			expected: true,
 		},
@@ -55,6 +69,9 @@ func TestFilterServices(t *testing.T) {
 					Labels: map[string]string{
 						"messaging.knative.dev/channel": "in-memory-channel2",
 					},
+				},
+				Spec: corev1.ServiceSpec{
+					ExternalName: "example.com",
 				},
 			},
 			expected: false,
@@ -68,6 +85,9 @@ func TestFilterServices(t *testing.T) {
 						"messaging.knative.dev/role2": "kafka-channel",
 					},
 				},
+				Spec: corev1.ServiceSpec{
+					ExternalName: "example.com",
+				},
 			},
 			expected: true,
 		},
@@ -79,6 +99,9 @@ func TestFilterServices(t *testing.T) {
 						"messaging.knative.dev/role": "kafka-channel1",
 					},
 				},
+				Spec: corev1.ServiceSpec{
+					ExternalName: "example.com",
+				},
 			},
 			expected: false,
 		},
@@ -86,10 +109,25 @@ func TestFilterServices(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+
+			if _, ok := tc.obj.(runtime.Object); !ok {
+				panic(tc.obj)
+			}
+
 			got := filterServices(ctx)(tc.obj)
 			if tc.expected != got {
 				t.Fatal("expected", tc.expected, "got", got)
 			}
 		})
+	}
+}
+
+func TestNewController(t *testing.T) {
+	ctx := istiofilteredfactory.WithSelectors(context.Background(), IstioResourceSelector)
+	ctx, _ = injection.Fake.SetupInformers(ctx, &rest.Config{})
+
+	impl := NewController(ctx, &configmap.ManualWatcher{})
+	if impl == nil {
+		t.Fatal("impl must not be nil")
 	}
 }

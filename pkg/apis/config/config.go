@@ -39,9 +39,26 @@ type Config struct {
 	Istio feature.Flag
 }
 
-func NewDefaultConfig() *Config {
-	return &Config{
+type Option func(config *Config) error
+
+func NewDefaultConfig(options ...Option) (*Config, error) {
+	c := &Config{
 		Istio: feature.Disabled,
+	}
+
+	for _, opt := range options {
+		if err := opt(c); err != nil {
+			return nil, err
+		}
+	}
+
+	return c, nil
+}
+
+func WithEnabled() Option {
+	return func(config *Config) error {
+		config.Istio = feature.Enabled
+		return nil
 	}
 }
 
@@ -77,7 +94,10 @@ func newIstioConfig(config *corev1.ConfigMap) (*Config, error) {
 }
 
 func newIstioConfigFromMap(data map[string]string) (*Config, error) {
-	c := NewDefaultConfig()
+	c, err := NewDefaultConfig()
+	if err != nil {
+		return nil, err
+	}
 	if err := configmap.Parse(data, asFlag(IstioConfigKey, &c.Istio)); err != nil {
 		return c, fmt.Errorf("failed to parse flag %s: %w", IstioConfigKey, err)
 	}
