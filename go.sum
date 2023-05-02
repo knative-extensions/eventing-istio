@@ -814,12 +814,12 @@ k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1 h1:MQ8BAZPZlWk3S9K4a9NCkI
 k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1/go.mod h1:C/N6wCaBHeBHkHUesQOQy2/MZqGgMAFPqGsGQLdbZBU=
 k8s.io/utils v0.0.0-20221108210102-8e77b1f39fe2 h1:GfD9OzL11kvZN5iArC6oTS7RTj7oJOIfnislxYlqTj8=
 k8s.io/utils v0.0.0-20221108210102-8e77b1f39fe2/go.mod h1:OLgZIPagt7ERELqWJFomSt595RzquPNLL48iOWgYOg0=
-knative.dev/eventing v0.37.1-0.20230502055954-cd50d2786189 h1:Nr8uXYt/248ePURdrr36gL5dQCFDChsUU3S5QL7TkbM=
-knative.dev/eventing v0.37.1-0.20230502055954-cd50d2786189/go.mod h1:jkRCS2JQWe9hzRRuzx5GnWZ43xowbWHPntoCNsnmsV0=
+knative.dev/eventing v0.37.1-0.20230502135555-66e8257b9c83 h1:nfYLJbYQcH6sxRkY1esskJHaEPPLudAYeLGzkvJlqDs=
+knative.dev/eventing v0.37.1-0.20230502135555-66e8257b9c83/go.mod h1:jkRCS2JQWe9hzRRuzx5GnWZ43xowbWHPntoCNsnmsV0=
 knative.dev/hack v0.0.0-20230501013555-7d81248b4638 h1:9IuXHdwp5jNmIg+0LVTQr8o4u0FYD99uCfynM9tS0XY=
 knative.dev/hack v0.0.0-20230501013555-7d81248b4638/go.mod h1:yk2OjGDsbEnQjfxdm0/HJKS2WqTLEFg/N6nUs6Rqx3Q=
-knative.dev/pkg v0.0.0-20230501013355-904966742b58 h1:A8F5gaIpL34Zh746M2q7HEI2+wLulYMMNrFuetRwymM=
-knative.dev/pkg v0.0.0-20230501013355-904966742b58/go.mod h1:2qWPP9Gjh9Q7ETti+WRHnBnGCSCq+6q7m3p/nmUQviE=
+knative.dev/pkg v0.0.0-20230502134655-db8a35330281 h1:9mN8O5XO68DKlkzEhFAShUx+O/I+TQR71vmTvYt8oF4=
+knative.dev/pkg v0.0.0-20230502134655-db8a35330281/go.mod h1:2qWPP9Gjh9Q7ETti+WRHnBnGCSCq+6q7m3p/nmUQviE=
 rsc.io/binaryregexp v0.2.0/go.mod h1:qTv7/COck+e2FymRvadv62gMdZztPaShugOCi3I+8D8=
 rsc.io/quote/v3 v3.1.0/go.mod h1:yEA65RcK8LyAZtP9Kv3t0HmxON59tX3rD+tICJqUlj0=
 rsc.io/sampler v1.3.0/go.mod h1:T1hPZKmBbMNahiBKFy5HrXp6adAjACjK9JXDnKaTXpA=

@@ -62,7 +62,7 @@ function run_eventing_core_tests() {
   CHANNEL_VERSION="v1" \
   go_test_e2e \
     -timeout=1h \
-    -parallel=12 \
+    -parallel=18 \
     -run TestChannel \
     ./test/rekt/ \
     --istio.enabled=true || return $?
@@ -71,7 +71,7 @@ function run_eventing_core_tests() {
   CHANNEL_VERSION="v1beta1" \
   go_test_e2e \
     -timeout=1h \
-    -parallel=12 \
+    -parallel=18 \
     -run TestChannel \
     ./test/rekt/ \
     --istio.enabled=true || return $?
