@@ -17,8 +17,6 @@ kind: ConfigMap
 metadata:
   name: config-logging
   namespace: knative-eventing
-  labels:
-
 data:
   zap-logger-config: |
     {

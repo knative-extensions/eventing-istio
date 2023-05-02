@@ -116,7 +116,7 @@ func TestReconcileKind(t *testing.T) {
 			Objects: []runtime.Object{
 				makeService(),
 				makeDestinationRuleForService(func(rule *istionetworking.DestinationRule) {
-					rule.Spec.Host = network.GetServiceHostname(serviceName, serviceNamespace)
+					rule.Spec.Host = serviceExternalName
 				}),
 			},
 			Key:     key,
@@ -229,7 +229,7 @@ func makeDestinationRuleForService(opts ...func(rule *istionetworking.Destinatio
 			Labels: s.Labels,
 		},
 		Spec: istionetworkingapi.DestinationRule{
-			Host: serviceExternalName,
+			Host: network.GetServiceHostname(serviceName, serviceNamespace),
 			TrafficPolicy: &istionetworkingapi.TrafficPolicy{
 				Tls: &istionetworkingapi.ClientTLSSettings{
 					Mode: istionetworkingapi.ClientTLSSettings_ISTIO_MUTUAL,

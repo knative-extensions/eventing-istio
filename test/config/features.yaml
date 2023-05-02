@@ -17,10 +17,5 @@ kind: ConfigMap
 metadata:
   name: config-features
   namespace: knative-eventing
-  labels:
-    knative.dev/config-propagation: original
-    knative.dev/config-category: eventing
-    app.kubernetes.io/version: devel
-    app.kubernetes.io/name: knative-eventing
 data:
   istio: "enabled"

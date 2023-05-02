@@ -38,7 +38,21 @@ import (
 
 func NewController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
 
-	store := config.NewStore(ctx)
+	logger := logging.FromContext(ctx).Desugar()
+
+	var globalResync func()
+
+	store := config.NewStore(ctx, func(name string, value interface{}) {
+		if globalResync == nil {
+			return
+		}
+
+		logger.Info("Config store changed",
+			zap.String("name", name),
+			zap.Any("value", value.(*config.Config)))
+
+		globalResync()
+	})
 	store.WatchConfigs(cmw)
 
 	// Get a filtered informer for destination rules
@@ -61,6 +75,11 @@ func NewController(ctx context.Context, cmw configmap.Watcher) *controller.Impl 
 			PromoteFilterFunc: filterServices(ctx),
 		}
 	})
+
+	globalResync = func() {
+		impl.FilteredGlobalResync(filterServices(ctx), serviceInformer)
+	}
+
 	r.Tracker = impl.Tracker
 
 	serviceInformer.AddEventHandler(cache.FilteringResourceEventHandler{

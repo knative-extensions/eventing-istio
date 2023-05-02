@@ -36,7 +36,7 @@ const (
 )
 
 type Config struct {
-	Istio feature.Flag
+	Istio feature.Flag `json:"istio"`
 }
 
 type Option func(config *Config) error

@@ -22,6 +22,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"knative.dev/pkg/network"
 )
 
 const (
@@ -51,7 +52,7 @@ func DestinationRule(cfg DestinationRuleConfig) *istionetworking.DestinationRule
 			},
 		},
 		Spec: istionetworkingapi.DestinationRule{
-			Host: cfg.Service.Spec.ExternalName,
+			Host: network.GetServiceHostname(cfg.Service.Name, cfg.Service.Namespace),
 			TrafficPolicy: &istionetworkingapi.TrafficPolicy{
 				Tls: &istionetworkingapi.ClientTLSSettings{
 					Mode: istionetworkingapi.ClientTLSSettings_ISTIO_MUTUAL,
