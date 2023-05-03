@@ -19,3 +19,9 @@ metadata:
   namespace: knative-eventing
 data:
   istio: "enabled"
+  kreference-group: "disabled"
+  delivery-retryafter: "disabled"
+  delivery-timeout: "enabled"
+  kreference-mapping: "disabled"
+  new-trigger-filters: "disabled"
+  transport-encryption: "disabled"
