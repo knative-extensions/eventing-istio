@@ -58,8 +58,7 @@ func (r *Reconciler) ReconcileKind(ctx context.Context, svc *corev1.Service) rec
 	logger := logging.FromContext(ctx).Desugar().With(zap.Any("config", cfg))
 
 	if !cfg.IsEnabled() {
-		logger.Debug("Istio is disabled")
-		// If the flag was disabled after being enabled finalize resources
+		logger.Debug("Istio is disabled, finalizing resources since it might have been disabled after being enabled")
 		return r.finalizeDestinationRule(ctx, svc)
 	}
 
