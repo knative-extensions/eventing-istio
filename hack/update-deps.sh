@@ -32,14 +32,16 @@ function fetch_submodule() {
 }
 
 function update_submodule() {
+  if [ "${upgrade}" = "" ]; then
+    return
+  fi
 
-  if [ "${version}" = "" ] || [ "${version}" = "v9000.1" ]; then
-    if [ "${upgrade}" != "" ]; then
-      fetch_submodule "main" || return $?
-    fi
+  if [ "${version}" = "" ]; then
+    fetch_submodule "main" || return $?
   else
     major_minor=${version:1} # Remove 'v' prefix
-    fetch_submodule "release-${major_minor}" || return $?
+    # knobots might use a non existing version branch, in that case, fetch main branch
+    fetch_submodule "release-${major_minor}" || fetch_submodule "main" || return $?
   fi
 
 }
