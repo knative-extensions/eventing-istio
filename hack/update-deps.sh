@@ -25,44 +25,49 @@ upgrade=$(echo $@ | grep '\-\-upgrade' || echo "")
 upgrade_artifacts=${UPGRADE_ARTIFACTS:-""}
 
 function fetch_submodule() {
-  echo "Pulling branch main for submodule $(pwd)"
   branch=${1}
-  git fetch origin -u "${branch}":"${branch}" || return $?
-  git merge "origin/${branch}" || return $?
+  module=${2}
+
+  echo "Fetching branch ${branch} for submodule ${module}"
+  pushd "${module}"
+  git fetch origin "${branch}:${branch}" || return $?
+  popd
+
+  git submodule set-branch -b "${branch}" "${module}" || return $?
+  git submodule sync --recursive || return $?
+  git submodule update --init --recursive --remote || return $?
 }
 
 function update_submodule() {
-  if [ "${upgrade}" = "" ]; then
-    return
-  fi
+  module=${1}
+  branch=""
 
-  if [ "${version}" = "" ]; then
-    fetch_submodule "main" || return $?
+  if [ "${version}" = "" ] || [ "${version}" = "v9000.1" ]; then
+    branch="main"
   else
     major_minor=${version:1} # Remove 'v' prefix
-    # knobots might use a non existing version branch, in that case, fetch main branch
-    fetch_submodule "release-${major_minor}" || fetch_submodule "main" || return $?
+    branch="release-${major_minor}"
+  fi
+
+  if [ "${upgrade}" != "" ]; then
+    fetch_submodule "${branch}" "${module}" || return $?
+  else
+    git submodule sync --recursive || return $?
+    git submodule update --init --recursive --remote || return $?
   fi
 
 }
 
 function fetch_artifacts() {
-      url="https://storage.googleapis.com/knative-nightly/${1}"
-      echo "Fetch $url to ${2}"
-      curl "${url}" > "${2}"
+  url="https://storage.googleapis.com/knative-nightly/${1}"
+  echo "Fetch $url to ${2}"
+  curl "${url}" > "${2}"
 }
 
 function update_submodules() {
-  pushd $(dirname "$0")/../third_party/eventing
-  update_submodule
-  popd
-
-  pushd $(dirname "$0")/../third_party/eventing-kafka-broker
-  update_submodule
-  popd
+  update_submodule "third_party/eventing" || return $?
+  update_submodule "third_party/eventing-kafka-broker" || return $?
 }
-
-git submodule update --init --recursive
 
 update_submodules || exit $?
 
