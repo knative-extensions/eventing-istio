@@ -921,7 +921,6 @@ knative.dev/pkg/metrics/testing
 knative.dev/pkg/network
 knative.dev/pkg/network/handlers
 knative.dev/pkg/profiling
-knative.dev/pkg/ptr
 knative.dev/pkg/reconciler
 knative.dev/pkg/reconciler/testing
 knative.dev/pkg/signals
