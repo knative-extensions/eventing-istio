@@ -62,10 +62,6 @@ group "Knative Codegen"
   --lister-has-pointer-elem=true \
   --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt
 
-# This is an extension file to be able to satisfy some interfaces but it is mostly there to
-# make the code compile, so it's not functional code.
-cp "${REPO_ROOT_DIR}"/vendor/knative.dev/pkg/client/injection/kube/client/client_expansion.go "${REPO_ROOT_DIR}"/pkg/client/injection/kube/client
-
 group "Update deps post-codegen"
 
 # Make sure our dependencies are up-to-date
