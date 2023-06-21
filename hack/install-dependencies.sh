@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-$(dirname $0)/update-istio.sh
+"$(dirname "$0")"/update-istio.sh
 
 export REPO_ROOT_DIR=${REPO_ROOT_DIR:-$(git rev-parse --show-toplevel)}
 
@@ -62,7 +62,8 @@ kubectl patch deployment \
 kubectl apply -n "${ISTIO_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
 kubectl apply -n "${SYSTEM_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
 
-source "${REPO_ROOT_DIR}/third_party/eventing-kafka-broker/test/e2e-common.sh"
+# shellcheck disable=SC1091
+source "${REPO_ROOT_DIR}"/third_party/eventing-kafka-broker/test/e2e-common.sh
 
 create_sasl_secrets || exit 1
 create_tls_secrets || exit 1

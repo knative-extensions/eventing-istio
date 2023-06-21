@@ -18,7 +18,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-source $(dirname $0)/../vendor/knative.dev/hack/codegen-library.sh
+# shellcheck disable=SC1091
+source "$(dirname "$0")"/../vendor/knative.dev/hack/codegen-library.sh
 
 # If we run with -mod=vendor here, then generate-groups.sh looks for vendor files in the wrong place.
 export GOFLAGS=-mod=
@@ -60,7 +61,7 @@ group "Knative Codegen"
   knative.dev/eventing-istio/pkg/client/istio istio.io/client-go/pkg/apis \
   "networking:v1beta1" \
   --lister-has-pointer-elem=true \
-  --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt
+  --go-header-file "${REPO_ROOT_DIR}"/hack/boilerplate/boilerplate.go.txt
 
 group "Update deps post-codegen"
 
