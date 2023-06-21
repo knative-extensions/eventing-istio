@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-$(dirname $0)/update-istio.sh
+"$(dirname "$0")"/update-istio.sh
 
 export REPO_ROOT_DIR=${REPO_ROOT_DIR:-$(git rev-parse --show-toplevel)}
 
@@ -44,6 +44,10 @@ kubectl patch deployment \
   -n knative-eventing \
   --patch-file "${REPO_ROOT_DIR}/hack/eventing-injection-disabled.yaml"
 
+echo "Installing Cert-Manager" # This is only needed, as some eventing e2e tests setup their environment with eventshub.WithTLS() which fails if certmanager isn't installed
+kubectl apply -f "${REPO_ROOT_DIR}/third_party/eventing/third_party/cert-manager/01-cert-manager.crds.yaml"
+kubectl apply -f "${REPO_ROOT_DIR}/third_party/eventing/third_party/cert-manager/02-cert-manager.yaml"
+
 echo "Installing Eventing Kafka from ${EVENTING_KAFKA_CONFIG}"
 kubectl apply -Rf "${EVENTING_KAFKA_CONFIG}"
 
@@ -58,7 +62,8 @@ kubectl patch deployment \
 kubectl apply -n "${ISTIO_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
 kubectl apply -n "${SYSTEM_NAMESPACE}" -Rf "${REPO_ROOT_DIR}"/test/config
 
-source "${REPO_ROOT_DIR}/third_party/eventing-kafka-broker/test/e2e-common.sh"
+# shellcheck disable=SC1091
+source "${REPO_ROOT_DIR}"/third_party/eventing-kafka-broker/test/e2e-common.sh
 
 create_sasl_secrets || exit 1
 create_tls_secrets || exit 1
