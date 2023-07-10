@@ -17,7 +17,7 @@ metadata:
   name: config-kafka-broker-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "f63f4885419e6c8bca7b9d0db1dc8cb7cc81ae60"
+    app.kubernetes.io/version: "6cecb3b2cb589e38c2d6c7db804c0de44a920aa5"
   annotations:
     knative.dev/example-checksum: "57a32008"
 data:
@@ -198,7 +198,7 @@ kind: ClusterRole
 metadata:
   name: knative-kafka-broker-data-plane
   labels:
-    app.kubernetes.io/version: "f63f4885419e6c8bca7b9d0db1dc8cb7cc81ae60"
+    app.kubernetes.io/version: "6cecb3b2cb589e38c2d6c7db804c0de44a920aa5"
 rules:
   - apiGroups:
       - ""
@@ -229,7 +229,7 @@ metadata:
   name: knative-kafka-broker-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "f63f4885419e6c8bca7b9d0db1dc8cb7cc81ae60"
+    app.kubernetes.io/version: "6cecb3b2cb589e38c2d6c7db804c0de44a920aa5"
 
 ---
 # Copyright 2020 The Knative Authors
@@ -250,7 +250,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-kafka-broker-data-plane
   labels:
-    app.kubernetes.io/version: "f63f4885419e6c8bca7b9d0db1dc8cb7cc81ae60"
+    app.kubernetes.io/version: "6cecb3b2cb589e38c2d6c7db804c0de44a920aa5"
 subjects:
   - kind: ServiceAccount
     name: knative-kafka-broker-data-plane
@@ -281,7 +281,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-dispatcher
-    app.kubernetes.io/version: "f63f4885419e6c8bca7b9d0db1dc8cb7cc81ae60"
+    app.kubernetes.io/version: "6cecb3b2cb589e38c2d6c7db804c0de44a920aa5"
     app.kubernetes.io/component: kafka-broker-dispatcher
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -293,7 +293,7 @@ spec:
       name: kafka-broker-dispatcher
       labels:
         app: kafka-broker-dispatcher
-        app.kubernetes.io/version: "f63f4885419e6c8bca7b9d0db1dc8cb7cc81ae60"
+        app.kubernetes.io/version: "6cecb3b2cb589e38c2d6c7db804c0de44a920aa5"
         app.kubernetes.io/component: kafka-broker-dispatcher
         app.kubernetes.io/name: knative-eventing
     spec:
@@ -319,7 +319,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: kafka-broker-dispatcher
-          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher:v20230621-f63f4885
+          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher:v20230709-6cecb3b2
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
@@ -452,7 +452,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-receiver
-    app.kubernetes.io/version: "f63f4885419e6c8bca7b9d0db1dc8cb7cc81ae60"
+    app.kubernetes.io/version: "6cecb3b2cb589e38c2d6c7db804c0de44a920aa5"
     app.kubernetes.io/component: kafka-broker-receiver
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -464,7 +464,7 @@ spec:
       name: kafka-broker-receiver
       labels:
         app: kafka-broker-receiver
-        app.kubernetes.io/version: "f63f4885419e6c8bca7b9d0db1dc8cb7cc81ae60"
+        app.kubernetes.io/version: "6cecb3b2cb589e38c2d6c7db804c0de44a920aa5"
         app.kubernetes.io/component: kafka-broker-receiver
         app.kubernetes.io/name: knative-eventing
     spec:
@@ -490,7 +490,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: kafka-broker-receiver
-          image: gcr.io/knative-nightly/knative-kafka-broker-receiver:v20230621-f63f4885
+          image: gcr.io/knative-nightly/knative-kafka-broker-receiver:v20230709-6cecb3b2
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
@@ -507,12 +507,18 @@ spec:
             - mountPath: /etc/tracing
               name: config-tracing
               readOnly: true
+            - mountPath: /etc/receiver-tls-secret
+              name: broker-receiver-tls-secret
+              readOnly: true
           ports:
             - containerPort: 9090
               name: http-metrics
               protocol: TCP
             - containerPort: 8080
               name: http
+              protocol: TCP
+            - containerPort: 8443
+              name: https
               protocol: TCP
           env:
             - name: SERVICE_NAME
@@ -523,6 +529,8 @@ spec:
                   fieldPath: metadata.namespace
             - name: INGRESS_PORT
               value: "8080"
+            - name: INGRESS_TLS_PORT
+              value: "8443"
             - name: PRODUCER_CONFIG_FILE_PATH
               value: /etc/config/config-kafka-broker-producer.properties
             - name: HTTPSERVER_CONFIG_FILE_PATH
@@ -600,6 +608,10 @@ spec:
         - name: config-tracing
           configMap:
             name: config-tracing
+        - name: broker-receiver-tls-secret
+          secret:
+            secretName: kafka-broker-ingress-server-tls
+            optional: true
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -609,7 +621,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-receiver
-    app.kubernetes.io/version: "f63f4885419e6c8bca7b9d0db1dc8cb7cc81ae60"
+    app.kubernetes.io/version: "6cecb3b2cb589e38c2d6c7db804c0de44a920aa5"
     app.kubernetes.io/component: kafka-broker-receiver
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -620,6 +632,10 @@ spec:
       port: 80
       protocol: TCP
       targetPort: 8080
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 8443
     - name: http-container
       port: 8080
       protocol: TCP
