@@ -33,11 +33,11 @@ function generate_artifacts() {
 }
 
 function update_release_labels() {
-  TAG=${TAG:-$(git rev-parse HEAD)}
+  release_tag=${TAG:-$(git rev-parse HEAD)}
   
-  echo "Updating release labels to app.kubernetes.io/version: \"${TAG}\""
+  echo "Updating release labels to app.kubernetes.io/version: \"${release_tag}\""
 
-  sed -e "s|app.kubernetes.io/version: devel|app.kubernetes.io/version: \"${TAG}\"|" -i ${EVENTING_ISTIO_ARTIFACT}
+  sed -e "s|app.kubernetes.io/version: devel|app.kubernetes.io/version: \"${release_tag}\"|" -i ${EVENTING_ISTIO_ARTIFACT}
 }
 
 function build_release() {
