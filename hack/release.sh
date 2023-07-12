@@ -29,7 +29,7 @@ function fail() {
 }
 
 function generate_artifacts() {
-  "$(dirname $0)"/hack/build-from-source.sh || return $?
+  "$(dirname "$(realpath "${BASH_SOURCE[0]}")")"/build-from-source.sh || return $?
 }
 
 function update_release_labels() {
