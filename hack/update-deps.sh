@@ -39,7 +39,7 @@ function update_submodule() {
   if [ "${version}" = "" ]; then
     fetch_submodule "main" || return $?
   else
-    major_minor=${version:1} # Remove 'v' prefix
+    major_minor="${version##v}" # Remove 'v' prefix
     # knobots might use a non existing version branch, in that case, fetch main branch
     fetch_submodule "release-${major_minor}" || fetch_submodule "main" || return $?
   fi
