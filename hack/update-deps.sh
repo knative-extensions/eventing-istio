@@ -29,6 +29,8 @@ function fetch_submodule() {
   branch=${1}
   git fetch origin -u "${branch}":"${branch}" || return $?
   git merge "origin/${branch}" || return $?
+
+  git submodule update --init
 }
 
 function update_submodule() {
@@ -61,8 +63,6 @@ function update_submodules() {
   update_submodule
   popd
 }
-
-git submodule update --init --recursive
 
 update_submodules || exit $?
 
