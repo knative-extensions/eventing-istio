@@ -17,7 +17,7 @@ metadata:
   name: config-kafka-broker-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "8a22c92df90fbe82c8714d00c5ee5842cd3a37b9"
+    app.kubernetes.io/version: "a60586958fa6f8028624e7cd7e99731f00d738a3"
   annotations:
     knative.dev/example-checksum: "57a32008"
 data:
@@ -198,7 +198,7 @@ kind: ClusterRole
 metadata:
   name: knative-kafka-broker-data-plane
   labels:
-    app.kubernetes.io/version: "8a22c92df90fbe82c8714d00c5ee5842cd3a37b9"
+    app.kubernetes.io/version: "a60586958fa6f8028624e7cd7e99731f00d738a3"
 rules:
   - apiGroups:
       - ""
@@ -229,7 +229,7 @@ metadata:
   name: knative-kafka-broker-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "8a22c92df90fbe82c8714d00c5ee5842cd3a37b9"
+    app.kubernetes.io/version: "a60586958fa6f8028624e7cd7e99731f00d738a3"
 
 ---
 # Copyright 2020 The Knative Authors
@@ -250,7 +250,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-kafka-broker-data-plane
   labels:
-    app.kubernetes.io/version: "8a22c92df90fbe82c8714d00c5ee5842cd3a37b9"
+    app.kubernetes.io/version: "a60586958fa6f8028624e7cd7e99731f00d738a3"
 subjects:
   - kind: ServiceAccount
     name: knative-kafka-broker-data-plane
@@ -281,7 +281,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-dispatcher
-    app.kubernetes.io/version: "8a22c92df90fbe82c8714d00c5ee5842cd3a37b9"
+    app.kubernetes.io/version: "a60586958fa6f8028624e7cd7e99731f00d738a3"
     app.kubernetes.io/component: kafka-broker-dispatcher
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -293,7 +293,7 @@ spec:
       name: kafka-broker-dispatcher
       labels:
         app: kafka-broker-dispatcher
-        app.kubernetes.io/version: "8a22c92df90fbe82c8714d00c5ee5842cd3a37b9"
+        app.kubernetes.io/version: "a60586958fa6f8028624e7cd7e99731f00d738a3"
         app.kubernetes.io/component: kafka-broker-dispatcher
         app.kubernetes.io/name: knative-eventing
     spec:
@@ -319,7 +319,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: kafka-broker-dispatcher
-          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher:v20230727-8a22c92d
+          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher:v20230904-a6058695
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
@@ -452,7 +452,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-receiver
-    app.kubernetes.io/version: "8a22c92df90fbe82c8714d00c5ee5842cd3a37b9"
+    app.kubernetes.io/version: "a60586958fa6f8028624e7cd7e99731f00d738a3"
     app.kubernetes.io/component: kafka-broker-receiver
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -464,7 +464,7 @@ spec:
       name: kafka-broker-receiver
       labels:
         app: kafka-broker-receiver
-        app.kubernetes.io/version: "8a22c92df90fbe82c8714d00c5ee5842cd3a37b9"
+        app.kubernetes.io/version: "a60586958fa6f8028624e7cd7e99731f00d738a3"
         app.kubernetes.io/component: kafka-broker-receiver
         app.kubernetes.io/name: knative-eventing
     spec:
@@ -490,7 +490,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: kafka-broker-receiver
-          image: gcr.io/knative-nightly/knative-kafka-broker-receiver:v20230727-8a22c92d
+          image: gcr.io/knative-nightly/knative-kafka-broker-receiver:v20230904-a6058695
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
@@ -621,7 +621,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-receiver
-    app.kubernetes.io/version: "8a22c92df90fbe82c8714d00c5ee5842cd3a37b9"
+    app.kubernetes.io/version: "a60586958fa6f8028624e7cd7e99731f00d738a3"
     app.kubernetes.io/component: kafka-broker-receiver
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -640,6 +640,10 @@ spec:
       port: 8080
       protocol: TCP
       targetPort: 8080
+    - name: https-container
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
     - name: http-metrics
       port: 9090
       protocol: TCP
