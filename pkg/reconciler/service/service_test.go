@@ -42,12 +42,12 @@ import (
 	. "knative.dev/pkg/reconciler/testing"
 	"knative.dev/pkg/tracker"
 
-	kubeclient "knative.dev/eventing-istio/pkg/client/injection/kube/client/fake"
+	kubeclient "knative.dev/pkg/client/injection/kube/client/fake"
 
 	"knative.dev/eventing-istio/pkg/apis/config"
-	"knative.dev/eventing-istio/pkg/client/injection/kube/reconciler/core/v1/service"
 	istioclientset "knative.dev/eventing-istio/pkg/client/istio/injection/client/fake"
 	. "knative.dev/eventing-istio/pkg/reconciler/testing"
+	"knative.dev/pkg/client/injection/kube/reconciler/core/v1/service"
 )
 
 const (

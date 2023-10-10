@@ -31,11 +31,11 @@ import (
 
 	_ "knative.dev/pkg/client/injection/kube/client/fake"
 
-	_ "knative.dev/eventing-istio/pkg/client/injection/kube/informers/core/v1/service/fake"
 	_ "knative.dev/eventing-istio/pkg/client/istio/injection/client/fake"
 	istiofilteredfactory "knative.dev/eventing-istio/pkg/client/istio/injection/informers/factory/filtered"
 	_ "knative.dev/eventing-istio/pkg/client/istio/injection/informers/factory/filtered/fake"
 	_ "knative.dev/eventing-istio/pkg/client/istio/injection/informers/networking/v1beta1/destinationrule/filtered/fake"
+	_ "knative.dev/pkg/client/injection/kube/informers/core/v1/service/fake"
 )
 
 func TestFilterServices(t *testing.T) {

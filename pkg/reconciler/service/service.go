@@ -34,9 +34,9 @@ import (
 	istionetworking "istio.io/client-go/pkg/apis/networking/v1beta1"
 
 	"knative.dev/eventing-istio/pkg/apis/config"
-	servicereconciler "knative.dev/eventing-istio/pkg/client/injection/kube/reconciler/core/v1/service"
 	istioclientset "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
 	istionetworkinglisters "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
+	servicereconciler "knative.dev/pkg/client/injection/kube/reconciler/core/v1/service"
 )
 
 type Reconciler struct {
