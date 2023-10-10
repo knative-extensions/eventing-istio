@@ -38,16 +38,6 @@ group "Kubernetes Codegen"
 K8S_TYPES=$(find ./vendor/k8s.io/api -type d -path '*/*/*/*/*/*' | cut -d'/' -f 5-6 | sort | sed 's@/@:@g' |
   grep -v "admission:" | grep -v "imagepolicy:" | grep -v "abac:" | grep -v "componentconfig:")
 
-# OUTPUT_PKG="knative.dev/eventing-istio/pkg/client/injection/kube" \
-#   VERSIO.NED_CLIENTSET_PKG="k8s.io/client-go/kubernetes" \
-#   EXTERNAL_INFORMER_PKG="k8s.io/client-go/informers" \
-#   "${KNATIVE_CODEGEN_PKG}"/hack/generate-knative.sh "injection" \
-#   k8s.io/client-go \
-#   k8s.io/api \
-#   "${K8S_TYPES}" \
-#   --go-header-file "${REPO_ROOT_DIR}"/hack/boilerplate/boilerplate.go.txt \
-#   --force-genreconciler-kinds "Service"
-
 # Generate our own client for istio (otherwise injection won't work)
 "${CODEGEN_PKG}"/generate-groups.sh "client,informer,lister" \
   knative.dev/eventing-istio/pkg/client/istio istio.io/client-go/pkg/apis \
