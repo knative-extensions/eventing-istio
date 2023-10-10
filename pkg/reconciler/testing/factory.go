@@ -38,8 +38,8 @@ import (
 
 	fakedynamicclient "knative.dev/pkg/injection/clients/dynamicclient/fake"
 
-	fakekubeclient "knative.dev/eventing-istio/pkg/client/injection/kube/client/fake"
 	fakeistioclient "knative.dev/eventing-istio/pkg/client/istio/injection/client/fake"
+	fakekubeclient "knative.dev/pkg/client/injection/kube/client/fake"
 
 	_ "knative.dev/pkg/metrics/testing"
 	. "knative.dev/pkg/reconciler/testing"

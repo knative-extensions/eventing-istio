@@ -30,10 +30,10 @@ import (
 	"knative.dev/pkg/logging"
 
 	"knative.dev/eventing-istio/pkg/apis/config"
-	serviceinformer "knative.dev/eventing-istio/pkg/client/injection/kube/informers/core/v1/service"
-	"knative.dev/eventing-istio/pkg/client/injection/kube/reconciler/core/v1/service"
 	istioclientset "knative.dev/eventing-istio/pkg/client/istio/injection/client"
 	istionetworkinginformer "knative.dev/eventing-istio/pkg/client/istio/injection/informers/networking/v1beta1/destinationrule/filtered"
+	serviceinformer "knative.dev/pkg/client/injection/kube/informers/core/v1/service"
+	"knative.dev/pkg/client/injection/kube/reconciler/core/v1/service"
 )
 
 func NewController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
