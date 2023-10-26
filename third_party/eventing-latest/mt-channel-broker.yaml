@@ -16,7 +16,7 @@ kind: ClusterRole
 metadata:
   name: knative-eventing-mt-channel-broker-controller
   labels:
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 rules:
   # Configs resources and status we care about.
@@ -58,7 +58,7 @@ kind: ClusterRole
 metadata:
   name: knative-eventing-mt-broker-filter
   labels:
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 rules:
   - apiGroups:
@@ -129,7 +129,7 @@ metadata:
   name: mt-broker-filter
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 
 ---
@@ -151,7 +151,7 @@ kind: ClusterRole
 metadata:
   name: knative-eventing-mt-broker-ingress
   labels:
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 rules:
   - apiGroups:
@@ -229,7 +229,7 @@ metadata:
   name: mt-broker-ingress
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 
 ---
@@ -252,7 +252,7 @@ kind: ClusterRoleBinding
 metadata:
   name: eventing-mt-channel-broker-controller
   labels:
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 subjects:
   - kind: ServiceAccount
@@ -283,7 +283,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-eventing-mt-broker-filter
   labels:
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 subjects:
   - kind: ServiceAccount
@@ -343,7 +343,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-eventing-mt-broker-ingress
   labels:
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 subjects:
   - kind: ServiceAccount
@@ -404,7 +404,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app.kubernetes.io/component: broker-filter
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 spec:
   selector:
@@ -415,7 +415,7 @@ spec:
       labels:
         eventing.knative.dev/brokerRole: filter
         app.kubernetes.io/component: broker-filter
-        app.kubernetes.io/version: "20231018-5168dc3b4"
+        app.kubernetes.io/version: "20231025-360ec60b1"
         app.kubernetes.io/name: knative-eventing
     spec:
       serviceAccountName: mt-broker-filter
@@ -423,7 +423,7 @@ spec:
       containers:
         - name: filter
           terminationMessagePolicy: FallbackToLogsOnError
-          image: gcr.io/knative-nightly/knative.dev/eventing/cmd/broker/filter@sha256:f2957b5131fcb9a72c9891a3e0a3425364a20e2501e8b3c813d5b0b63654951e
+          image: gcr.io/knative-nightly/knative.dev/eventing/cmd/broker/filter@sha256:2d8dcb5883331f4b47bcc7c188fd872594357d739df2db62a9efb4006c9270a9
           readinessProbe: &probe
             failureThreshold: 3
             httpGet:
@@ -494,7 +494,7 @@ metadata:
   labels:
     eventing.knative.dev/brokerRole: filter
     app.kubernetes.io/component: broker-filter
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
   name: broker-filter
   namespace: knative-eventing
@@ -537,7 +537,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app.kubernetes.io/component: broker-ingress
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 spec:
   selector:
@@ -548,7 +548,7 @@ spec:
       labels:
         eventing.knative.dev/brokerRole: ingress
         app.kubernetes.io/component: broker-ingress
-        app.kubernetes.io/version: "20231018-5168dc3b4"
+        app.kubernetes.io/version: "20231025-360ec60b1"
         app.kubernetes.io/name: knative-eventing
     spec:
       serviceAccountName: mt-broker-ingress
@@ -556,7 +556,7 @@ spec:
       containers:
         - name: ingress
           terminationMessagePolicy: FallbackToLogsOnError
-          image: gcr.io/knative-nightly/knative.dev/eventing/cmd/broker/ingress@sha256:a754f022447e860957188e4a7877876d4c1bbbc4c8c4566534a27e3a342f254c
+          image: gcr.io/knative-nightly/knative.dev/eventing/cmd/broker/ingress@sha256:be384f852ae9faadda1960273ea3bf0dc8401ff649ab58f5c959614833a63427
           readinessProbe: &probe
             failureThreshold: 3
             httpGet:
@@ -627,7 +627,7 @@ metadata:
   labels:
     eventing.knative.dev/brokerRole: ingress
     app.kubernetes.io/component: broker-ingress
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
   name: broker-ingress
   namespace: knative-eventing
@@ -670,7 +670,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app.kubernetes.io/component: mt-broker-controller
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 spec:
   selector:
@@ -681,7 +681,7 @@ spec:
       labels:
         app: mt-broker-controller
         app.kubernetes.io/component: broker-controller
-        app.kubernetes.io/version: "20231018-5168dc3b4"
+        app.kubernetes.io/version: "20231025-360ec60b1"
         app.kubernetes.io/name: knative-eventing
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
@@ -699,7 +699,7 @@ spec:
       containers:
         - name: mt-broker-controller
           terminationMessagePolicy: FallbackToLogsOnError
-          image: gcr.io/knative-nightly/knative.dev/eventing/cmd/mtchannel_broker@sha256:c53b0406d8459e5bfbf41c9cd0fe36771d00def9662a0c5180cd1ebf3a5dd96b
+          image: gcr.io/knative-nightly/knative.dev/eventing/cmd/mtchannel_broker@sha256:c0a6c410b37b9551b36be700c6a85d2419fb10341a6b1d0e78ece75aca5313d0
           resources:
             requests:
               cpu: 100m
@@ -756,7 +756,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app.kubernetes.io/component: broker-ingress
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 spec:
   scaleTargetRef:
@@ -780,7 +780,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app.kubernetes.io/component: broker-filter
-    app.kubernetes.io/version: "20231018-5168dc3b4"
+    app.kubernetes.io/version: "20231025-360ec60b1"
     app.kubernetes.io/name: knative-eventing
 spec:
   scaleTargetRef:
