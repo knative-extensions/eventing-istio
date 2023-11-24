@@ -25,8 +25,8 @@ upgrade=$(echo $@ | grep '\-\-upgrade' || echo "")
 upgrade_artifacts=${UPGRADE_ARTIFACTS:-""}
 
 function fetch_submodule() {
-  echo "Pulling branch main for submodule $(pwd)"
   branch=${1}
+  echo "Pulling branch ${branch} for submodule $(pwd)"
   git fetch origin -u "${branch}":"${branch}" || return $?
   git merge "origin/${branch}" || return $?
 
