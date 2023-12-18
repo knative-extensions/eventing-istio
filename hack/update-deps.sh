@@ -29,8 +29,6 @@ function fetch_submodule() {
   echo "Pulling branch ${branch} for submodule $(pwd)"
   git fetch origin -u "${branch}":"${branch}" || return $?
   git merge "origin/${branch}" || return $?
-
-  git submodule update --init
 }
 
 function update_submodule() {
@@ -55,6 +53,8 @@ function fetch_artifacts() {
 }
 
 function update_submodules() {
+  git submodule update --init --recursive
+
   pushd $(dirname "$0")/../third_party/eventing
   update_submodule
   popd
