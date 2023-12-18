@@ -26,9 +26,12 @@ upgrade_artifacts=${UPGRADE_ARTIFACTS:-""}
 
 function fetch_submodule() {
   branch=${1}
+  echo "Listing remotes"
+  git remote -v
+
   echo "Pulling branch ${branch} for submodule $(pwd)"
-  git fetch origin -u "${branch}":"${branch}" || return $?
-  git merge "origin/${branch}" || return $?
+  git fetch origin -u "${branch}":"${branch}" -v || return $?
+  git merge -v "origin/${branch}" || return $?
 
   git submodule update --init
 }
