@@ -29,6 +29,10 @@ jobs:
   update-deps:
     name: Test update-deps.sh
     runs-on: ubuntu-latest
+
     steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
       - name: Run
-        run: pwd
+        run: ./hack/update-deps.sh --upgrade
