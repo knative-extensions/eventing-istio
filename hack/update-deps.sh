@@ -26,6 +26,9 @@ upgrade_artifacts=${UPGRADE_ARTIFACTS:-""}
 
 function fetch_submodule() {
   branch=${1}
+  echo "Currently in directory"
+  pwd
+
   echo "Listing remotes"
   git remote -v
 
@@ -67,6 +70,7 @@ function update_submodules() {
   popd
 }
 
+git -v
 update_submodules || exit $?
 
 if [ "${upgrade_artifacts}" != "" ]; then
