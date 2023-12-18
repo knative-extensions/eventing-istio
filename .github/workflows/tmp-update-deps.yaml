@@ -31,4 +31,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run
-        run: ./hack/update-deps.sh --upgrade
+        run: pwd
