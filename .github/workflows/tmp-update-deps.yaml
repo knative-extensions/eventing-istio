@@ -39,7 +39,7 @@ jobs:
 
       - name: Apply work
         id: work
-        uses: "knative-extensions/knobots/config/actions/update-deps@main"
+        uses: "knative-extensions/knobots/actions/update-deps@main"
         with:
           repo: "eventing-istio"
           organization: "knative-extensions"
