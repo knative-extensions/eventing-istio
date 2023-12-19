@@ -92,3 +92,5 @@ $(dirname $0)/update-istio.sh
 rm -rf $(dirname $0)/../third_party/istio/bin
 
 go_update_deps "$@"
+
+git status

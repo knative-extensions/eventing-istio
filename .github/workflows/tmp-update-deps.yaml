@@ -34,14 +34,5 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      #- name: Run
-      #  run: ./hack/update-deps.sh --upgrade
-
-      - name: Apply work
-        id: work
-        uses: "knative-extensions/knobots/actions/update-deps@main"
-        with:
-          repo: "eventing-istio"
-          organization: "knative-extensions"
-          pr-empty-deps: "false"
-          branch: "main"
+      - name: Run
+        run: ./hack/update-deps.sh --upgrade
