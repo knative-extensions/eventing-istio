@@ -58,10 +58,12 @@ function update_submodules() {
   pushd $(dirname "$0")/../third_party/eventing
   update_submodule
   popd
+  git add $(dirname "$0")/../third_party/eventing
 
   pushd $(dirname "$0")/../third_party/eventing-kafka-broker
   update_submodule
   popd
+  git add $(dirname "$0")/../third_party/eventing-kafka-broker
 }
 
 update_submodules || exit $?
