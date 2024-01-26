@@ -1,6 +1,8 @@
 module knative.dev/eventing-istio
 
-go 1.19
+go 1.21
+
+toolchain go1.21.6
 
 require (
 	github.com/google/go-cmp v0.6.0
@@ -13,8 +15,8 @@ require (
 	k8s.io/apimachinery v0.28.5
 	k8s.io/client-go v0.28.5
 	k8s.io/utils v0.0.0-20230406110748-d93618cff8a2
-	knative.dev/eventing v0.39.1-0.20240117185642-b0d9c136a997
-	knative.dev/hack v0.0.0-20240111013919-e89096d74d85
+	knative.dev/eventing v0.40.0
+	knative.dev/hack v0.0.0-20240123162936-f3f03ac0ab1a
 	knative.dev/pkg v0.0.0-20240116073220-b488e7be5902
 )
 
