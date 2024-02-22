@@ -10,6 +10,8 @@ export ISTIO_NAMESPACE=${ISTIO_NAMESPACE:-"istio-system"}
 export KAFKA_BROKER_TEMPLATES=${KAFKA_BROKER_TEMPLATES:-"${repo_root_dir}/test/e2e/templates/kafka-broker"}
 export KAFKA_NAMESPACED_BROKER_TEMPLATES=${KAFKA_BROKER_TEMPLATES:-"${repo_root_dir}/test/e2e/templates/kafka-namespaced-broker"}
 
+readonly K8S_CLUSTER_VERSION=1.28
+
 source "${repo_root_dir}"/vendor/knative.dev/hack/e2e-tests.sh
 
 function knative_setup() {
