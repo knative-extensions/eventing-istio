@@ -1,0 +1,149 @@
+# Copyright 2024 The Knative Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventing-istio-webhook
+  namespace: knative-eventing
+  labels:
+    app.kubernetes.io/component: eventing-istio-webhook
+    app.kubernetes.io/version: devel
+    app.kubernetes.io/name: knative-eventing
+spec:
+  selector:
+    matchLabels:
+      app: eventing-istio-webhook
+      role: eventing-istio-webhook
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: eventing-istio-webhook
+        role: eventing-istio-webhook
+        app.kubernetes.io/component: eventing-istio-webhook
+        app.kubernetes.io/version: devel
+        app.kubernetes.io/name: knative-eventing
+    spec:
+      # To avoid node becoming SPOF, spread our replicas to different nodes.
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: eventing-istio-webhook
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+
+      serviceAccountName: eventing-istio-webhook
+      enableServiceLinks: false
+      containers:
+      - name: eventing-istio-webhook
+        terminationMessagePolicy: FallbackToLogsOnError
+
+        # This is the Go import path for the binary that is containerized
+        # and substituted here.
+        image: ko://knative.dev/eventing-istio/cmd/webhook
+
+        resources:
+          requests:
+            # taken from serving.
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            # taken from serving.
+            cpu: 200m
+            memory: 200Mi
+
+        env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: WEBHOOK_NAME
+          value: eventing-istio-webhook
+        - name: WEBHOOK_PORT
+          value: "8443"
+          # SINK_BINDING_SELECTION_MODE specifies the NamespaceSelector and ObjectSelector
+          # for the sinkbinding webhook.
+          # If `inclusion` is selected, namespaces/objects labelled as `bindings.knative.dev/include:true`
+          # will be considered by the sinkbinding webhook;
+          # If `exclusion` is selected, namespaces/objects labelled as `bindings.knative.dev/exclude:true`
+          # will NOT be considered by the sinkbinding webhook.
+          # The default is `exclusion`.
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+
+        ports:
+        - name: https-webhook
+          containerPort: 8443
+        - name: metrics
+          containerPort: 9090
+        - name: profiling
+          containerPort: 8008
+
+        readinessProbe:
+          periodSeconds: 1
+          httpGet:
+            scheme: HTTPS
+            port: 8443
+            httpHeaders:
+            - name: k-kubelet-probe
+              value: "webhook"
+        livenessProbe:
+          periodSeconds: 1
+          httpGet:
+            scheme: HTTPS
+            port: 8443
+            httpHeaders:
+              - name: k-kubelet-probe
+                value: "webhook"
+          initialDelaySeconds: 120
+
+      # Our webhook should gracefully terminate by lame ducking first, set this to a sufficiently
+      # high value that we respect whatever value it has configured for the lame duck grace period.
+      terminationGracePeriodSeconds: 300
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    role: eventing-istio-webhook
+    app.kubernetes.io/component: eventing-istio-webhook
+    app.kubernetes.io/version: devel
+    app.kubernetes.io/name: knative-eventing
+  name: eventing-istio-webhook
+  namespace: knative-eventing
+spec:
+  ports:
+    - name: https-webhook
+      port: 443
+      targetPort: 8443
+  selector:
+    role: eventing-istio-webhook
