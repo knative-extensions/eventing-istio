@@ -1,2 +1,4 @@
 /third_party/istio/bin
 /eventing-istio.yaml
+.idea/
+.vscode/
