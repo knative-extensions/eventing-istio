@@ -28,7 +28,7 @@ function fetch_submodule() {
   branch=${1}
   echo "Pulling branch ${branch} for submodule $(pwd)"
   git fetch origin -u "${branch}":"${branch}" || return $?
-  git merge --no-edit "origin/${branch}" || return $?
+  git checkout "origin/${branch}" || return $?
 }
 
 function update_submodule() {
