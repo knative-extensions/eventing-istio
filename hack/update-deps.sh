@@ -28,14 +28,10 @@ function fetch_submodule() {
   branch=${1}
   echo "Pulling branch ${branch} for submodule $(pwd)"
   git fetch origin -u "${branch}":"${branch}" || return $?
-  git merge "origin/${branch}" || return $?
+  git merge --no-edit "origin/${branch}" || return $?
 }
 
 function update_submodule() {
-  if [ "${upgrade}" = "" ]; then
-    return
-  fi
-
   if [ "${version}" = "" ]; then
     fetch_submodule "main" || return $?
   else
@@ -43,16 +39,19 @@ function update_submodule() {
     # knobots might use a non existing version branch, in that case, fetch main branch
     fetch_submodule "release-${major_minor}" || fetch_submodule "main" || return $?
   fi
-
 }
 
 function fetch_artifacts() {
-      url="https://storage.googleapis.com/knative-nightly/${1}"
-      echo "Fetch $url to ${2}"
-      curl "${url}" > "${2}"
+  url="https://storage.googleapis.com/knative-nightly/${1}"
+  echo "Fetch $url to ${2}"
+  curl "${url}" > "${2}"
 }
 
 function update_submodules() {
+  if [ "${upgrade}" = "" ]; then
+    return
+  fi
+
   git submodule update --init --recursive
 
   pushd $(dirname "$0")/../third_party/eventing
