@@ -882,13 +882,13 @@ k8s.io/utils/pointer
 k8s.io/utils/ptr
 k8s.io/utils/strings/slices
 k8s.io/utils/trace
-# knative.dev/eventing v0.41.1-0.20240613093107-ea8f0fda4c06
+# knative.dev/eventing v0.41.1-0.20240617131715-e298f32440e4
 ## explicit; go 1.21
 knative.dev/eventing/pkg/apis/feature
 # knative.dev/hack v0.0.0-20240607132042-09143140a254
 ## explicit; go 1.18
 knative.dev/hack
-# knative.dev/pkg v0.0.0-20240610120318-15e6cdf2f386
+# knative.dev/pkg v0.0.0-20240614135239-339c22b8218c
 ## explicit; go 1.21
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
@@ -929,6 +929,7 @@ knative.dev/pkg/metrics/testing
 knative.dev/pkg/network
 knative.dev/pkg/network/handlers
 knative.dev/pkg/profiling
+knative.dev/pkg/ptr
 knative.dev/pkg/reconciler
 knative.dev/pkg/reconciler/testing
 knative.dev/pkg/signals
