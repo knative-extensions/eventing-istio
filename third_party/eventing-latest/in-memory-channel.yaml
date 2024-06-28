@@ -18,7 +18,7 @@ metadata:
   name: imc-controller
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -26,7 +26,7 @@ kind: ClusterRoleBinding
 metadata:
   name: imc-controller
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 subjects:
   - kind: ServiceAccount
@@ -43,7 +43,7 @@ metadata:
   namespace: knative-eventing
   name: imc-controller
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 subjects:
   - kind: ServiceAccount
@@ -59,7 +59,7 @@ kind: ClusterRoleBinding
 metadata:
   name: imc-controller-resolver
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 subjects:
   - kind: ServiceAccount
@@ -91,7 +91,7 @@ metadata:
   name: imc-dispatcher
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -99,7 +99,7 @@ kind: ClusterRoleBinding
 metadata:
   name: imc-dispatcher
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 subjects:
   - kind: ServiceAccount
@@ -161,7 +161,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app.kubernetes.io/component: imc-controller
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 data:
   MaxIdleConnections: "1000"
@@ -190,7 +190,7 @@ metadata:
   labels:
     knative.dev/high-availability: "true"
     app.kubernetes.io/component: imc-controller
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
     bindings.knative.dev/exclude: "true"
 spec:
@@ -204,7 +204,7 @@ spec:
         messaging.knative.dev/channel: in-memory-channel
         messaging.knative.dev/role: controller
         app.kubernetes.io/component: imc-controller
-        app.kubernetes.io/version: "20240626-0f71292d9"
+        app.kubernetes.io/version: "20240627-a6ac8111e"
         app.kubernetes.io/name: knative-eventing
     spec:
       affinity:
@@ -221,7 +221,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: controller
-          image: gcr.io/knative-nightly/knative.dev/eventing/cmd/in_memory/channel_controller@sha256:a2d7218dd93e240842570ba6aff1a321e243efcd0bbc3d8beb074a2fb0dc7d66
+          image: gcr.io/knative-nightly/knative.dev/eventing/cmd/in_memory/channel_controller@sha256:fe8021a3355d97815ebc7122227bc2f0d33eabd0ed5f654451defc0f010fc82e
           env:
             - name: WEBHOOK_NAME
               value: inmemorychannel-webhook
@@ -238,7 +238,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: DISPATCHER_IMAGE
-              value: gcr.io/knative-nightly/knative.dev/eventing/cmd/in_memory/channel_dispatcher@sha256:4485df1735903cbfa493cd3a62114f6604be8554d14d6d9c1816eb3d01bbb255
+              value: gcr.io/knative-nightly/knative.dev/eventing/cmd/in_memory/channel_dispatcher@sha256:674087190dcda4536adf76be30af3929a024bf5ef21eb1bbafbeee7a727be541
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -285,7 +285,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/component: imc-controller
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
   name: inmemorychannel-webhook
   namespace: knative-eventing
@@ -327,7 +327,7 @@ metadata:
     messaging.knative.dev/channel: in-memory-channel
     messaging.knative.dev/role: dispatcher
     app.kubernetes.io/component: imc-dispatcher
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 spec:
   selector:
@@ -369,7 +369,7 @@ metadata:
   labels:
     knative.dev/high-availability: "true"
     app.kubernetes.io/component: imc-dispatcher
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
     bindings.knative.dev/exclude: "true"
 spec:
@@ -383,7 +383,7 @@ spec:
         messaging.knative.dev/channel: in-memory-channel
         messaging.knative.dev/role: dispatcher
         app.kubernetes.io/component: imc-dispatcher
-        app.kubernetes.io/version: "20240626-0f71292d9"
+        app.kubernetes.io/version: "20240627-a6ac8111e"
         app.kubernetes.io/name: knative-eventing
     spec:
       affinity:
@@ -400,7 +400,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: dispatcher
-          image: gcr.io/knative-nightly/knative.dev/eventing/cmd/in_memory/channel_dispatcher@sha256:4485df1735903cbfa493cd3a62114f6604be8554d14d6d9c1816eb3d01bbb255
+          image: gcr.io/knative-nightly/knative.dev/eventing/cmd/in_memory/channel_dispatcher@sha256:674087190dcda4536adf76be30af3929a024bf5ef21eb1bbafbeee7a727be541
           readinessProbe:
             failureThreshold: 3
             httpGet:
@@ -482,7 +482,7 @@ metadata:
     knative.dev/crd-install: "true"
     messaging.knative.dev/subscribable: "true"
     duck.knative.dev/addressable: "true"
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 spec:
   group: messaging.knative.dev
@@ -818,7 +818,7 @@ metadata:
   name: imc-addressable-resolver
   labels:
     duck.knative.dev/addressable: "true"
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 # Do not use this role directly. These rules will be added to the "addressable-resolver" role.
 rules:
@@ -853,7 +853,7 @@ metadata:
   name: imc-channelable-manipulator
   labels:
     duck.knative.dev/channelable: "true"
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 # Do not use this role directly. These rules will be added to the "channelable-manipulator" role.
 rules:
@@ -891,7 +891,7 @@ kind: ClusterRole
 metadata:
   name: imc-controller
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 rules:
   - apiGroups:
@@ -1058,7 +1058,7 @@ metadata:
   name: imc-subscriber
   labels:
     duck.knative.dev/crossnamespace-subscribable: "true"
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 rules:
   - apiGroups:
@@ -1087,7 +1087,7 @@ kind: ClusterRole
 metadata:
   name: imc-dispatcher
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 rules:
   - apiGroups:
@@ -1174,7 +1174,7 @@ metadata:
   namespace: knative-eventing
   name: knative-inmemorychannel-webhook
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 rules:
   # For manipulating certs into secrets.
@@ -1210,7 +1210,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: inmemorychannel.eventing.knative.dev
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 webhooks:
   - admissionReviewVersions: ["v1"]
@@ -1243,7 +1243,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: validation.inmemorychannel.eventing.knative.dev
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 webhooks:
   - admissionReviewVersions: ["v1"]
@@ -1277,7 +1277,7 @@ metadata:
   name: inmemorychannel-webhook-certs
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "20240626-0f71292d9"
+    app.kubernetes.io/version: "20240627-a6ac8111e"
     app.kubernetes.io/name: knative-eventing
 # The data is populated at install time.
 
