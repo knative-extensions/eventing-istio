@@ -20,6 +20,7 @@ set -o pipefail
 
 # shellcheck disable=SC1091
 source "$(dirname "$0")"/../vendor/knative.dev/hack/codegen-library.sh
+source "${CODEGEN_PKG}/kube_codegen.sh"
 
 # If we run with -mod=vendor here, then generate-groups.sh looks for vendor files in the wrong place.
 export GOFLAGS=-mod=
@@ -39,10 +40,12 @@ K8S_TYPES=$(find ./vendor/k8s.io/api -type d -path '*/*/*/*/*/*' | cut -d'/' -f 
   grep -v "admission:" | grep -v "imagepolicy:" | grep -v "abac:" | grep -v "componentconfig:")
 
 # Generate our own client for istio (otherwise injection won't work)
-"${CODEGEN_PKG}"/generate-groups.sh "client,informer,lister" \
-  knative.dev/eventing-istio/pkg/client/istio istio.io/client-go/pkg/apis \
-  "networking:v1beta1" \
-  --go-header-file "${REPO_ROOT_DIR}"/hack/boilerplate/boilerplate.go.txt
+kube::codegen::gen_client \
+  --boilerplate "${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt" \
+  --output-dir "${REPO_ROOT_DIR}/pkg/client/istio" \
+  --output-pkg "knative.dev/eventing-istio/pkg/client/istio" \
+  --with-watch \
+  "${REPO_ROOT_DIR}/vendor/istio.io/client-go/pkg/apis"
 
 group "Knative Codegen"
 
