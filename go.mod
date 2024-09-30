@@ -15,7 +15,7 @@ require (
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
 	knative.dev/eventing v0.42.1-0.20240926123447-e7fca7646f4a
 	knative.dev/hack v0.0.0-20240909014011-fc6a8452af6d
-	knative.dev/pkg v0.0.0-20240926013127-c4843b746d24
+	knative.dev/pkg v0.0.0-20240930065954-503173341499
 )
 
 require (
@@ -59,7 +59,7 @@ require (
 	github.com/prometheus/statsd_exporter v0.22.7 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.uber.org/automaxprocs v1.5.3 // indirect
+	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/net v0.29.0 // indirect
