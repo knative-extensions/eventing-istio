@@ -20,8 +20,8 @@ package v1beta1
 
 import (
 	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/client-go/listers"
 	"k8s.io/client-go/tools/cache"
 )
 
@@ -38,25 +38,17 @@ type WorkloadEntryLister interface {
 
 // workloadEntryLister implements the WorkloadEntryLister interface.
 type workloadEntryLister struct {
-	indexer cache.Indexer
+	listers.ResourceIndexer[*v1beta1.WorkloadEntry]
 }
 
 // NewWorkloadEntryLister returns a new WorkloadEntryLister.
 func NewWorkloadEntryLister(indexer cache.Indexer) WorkloadEntryLister {
-	return &workloadEntryLister{indexer: indexer}
-}
-
-// List lists all WorkloadEntries in the indexer.
-func (s *workloadEntryLister) List(selector labels.Selector) (ret []*v1beta1.WorkloadEntry, err error) {
-	err = cache.ListAll(s.indexer, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.WorkloadEntry))
-	})
-	return ret, err
+	return &workloadEntryLister{listers.New[*v1beta1.WorkloadEntry](indexer, v1beta1.Resource("workloadentry"))}
 }
 
 // WorkloadEntries returns an object that can list and get WorkloadEntries.
 func (s *workloadEntryLister) WorkloadEntries(namespace string) WorkloadEntryNamespaceLister {
-	return workloadEntryNamespaceLister{indexer: s.indexer, namespace: namespace}
+	return workloadEntryNamespaceLister{listers.NewNamespaced[*v1beta1.WorkloadEntry](s.ResourceIndexer, namespace)}
 }
 
 // WorkloadEntryNamespaceLister helps list and get WorkloadEntries.
@@ -74,26 +66,5 @@ type WorkloadEntryNamespaceLister interface {
 // workloadEntryNamespaceLister implements the WorkloadEntryNamespaceLister
 // interface.
 type workloadEntryNamespaceLister struct {
-	indexer   cache.Indexer
-	namespace string
-}
-
-// List lists all WorkloadEntries in the indexer for a given namespace.
-func (s workloadEntryNamespaceLister) List(selector labels.Selector) (ret []*v1beta1.WorkloadEntry, err error) {
-	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.WorkloadEntry))
-	})
-	return ret, err
-}
-
-// Get retrieves the WorkloadEntry from the indexer for a given namespace and name.
-func (s workloadEntryNamespaceLister) Get(name string) (*v1beta1.WorkloadEntry, error) {
-	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
-	if err != nil {
-		return nil, err
-	}
-	if !exists {
-		return nil, errors.NewNotFound(v1beta1.Resource("workloadentry"), name)
-	}
-	return obj.(*v1beta1.WorkloadEntry), nil
+	listers.ResourceIndexer[*v1beta1.WorkloadEntry]
 }

@@ -20,8 +20,8 @@ package v1beta1
 
 import (
 	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/client-go/listers"
 	"k8s.io/client-go/tools/cache"
 )
 
@@ -38,25 +38,17 @@ type SidecarLister interface {
 
 // sidecarLister implements the SidecarLister interface.
 type sidecarLister struct {
-	indexer cache.Indexer
+	listers.ResourceIndexer[*v1beta1.Sidecar]
 }
 
 // NewSidecarLister returns a new SidecarLister.
 func NewSidecarLister(indexer cache.Indexer) SidecarLister {
-	return &sidecarLister{indexer: indexer}
-}
-
-// List lists all Sidecars in the indexer.
-func (s *sidecarLister) List(selector labels.Selector) (ret []*v1beta1.Sidecar, err error) {
-	err = cache.ListAll(s.indexer, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.Sidecar))
-	})
-	return ret, err
+	return &sidecarLister{listers.New[*v1beta1.Sidecar](indexer, v1beta1.Resource("sidecar"))}
 }
 
 // Sidecars returns an object that can list and get Sidecars.
 func (s *sidecarLister) Sidecars(namespace string) SidecarNamespaceLister {
-	return sidecarNamespaceLister{indexer: s.indexer, namespace: namespace}
+	return sidecarNamespaceLister{listers.NewNamespaced[*v1beta1.Sidecar](s.ResourceIndexer, namespace)}
 }
 
 // SidecarNamespaceLister helps list and get Sidecars.
@@ -74,26 +66,5 @@ type SidecarNamespaceLister interface {
 // sidecarNamespaceLister implements the SidecarNamespaceLister
 // interface.
 type sidecarNamespaceLister struct {
-	indexer   cache.Indexer
-	namespace string
-}
-
-// List lists all Sidecars in the indexer for a given namespace.
-func (s sidecarNamespaceLister) List(selector labels.Selector) (ret []*v1beta1.Sidecar, err error) {
-	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.Sidecar))
-	})
-	return ret, err
-}
-
-// Get retrieves the Sidecar from the indexer for a given namespace and name.
-func (s sidecarNamespaceLister) Get(name string) (*v1beta1.Sidecar, error) {
-	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
-	if err != nil {
-		return nil, err
-	}
-	if !exists {
-		return nil, errors.NewNotFound(v1beta1.Resource("sidecar"), name)
-	}
-	return obj.(*v1beta1.Sidecar), nil
+	listers.ResourceIndexer[*v1beta1.Sidecar]
 }

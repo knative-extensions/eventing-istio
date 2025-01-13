@@ -41,22 +41,24 @@ var workloadgroupsKind = v1beta1.SchemeGroupVersion.WithKind("WorkloadGroup")
 
 // Get takes name of the workloadGroup, and returns the corresponding workloadGroup object, and an error if there is any.
 func (c *FakeWorkloadGroups) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.WorkloadGroup, err error) {
+	emptyResult := &v1beta1.WorkloadGroup{}
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(workloadgroupsResource, c.ns, name), &v1beta1.WorkloadGroup{})
+		Invokes(testing.NewGetActionWithOptions(workloadgroupsResource, c.ns, name, options), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.WorkloadGroup), err
 }
 
 // List takes label and field selectors, and returns the list of WorkloadGroups that match those selectors.
 func (c *FakeWorkloadGroups) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.WorkloadGroupList, err error) {
+	emptyResult := &v1beta1.WorkloadGroupList{}
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(workloadgroupsResource, workloadgroupsKind, c.ns, opts), &v1beta1.WorkloadGroupList{})
+		Invokes(testing.NewListActionWithOptions(workloadgroupsResource, workloadgroupsKind, c.ns, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 
 	label, _, _ := testing.ExtractFromListOptions(opts)
@@ -75,40 +77,43 @@ func (c *FakeWorkloadGroups) List(ctx context.Context, opts v1.ListOptions) (res
 // Watch returns a watch.Interface that watches the requested workloadGroups.
 func (c *FakeWorkloadGroups) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(workloadgroupsResource, c.ns, opts))
+		InvokesWatch(testing.NewWatchActionWithOptions(workloadgroupsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a workloadGroup and creates it.  Returns the server's representation of the workloadGroup, and an error, if there is any.
 func (c *FakeWorkloadGroups) Create(ctx context.Context, workloadGroup *v1beta1.WorkloadGroup, opts v1.CreateOptions) (result *v1beta1.WorkloadGroup, err error) {
+	emptyResult := &v1beta1.WorkloadGroup{}
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(workloadgroupsResource, c.ns, workloadGroup), &v1beta1.WorkloadGroup{})
+		Invokes(testing.NewCreateActionWithOptions(workloadgroupsResource, c.ns, workloadGroup, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.WorkloadGroup), err
 }
 
 // Update takes the representation of a workloadGroup and updates it. Returns the server's representation of the workloadGroup, and an error, if there is any.
 func (c *FakeWorkloadGroups) Update(ctx context.Context, workloadGroup *v1beta1.WorkloadGroup, opts v1.UpdateOptions) (result *v1beta1.WorkloadGroup, err error) {
+	emptyResult := &v1beta1.WorkloadGroup{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(workloadgroupsResource, c.ns, workloadGroup), &v1beta1.WorkloadGroup{})
+		Invokes(testing.NewUpdateActionWithOptions(workloadgroupsResource, c.ns, workloadGroup, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.WorkloadGroup), err
 }
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeWorkloadGroups) UpdateStatus(ctx context.Context, workloadGroup *v1beta1.WorkloadGroup, opts v1.UpdateOptions) (*v1beta1.WorkloadGroup, error) {
+func (c *FakeWorkloadGroups) UpdateStatus(ctx context.Context, workloadGroup *v1beta1.WorkloadGroup, opts v1.UpdateOptions) (result *v1beta1.WorkloadGroup, err error) {
+	emptyResult := &v1beta1.WorkloadGroup{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(workloadgroupsResource, "status", c.ns, workloadGroup), &v1beta1.WorkloadGroup{})
+		Invokes(testing.NewUpdateSubresourceActionWithOptions(workloadgroupsResource, "status", c.ns, workloadGroup, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.WorkloadGroup), err
 }
@@ -123,7 +128,7 @@ func (c *FakeWorkloadGroups) Delete(ctx context.Context, name string, opts v1.De
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeWorkloadGroups) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(workloadgroupsResource, c.ns, listOpts)
+	action := testing.NewDeleteCollectionActionWithOptions(workloadgroupsResource, c.ns, opts, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1beta1.WorkloadGroupList{})
 	return err
@@ -131,11 +136,12 @@ func (c *FakeWorkloadGroups) DeleteCollection(ctx context.Context, opts v1.Delet
 
 // Patch applies the patch and returns the patched workloadGroup.
 func (c *FakeWorkloadGroups) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.WorkloadGroup, err error) {
+	emptyResult := &v1beta1.WorkloadGroup{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(workloadgroupsResource, c.ns, name, pt, data, subresources...), &v1beta1.WorkloadGroup{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(workloadgroupsResource, c.ns, name, pt, data, opts, subresources...), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.WorkloadGroup), err
 }
