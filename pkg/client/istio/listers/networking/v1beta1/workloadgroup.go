@@ -20,8 +20,8 @@ package v1beta1
 
 import (
 	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/client-go/listers"
 	"k8s.io/client-go/tools/cache"
 )
 
@@ -38,25 +38,17 @@ type WorkloadGroupLister interface {
 
 // workloadGroupLister implements the WorkloadGroupLister interface.
 type workloadGroupLister struct {
-	indexer cache.Indexer
+	listers.ResourceIndexer[*v1beta1.WorkloadGroup]
 }
 
 // NewWorkloadGroupLister returns a new WorkloadGroupLister.
 func NewWorkloadGroupLister(indexer cache.Indexer) WorkloadGroupLister {
-	return &workloadGroupLister{indexer: indexer}
-}
-
-// List lists all WorkloadGroups in the indexer.
-func (s *workloadGroupLister) List(selector labels.Selector) (ret []*v1beta1.WorkloadGroup, err error) {
-	err = cache.ListAll(s.indexer, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.WorkloadGroup))
-	})
-	return ret, err
+	return &workloadGroupLister{listers.New[*v1beta1.WorkloadGroup](indexer, v1beta1.Resource("workloadgroup"))}
 }
 
 // WorkloadGroups returns an object that can list and get WorkloadGroups.
 func (s *workloadGroupLister) WorkloadGroups(namespace string) WorkloadGroupNamespaceLister {
-	return workloadGroupNamespaceLister{indexer: s.indexer, namespace: namespace}
+	return workloadGroupNamespaceLister{listers.NewNamespaced[*v1beta1.WorkloadGroup](s.ResourceIndexer, namespace)}
 }
 
 // WorkloadGroupNamespaceLister helps list and get WorkloadGroups.
@@ -74,26 +66,5 @@ type WorkloadGroupNamespaceLister interface {
 // workloadGroupNamespaceLister implements the WorkloadGroupNamespaceLister
 // interface.
 type workloadGroupNamespaceLister struct {
-	indexer   cache.Indexer
-	namespace string
-}
-
-// List lists all WorkloadGroups in the indexer for a given namespace.
-func (s workloadGroupNamespaceLister) List(selector labels.Selector) (ret []*v1beta1.WorkloadGroup, err error) {
-	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.WorkloadGroup))
-	})
-	return ret, err
-}
-
-// Get retrieves the WorkloadGroup from the indexer for a given namespace and name.
-func (s workloadGroupNamespaceLister) Get(name string) (*v1beta1.WorkloadGroup, error) {
-	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
-	if err != nil {
-		return nil, err
-	}
-	if !exists {
-		return nil, errors.NewNotFound(v1beta1.Resource("workloadgroup"), name)
-	}
-	return obj.(*v1beta1.WorkloadGroup), nil
+	listers.ResourceIndexer[*v1beta1.WorkloadGroup]
 }

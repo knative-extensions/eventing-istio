@@ -20,8 +20,8 @@ package v1beta1
 
 import (
 	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/client-go/listers"
 	"k8s.io/client-go/tools/cache"
 )
 
@@ -38,25 +38,17 @@ type ProxyConfigLister interface {
 
 // proxyConfigLister implements the ProxyConfigLister interface.
 type proxyConfigLister struct {
-	indexer cache.Indexer
+	listers.ResourceIndexer[*v1beta1.ProxyConfig]
 }
 
 // NewProxyConfigLister returns a new ProxyConfigLister.
 func NewProxyConfigLister(indexer cache.Indexer) ProxyConfigLister {
-	return &proxyConfigLister{indexer: indexer}
-}
-
-// List lists all ProxyConfigs in the indexer.
-func (s *proxyConfigLister) List(selector labels.Selector) (ret []*v1beta1.ProxyConfig, err error) {
-	err = cache.ListAll(s.indexer, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.ProxyConfig))
-	})
-	return ret, err
+	return &proxyConfigLister{listers.New[*v1beta1.ProxyConfig](indexer, v1beta1.Resource("proxyconfig"))}
 }
 
 // ProxyConfigs returns an object that can list and get ProxyConfigs.
 func (s *proxyConfigLister) ProxyConfigs(namespace string) ProxyConfigNamespaceLister {
-	return proxyConfigNamespaceLister{indexer: s.indexer, namespace: namespace}
+	return proxyConfigNamespaceLister{listers.NewNamespaced[*v1beta1.ProxyConfig](s.ResourceIndexer, namespace)}
 }
 
 // ProxyConfigNamespaceLister helps list and get ProxyConfigs.
@@ -74,26 +66,5 @@ type ProxyConfigNamespaceLister interface {
 // proxyConfigNamespaceLister implements the ProxyConfigNamespaceLister
 // interface.
 type proxyConfigNamespaceLister struct {
-	indexer   cache.Indexer
-	namespace string
-}
-
-// List lists all ProxyConfigs in the indexer for a given namespace.
-func (s proxyConfigNamespaceLister) List(selector labels.Selector) (ret []*v1beta1.ProxyConfig, err error) {
-	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1beta1.ProxyConfig))
-	})
-	return ret, err
-}
-
-// Get retrieves the ProxyConfig from the indexer for a given namespace and name.
-func (s proxyConfigNamespaceLister) Get(name string) (*v1beta1.ProxyConfig, error) {
-	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
-	if err != nil {
-		return nil, err
-	}
-	if !exists {
-		return nil, errors.NewNotFound(v1beta1.Resource("proxyconfig"), name)
-	}
-	return obj.(*v1beta1.ProxyConfig), nil
+	listers.ResourceIndexer[*v1beta1.ProxyConfig]
 }
