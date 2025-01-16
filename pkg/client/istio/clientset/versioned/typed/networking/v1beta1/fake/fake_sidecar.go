@@ -41,22 +41,24 @@ var sidecarsKind = v1beta1.SchemeGroupVersion.WithKind("Sidecar")
 
 // Get takes name of the sidecar, and returns the corresponding sidecar object, and an error if there is any.
 func (c *FakeSidecars) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.Sidecar, err error) {
+	emptyResult := &v1beta1.Sidecar{}
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(sidecarsResource, c.ns, name), &v1beta1.Sidecar{})
+		Invokes(testing.NewGetActionWithOptions(sidecarsResource, c.ns, name, options), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Sidecar), err
 }
 
 // List takes label and field selectors, and returns the list of Sidecars that match those selectors.
 func (c *FakeSidecars) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.SidecarList, err error) {
+	emptyResult := &v1beta1.SidecarList{}
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(sidecarsResource, sidecarsKind, c.ns, opts), &v1beta1.SidecarList{})
+		Invokes(testing.NewListActionWithOptions(sidecarsResource, sidecarsKind, c.ns, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 
 	label, _, _ := testing.ExtractFromListOptions(opts)
@@ -75,40 +77,43 @@ func (c *FakeSidecars) List(ctx context.Context, opts v1.ListOptions) (result *v
 // Watch returns a watch.Interface that watches the requested sidecars.
 func (c *FakeSidecars) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(sidecarsResource, c.ns, opts))
+		InvokesWatch(testing.NewWatchActionWithOptions(sidecarsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a sidecar and creates it.  Returns the server's representation of the sidecar, and an error, if there is any.
 func (c *FakeSidecars) Create(ctx context.Context, sidecar *v1beta1.Sidecar, opts v1.CreateOptions) (result *v1beta1.Sidecar, err error) {
+	emptyResult := &v1beta1.Sidecar{}
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(sidecarsResource, c.ns, sidecar), &v1beta1.Sidecar{})
+		Invokes(testing.NewCreateActionWithOptions(sidecarsResource, c.ns, sidecar, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Sidecar), err
 }
 
 // Update takes the representation of a sidecar and updates it. Returns the server's representation of the sidecar, and an error, if there is any.
 func (c *FakeSidecars) Update(ctx context.Context, sidecar *v1beta1.Sidecar, opts v1.UpdateOptions) (result *v1beta1.Sidecar, err error) {
+	emptyResult := &v1beta1.Sidecar{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(sidecarsResource, c.ns, sidecar), &v1beta1.Sidecar{})
+		Invokes(testing.NewUpdateActionWithOptions(sidecarsResource, c.ns, sidecar, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Sidecar), err
 }
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeSidecars) UpdateStatus(ctx context.Context, sidecar *v1beta1.Sidecar, opts v1.UpdateOptions) (*v1beta1.Sidecar, error) {
+func (c *FakeSidecars) UpdateStatus(ctx context.Context, sidecar *v1beta1.Sidecar, opts v1.UpdateOptions) (result *v1beta1.Sidecar, err error) {
+	emptyResult := &v1beta1.Sidecar{}
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(sidecarsResource, "status", c.ns, sidecar), &v1beta1.Sidecar{})
+		Invokes(testing.NewUpdateSubresourceActionWithOptions(sidecarsResource, "status", c.ns, sidecar, opts), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Sidecar), err
 }
@@ -123,7 +128,7 @@ func (c *FakeSidecars) Delete(ctx context.Context, name string, opts v1.DeleteOp
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeSidecars) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(sidecarsResource, c.ns, listOpts)
+	action := testing.NewDeleteCollectionActionWithOptions(sidecarsResource, c.ns, opts, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1beta1.SidecarList{})
 	return err
@@ -131,11 +136,12 @@ func (c *FakeSidecars) DeleteCollection(ctx context.Context, opts v1.DeleteOptio
 
 // Patch applies the patch and returns the patched sidecar.
 func (c *FakeSidecars) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.Sidecar, err error) {
+	emptyResult := &v1beta1.Sidecar{}
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(sidecarsResource, c.ns, name, pt, data, subresources...), &v1beta1.Sidecar{})
+		Invokes(testing.NewPatchSubresourceActionWithOptions(sidecarsResource, c.ns, name, pt, data, opts, subresources...), emptyResult)
 
 	if obj == nil {
-		return nil, err
+		return emptyResult, err
 	}
 	return obj.(*v1beta1.Sidecar), err
 }
