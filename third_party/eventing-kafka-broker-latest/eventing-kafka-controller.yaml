@@ -17,7 +17,7 @@ metadata:
   name: kafka-broker-config
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 data:
   default.topic.partitions: "10"
   default.topic.replication.factor: "3"
@@ -43,7 +43,7 @@ metadata:
   name: kafka-channel-config
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 data:
   bootstrap.servers: "my-cluster-kafka-bootstrap.kafka:9092"
 
@@ -67,7 +67,7 @@ kind: CustomResourceDefinition
 metadata:
   name: kafkachannels.messaging.knative.dev
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     knative.dev/crd-install: "true"
     messaging.knative.dev/subscribable: "true"
     duck.knative.dev/addressable: "true"
@@ -77,6 +77,301 @@ spec:
     - name: v1beta1
       served: true
       storage: true
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          description: 'KafkaChannel is a resource representing a Channel that is backed by a topic of an Apache Kafka cluster.'
+          type: object
+          properties:
+            spec:
+              description: Spec defines the desired state of the Channel.
+              type: object
+              properties:
+                numPartitions:
+                  description: NumPartitions is the number of partitions of a Kafka topic. By default, it is set to 1.
+                  type: integer
+                  format: int32
+                  default: 1
+                replicationFactor:
+                  description: ReplicationFactor is the replication factor of a Kafka topic. By default, it is set to 1.
+                  type: integer
+                  maximum: 32767
+                  default: 1
+                retentionDuration:
+                  description: RetentionDuration is the retention time for events in a Kafka Topic represented as an ISO-8601 Duration.  By default it is set to 168 hours, which is the precise form of 7 days.
+                  type: string
+                delivery:
+                  description: DeliverySpec contains the default delivery spec for each subscription to this Channelable. Each subscription delivery spec, if any, overrides this global delivery spec.
+                  type: object
+                  properties:
+                    backoffDelay:
+                      description: 'BackoffDelay is the delay before retrying. More information on Duration format: - https://www.iso.org/iso-8601-date-and-time-format.html - https://en.wikipedia.org/wiki/ISO_8601  For linear policy, backoff delay is backoffDelay*<numberOfRetries>. For exponential policy, backoff delay is backoffDelay*2^<numberOfRetries>.'
+                      type: string
+                    backoffPolicy:
+                      description: BackoffPolicy is the retry backoff policy (linear, exponential).
+                      type: string
+                    deadLetterSink:
+                      description: DeadLetterSink is the sink receiving event that could not be sent to a destination.
+                      type: object
+                      properties:
+                        ref:
+                          description: Ref points to an Addressable.
+                          type: object
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/ This is optional field, it gets defaulted to the object holding it if left out.'
+                              type: string
+                        uri:
+                          description: URI can be an absolute URL(non-empty scheme and non-empty host) pointing to the target or a relative URI. Relative URIs will be resolved using the base URI retrieved from Ref.
+                          type: string
+                        CACerts:
+                          type: string
+                        audience:
+                          description: Audience is the OIDC audience for the deadLetterSink.
+                          type: string
+                    retry:
+                      description: Retry is the minimum number of retries the sender should attempt when sending an event before moving it to the dead letter sink.
+                      type: integer
+                      format: int32
+                  x-kubernetes-preserve-unknown-fields: true # This is necessary to enable experimental features in the delivery
+                subscribers:
+                  description: This is the list of subscriptions for this subscribable.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      delivery:
+                        description: DeliverySpec contains options controlling the event delivery
+                        type: object
+                        properties:
+                          backoffDelay:
+                            description: 'BackoffDelay is the delay before retrying. More information on Duration format: - https://www.iso.org/iso-8601-date-and-time-format.html - https://en.wikipedia.org/wiki/ISO_8601  For linear policy, backoff delay is backoffDelay*<numberOfRetries>. For exponential policy, backoff delay is backoffDelay*2^<numberOfRetries>.'
+                            type: string
+                          backoffPolicy:
+                            description: BackoffPolicy is the retry backoff policy (linear, exponential).
+                            type: string
+                          deadLetterSink:
+                            description: DeadLetterSink is the sink receiving event that could not be sent to a destination.
+                            type: object
+                            properties:
+                              ref:
+                                description: Ref points to an Addressable.
+                                type: object
+                                properties:
+                                  apiVersion:
+                                    description: API version of the referent.
+                                    type: string
+                                  kind:
+                                    description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    type: string
+                                  namespace:
+                                    description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/ This is optional field, it gets defaulted to the object holding it if left out.'
+                                    type: string
+                              uri:
+                                description: URI can be an absolute URL(non-empty scheme and non-empty host) pointing to the target or a relative URI. Relative URIs will be resolved using the base URI retrieved from Ref.
+                                type: string
+                              CACerts:
+                                type: string
+                              audience:
+                                description: Audience is the OIDC audience for the deadLetterSink.
+                                type: string
+                          retry:
+                            description: Retry is the minimum number of retries the sender should attempt when sending an event before moving it to the dead letter sink.
+                            type: integer
+                            format: int32
+                        x-kubernetes-preserve-unknown-fields: true # This is necessary to enable experimental features in the delivery
+                      generation:
+                        description: Generation of the origin of the subscriber with uid:UID.
+                        type: integer
+                        format: int64
+                      name:
+                        description: The name of the subscription
+                        type: string
+                      replyUri:
+                        description: ReplyURI is the endpoint for the reply
+                        type: string
+                      replyCACerts:
+                        description: replyCACerts is the CA certs to trust for the reply.
+                        type: string
+                      replyAudience:
+                        description: ReplyAudience is the OIDC audience for the replyUri.
+                        type: string
+                      subscriberUri:
+                        description: SubscriberURI is the endpoint for the subscriber
+                        type: string
+                      subscriberCACerts:
+                        description: SubscriberCACerts is the CA certs to trust for the subscriber.
+                        type: string
+                      subscriberAudience:
+                        description: SubscriberAudience is the OIDC audience for the subscriberUri.
+                        type: string
+                      uid:
+                        description: UID is used to understand the origin of the subscriber.
+                        type: string
+                      auth:
+                        description: Auth provides the relevant information for OIDC authentication.
+                        type: object
+                        properties:
+                          serviceAccountName:
+                            description: ServiceAccountName is the name of the generated service account used for this components OIDC authentication.
+                            type: string
+            status:
+              description: Status represents the current state of the KafkaChannel. This data may be out of date.
+              type: object
+              properties:
+                address:
+                  type: object
+                  required:
+                    - url
+                  properties:
+                    name:
+                      type: string
+                    url:
+                      type: string
+                    CACerts:
+                      type: string
+                    audience:
+                      type: string
+                addresses:
+                  description: Kafka Sink is Addressable. It exposes the endpoints as URIs to get events delivered into the Kafka topic.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      url:
+                        type: string
+                      CACerts:
+                        type: string
+                      audience:
+                        type: string
+                annotations:
+                  description: Annotations is additional Status fields for the Resource to save some additional State as well as convey more information to the user. This is roughly akin to Annotations on any k8s resource, just the reconciler conveying richer information outwards.
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                policies:
+                  description: List of applied EventPolicies
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      apiVersion:
+                        description: The API version of the applied EventPolicy. This indicates, which version of EventPolicy is supported by the resource.
+                        type: string
+                      name:
+                        description: The name of the applied EventPolicy
+                        type: string
+                conditions:
+                  description: Conditions the latest available observations of a resource's current state.
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - type
+                      - status
+                    properties:
+                      lastTransitionTime:
+                        description: LastTransitionTime is the last time the condition transitioned from one status to another. We use VolatileTime in place of metav1.Time to exclude this from creating equality.Semantic differences (all other things held constant).
+                        type: string
+                      message:
+                        description: A human readable message indicating details about the transition.
+                        type: string
+                      reason:
+                        description: The reason for the condition's last transition.
+                        type: string
+                      severity:
+                        description: Severity with which to treat failures of this type of condition. When this is not specified, it defaults to Error.
+                        type: string
+                      status:
+                        description: Status of the condition, one of True, False, Unknown.
+                        type: string
+                      type:
+                        description: Type of condition.
+                        type: string
+                deadLetterChannel:
+                  description: DeadLetterChannel is a KReference and is set by the channel when it supports native error handling via a channel Failed messages are delivered here.
+                  type: object
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    kind:
+                      description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                      type: string
+                    namespace:
+                      description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/ This is optional field, it gets defaulted to the object holding it if left out.'
+                      type: string
+                deadLetterSinkUri:
+                  description: DeadLetterSinkURI is the resolved URI of the dead letter ref if one is specified in the Spec.Delivery.
+                  type: string
+                deadLetterSinkCACerts:
+                  type: string
+                deadLetterSinkAudience:
+                  description: OIDC audience of the dead letter sink.
+                  type: string
+                observedGeneration:
+                  description: ObservedGeneration is the 'Generation' of the Service that was last processed by the controller.
+                  type: integer
+                  format: int64
+                subscribers:
+                  description: This is the list of subscription's statuses for this channel.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      message:
+                        description: A human readable message indicating details of Ready status.
+                        type: string
+                      observedGeneration:
+                        description: Generation of the origin of the subscriber with uid:UID.
+                        type: integer
+                        format: int64
+                      ready:
+                        description: Status of the subscriber.
+                        type: string
+                      uid:
+                        description: UID is used to understand the origin of the subscriber.
+                        type: string
+                      auth:
+                        description: Auth provides the relevant information for OIDC authentication.
+                        type: object
+                        properties:
+                          serviceAccountName:
+                            description: ServiceAccountName is the name of the generated service account used for this components OIDC authentication.
+                            type: string
+      additionalPrinterColumns:
+        - name: Ready
+          type: string
+          jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
+        - name: Reason
+          type: string
+          jsonPath: ".status.conditions[?(@.type==\"Ready\")].reason"
+        - name: URL
+          type: string
+          jsonPath: .status.address.url
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+    - name: v1
+      served: true
+      storage: false
       subresources:
         status: {}
       schema:
@@ -387,7 +682,7 @@ spec:
       conversionReviewVersions: ["v1", "v1beta1"]
       clientConfig:
         service:
-          name: kafka-webhook
+          name: kafka-webhook-eventing
           namespace: knative-eventing
 ---
 
@@ -412,7 +707,7 @@ kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     knative.dev/crd-install: "true"
   name: consumers.internal.kafka.eventing.knative.dev
 spec:
@@ -468,7 +763,7 @@ kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     knative.dev/crd-install: "true"
   name: consumergroups.internal.kafka.eventing.knative.dev
 spec:
@@ -539,7 +834,7 @@ metadata:
   labels:
     duck.knative.dev/addressable: "true"
     knative.dev/crd-install: "true"
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 spec:
   group: eventing.knative.dev
   names:
@@ -735,7 +1030,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     eventing.knative.dev/source: "true"
     duck.knative.dev/source: "true"
     knative.dev/crd-install: "true"
@@ -1595,7 +1890,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: eventing-kafka-source-observer
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     duck.knative.dev/source: "true"
 rules:
   - apiGroups:
@@ -1628,7 +1923,7 @@ metadata:
   name: config-kafka-source-defaults
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
   annotations:
     knative.dev/example-checksum: "b6ed351d"
 data:
@@ -1688,7 +1983,7 @@ metadata:
   name: config-kafka-autoscaler
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 data:
   class: "keda.autoscaling.knative.dev"
   min-scale: "0"
@@ -1696,43 +1991,6 @@ data:
   polling-interval: "10"
   cooldown-period: "30"
   lag-threshold: "100"
-
----
-# Copyright 2021 The Knative Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: config-kafka-descheduler
-  namespace: knative-eventing
-  labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
-data:
-  predicates: |
-    []
-  priorities: |
-    [
-      {"Name": "RemoveWithEvenPodSpreadPriority",
-      "Weight": 10,
-      "Args": "{\"MaxSkew\": 2}"},
-      {"Name": "RemoveWithAvailabilityZonePriority",
-      "Weight": 10,
-      "Args":  "{\"MaxSkew\": 2}"},
-      {"Name": "RemoveWithHighestOrdinalPriority",
-      "Weight": 2}
-    ]
 
 ---
 apiVersion: v1
@@ -1791,7 +2049,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
   name: config-kafka-leader-election
   namespace: knative-eventing
   annotations:
@@ -1838,47 +2096,6 @@ data:
   map-lease-prefix.kafka-broker-controller.knative.dev.eventing-kafka-broker.control-plane.pkg.reconciler.channel.Reconciler: kafkachannel-controller.knative.dev.eventing-kafka.pkg.channel.consolidated.reconciler.controller.reconciler
 
 ---
-# Copyright 2021 The Knative Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: config-kafka-scheduler
-  namespace: knative-eventing
-  labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
-data:
-  predicates: |
-    [
-      {"Name": "PodFitsResources"},
-      {"Name": "NoMaxResourceCount",
-      "Args": "{\"NumPartitions\": 100}"}
-    ]
-  priorities: |
-    [
-      {"Name": "AvailabilityZonePriority",
-      "Weight": 10,
-      "Args":  "{\"MaxSkew\": 2}"},
-      {"Name": "LowestOrdinalPriority",
-      "Weight": 2},
-      {"Name": "EvenPodSpread",
-      "Weight": 2,
-      "Args": "{\"MaxSkew\": 2}"}
-    ]
-
----
 # Copyright 2020 The Knative Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -1898,7 +2115,7 @@ metadata:
   name: kafka-config-logging
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 data:
   config.xml: |
     <configuration>
@@ -1960,7 +2177,7 @@ metadata:
   name: config-tracing
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     knative.dev/config-propagation: original
     knative.dev/config-category: eventing
   annotations:
@@ -2020,7 +2237,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-kafka-addressable-resolver
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     duck.knative.dev/addressable: "true"
 # Do not use this role directly. These rules will be added to the "addressable-resolver" role.
 rules:
@@ -2063,7 +2280,7 @@ kind: ClusterRole
 metadata:
   name: knative-kafka-channelable-manipulator
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     duck.knative.dev/channelable: "true"
 # Do not use this role directly. These rules will be added to the "channelable-manipulator" role.
 rules:
@@ -2100,7 +2317,7 @@ kind: ClusterRole
 metadata:
   name: kafka-controller
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 rules:
   - apiGroups:
       - ""
@@ -2299,6 +2516,15 @@ rules:
       - "kafkasinks/finalizers"
     verbs:
       - update
+  - apiGroups:
+      - "sinks.knative.dev"
+    resources:
+      - "jobsinks"
+      - "jobsinks/status"
+    verbs:
+      - get
+      - list
+      - watch
   # resources needed to grant eventtype autocreate rbac to namespaced data plane component
   - apiGroups:
       - "eventing.knative.dev"
@@ -2390,7 +2616,7 @@ metadata:
   name: kafka-controller
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 
 ---
 # Copyright 2020 The Knative Authors
@@ -2411,7 +2637,7 @@ kind: ClusterRoleBinding
 metadata:
   name: kafka-controller
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 subjects:
   - kind: ServiceAccount
     name: kafka-controller
@@ -2426,7 +2652,7 @@ kind: ClusterRoleBinding
 metadata:
   name: kafka-controller-addressable-resolver
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 subjects:
   - kind: ServiceAccount
     name: kafka-controller
@@ -2457,7 +2683,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-controller
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     app.kubernetes.io/component: kafka-controller
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -2469,7 +2695,7 @@ spec:
       name: kafka-controller
       labels:
         app: kafka-controller
-        app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+        app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
         app.kubernetes.io/component: kafka-controller
         app.kubernetes.io/name: knative-eventing
     spec:
@@ -2495,7 +2721,7 @@ spec:
               weight: 100
       containers:
         - name: controller
-          image: gcr.io/knative-nightly/knative.dev/eventing-kafka-broker/control-plane/cmd/kafka-controller@sha256:1866bef9480c83b3f7b5616b4ac7e57d4f777e24c5decbc999c52d3c62d40221
+          image: gcr.io/knative-nightly/knative.dev/eventing-kafka-broker/control-plane/cmd/kafka-controller@sha256:1bd5049d1a7b2d36a26645bcae2fbaed67a313ce151e3e59d7683acb4175803c
           imagePullPolicy: IfNotPresent
           env:
             - name: BROKER_DATA_PLANE_CONFIG_MAP_NAMESPACE
@@ -2636,7 +2862,7 @@ kind: ClusterRole
 metadata:
   name: kafka-webhook-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 rules:
   # For watching logging configuration and getting certs.
   - apiGroups:
@@ -2742,7 +2968,7 @@ metadata:
   name: kafka-webhook-eventing
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 
 ---
 # Copyright 2020 The Knative Authors
@@ -2763,7 +2989,7 @@ kind: ClusterRoleBinding
 metadata:
   name: kafka-webhook-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 subjects:
   - kind: ServiceAccount
     name: kafka-webhook-eventing
@@ -2793,7 +3019,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: defaulting.webhook.kafka.eventing.knative.dev
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -2825,7 +3051,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: pods.defaulting.webhook.kafka.eventing.knative.dev
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 webhooks:
   # Dispatcher pods webhook config.
   - admissionReviewVersions: ["v1", "v1beta1"]
@@ -2867,7 +3093,7 @@ metadata:
   name: kafka-webhook-eventing-certs
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 # The data is populated at install time.
 
 ---
@@ -2890,7 +3116,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: validation.webhook.kafka.eventing.knative.dev
   labels:
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
@@ -2924,7 +3150,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-webhook-eventing
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     app.kubernetes.io/component: kafka-webhook-eventing
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -2935,7 +3161,7 @@ spec:
     metadata:
       labels:
         app: kafka-webhook-eventing
-        app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+        app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
         app.kubernetes.io/component: kafka-webhook-eventing
         app.kubernetes.io/name: knative-eventing
     spec:
@@ -2955,7 +3181,7 @@ spec:
       containers:
         - name: kafka-webhook-eventing
           terminationMessagePolicy: FallbackToLogsOnError
-          image: gcr.io/knative-nightly/knative.dev/eventing-kafka-broker/control-plane/cmd/webhook-kafka@sha256:fca20f08fb5fb9463144a6cd2ab5930287d34c10962520f7a81fc7c6c17b8c0d
+          image: gcr.io/knative-nightly/knative.dev/eventing-kafka-broker/control-plane/cmd/webhook-kafka@sha256:ca8971741884d5199a1c93a8bcc514ab208e2ac5bf9b1b59b7797802667b04bf
           resources:
             requests:
               cpu: 20m
@@ -3025,7 +3251,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-webhook-eventing
-    app.kubernetes.io/version: "d82e4be1deb5b4bd33601ac1e3a1b1c98ddd94cb"
+    app.kubernetes.io/version: "6effb48cc2e60a51752ca56046634c2061e5fb1b"
     app.kubernetes.io/component: kafka-webhook-eventing
     app.kubernetes.io/name: knative-eventing
 spec:
