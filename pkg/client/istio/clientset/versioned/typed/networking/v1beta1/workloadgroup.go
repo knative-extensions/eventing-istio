@@ -19,9 +19,9 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -37,33 +37,34 @@ type WorkloadGroupsGetter interface {
 
 // WorkloadGroupInterface has methods to work with WorkloadGroup resources.
 type WorkloadGroupInterface interface {
-	Create(ctx context.Context, workloadGroup *v1beta1.WorkloadGroup, opts v1.CreateOptions) (*v1beta1.WorkloadGroup, error)
-	Update(ctx context.Context, workloadGroup *v1beta1.WorkloadGroup, opts v1.UpdateOptions) (*v1beta1.WorkloadGroup, error)
+	Create(ctx context.Context, workloadGroup *networkingv1beta1.WorkloadGroup, opts v1.CreateOptions) (*networkingv1beta1.WorkloadGroup, error)
+	Update(ctx context.Context, workloadGroup *networkingv1beta1.WorkloadGroup, opts v1.UpdateOptions) (*networkingv1beta1.WorkloadGroup, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, workloadGroup *v1beta1.WorkloadGroup, opts v1.UpdateOptions) (*v1beta1.WorkloadGroup, error)
+	UpdateStatus(ctx context.Context, workloadGroup *networkingv1beta1.WorkloadGroup, opts v1.UpdateOptions) (*networkingv1beta1.WorkloadGroup, error)
 	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.WorkloadGroup, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1beta1.WorkloadGroupList, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*networkingv1beta1.WorkloadGroup, error)
+	List(ctx context.Context, opts v1.ListOptions) (*networkingv1beta1.WorkloadGroupList, error)
 	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.WorkloadGroup, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *networkingv1beta1.WorkloadGroup, err error)
 	WorkloadGroupExpansion
 }
 
 // workloadGroups implements WorkloadGroupInterface
 type workloadGroups struct {
-	*gentype.ClientWithList[*v1beta1.WorkloadGroup, *v1beta1.WorkloadGroupList]
+	*gentype.ClientWithList[*networkingv1beta1.WorkloadGroup, *networkingv1beta1.WorkloadGroupList]
 }
 
 // newWorkloadGroups returns a WorkloadGroups
 func newWorkloadGroups(c *NetworkingV1beta1Client, namespace string) *workloadGroups {
 	return &workloadGroups{
-		gentype.NewClientWithList[*v1beta1.WorkloadGroup, *v1beta1.WorkloadGroupList](
+		gentype.NewClientWithList[*networkingv1beta1.WorkloadGroup, *networkingv1beta1.WorkloadGroupList](
 			"workloadgroups",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *v1beta1.WorkloadGroup { return &v1beta1.WorkloadGroup{} },
-			func() *v1beta1.WorkloadGroupList { return &v1beta1.WorkloadGroupList{} }),
+			func() *networkingv1beta1.WorkloadGroup { return &networkingv1beta1.WorkloadGroup{} },
+			func() *networkingv1beta1.WorkloadGroupList { return &networkingv1beta1.WorkloadGroupList{} },
+		),
 	}
 }
