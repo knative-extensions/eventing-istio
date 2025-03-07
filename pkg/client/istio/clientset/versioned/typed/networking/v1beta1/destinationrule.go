@@ -19,9 +19,9 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -37,33 +37,34 @@ type DestinationRulesGetter interface {
 
 // DestinationRuleInterface has methods to work with DestinationRule resources.
 type DestinationRuleInterface interface {
-	Create(ctx context.Context, destinationRule *v1beta1.DestinationRule, opts v1.CreateOptions) (*v1beta1.DestinationRule, error)
-	Update(ctx context.Context, destinationRule *v1beta1.DestinationRule, opts v1.UpdateOptions) (*v1beta1.DestinationRule, error)
+	Create(ctx context.Context, destinationRule *networkingv1beta1.DestinationRule, opts v1.CreateOptions) (*networkingv1beta1.DestinationRule, error)
+	Update(ctx context.Context, destinationRule *networkingv1beta1.DestinationRule, opts v1.UpdateOptions) (*networkingv1beta1.DestinationRule, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, destinationRule *v1beta1.DestinationRule, opts v1.UpdateOptions) (*v1beta1.DestinationRule, error)
+	UpdateStatus(ctx context.Context, destinationRule *networkingv1beta1.DestinationRule, opts v1.UpdateOptions) (*networkingv1beta1.DestinationRule, error)
 	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.DestinationRule, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1beta1.DestinationRuleList, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*networkingv1beta1.DestinationRule, error)
+	List(ctx context.Context, opts v1.ListOptions) (*networkingv1beta1.DestinationRuleList, error)
 	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.DestinationRule, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *networkingv1beta1.DestinationRule, err error)
 	DestinationRuleExpansion
 }
 
 // destinationRules implements DestinationRuleInterface
 type destinationRules struct {
-	*gentype.ClientWithList[*v1beta1.DestinationRule, *v1beta1.DestinationRuleList]
+	*gentype.ClientWithList[*networkingv1beta1.DestinationRule, *networkingv1beta1.DestinationRuleList]
 }
 
 // newDestinationRules returns a DestinationRules
 func newDestinationRules(c *NetworkingV1beta1Client, namespace string) *destinationRules {
 	return &destinationRules{
-		gentype.NewClientWithList[*v1beta1.DestinationRule, *v1beta1.DestinationRuleList](
+		gentype.NewClientWithList[*networkingv1beta1.DestinationRule, *networkingv1beta1.DestinationRuleList](
 			"destinationrules",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *v1beta1.DestinationRule { return &v1beta1.DestinationRule{} },
-			func() *v1beta1.DestinationRuleList { return &v1beta1.DestinationRuleList{} }),
+			func() *networkingv1beta1.DestinationRule { return &networkingv1beta1.DestinationRule{} },
+			func() *networkingv1beta1.DestinationRuleList { return &networkingv1beta1.DestinationRuleList{} },
+		),
 	}
 }
