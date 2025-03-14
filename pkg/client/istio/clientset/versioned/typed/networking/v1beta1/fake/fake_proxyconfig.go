@@ -19,129 +19,32 @@ limitations under the License.
 package fake
 
 import (
-	"context"
-
 	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	labels "k8s.io/apimachinery/pkg/labels"
-	types "k8s.io/apimachinery/pkg/types"
-	watch "k8s.io/apimachinery/pkg/watch"
-	testing "k8s.io/client-go/testing"
+	gentype "k8s.io/client-go/gentype"
+	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned/typed/networking/v1beta1"
 )
 
-// FakeProxyConfigs implements ProxyConfigInterface
-type FakeProxyConfigs struct {
+// fakeProxyConfigs implements ProxyConfigInterface
+type fakeProxyConfigs struct {
+	*gentype.FakeClientWithList[*v1beta1.ProxyConfig, *v1beta1.ProxyConfigList]
 	Fake *FakeNetworkingV1beta1
-	ns   string
 }
 
-var proxyconfigsResource = v1beta1.SchemeGroupVersion.WithResource("proxyconfigs")
-
-var proxyconfigsKind = v1beta1.SchemeGroupVersion.WithKind("ProxyConfig")
-
-// Get takes name of the proxyConfig, and returns the corresponding proxyConfig object, and an error if there is any.
-func (c *FakeProxyConfigs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.ProxyConfig, err error) {
-	emptyResult := &v1beta1.ProxyConfig{}
-	obj, err := c.Fake.
-		Invokes(testing.NewGetActionWithOptions(proxyconfigsResource, c.ns, name, options), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
+func newFakeProxyConfigs(fake *FakeNetworkingV1beta1, namespace string) networkingv1beta1.ProxyConfigInterface {
+	return &fakeProxyConfigs{
+		gentype.NewFakeClientWithList[*v1beta1.ProxyConfig, *v1beta1.ProxyConfigList](
+			fake.Fake,
+			namespace,
+			v1beta1.SchemeGroupVersion.WithResource("proxyconfigs"),
+			v1beta1.SchemeGroupVersion.WithKind("ProxyConfig"),
+			func() *v1beta1.ProxyConfig { return &v1beta1.ProxyConfig{} },
+			func() *v1beta1.ProxyConfigList { return &v1beta1.ProxyConfigList{} },
+			func(dst, src *v1beta1.ProxyConfigList) { dst.ListMeta = src.ListMeta },
+			func(list *v1beta1.ProxyConfigList) []*v1beta1.ProxyConfig { return gentype.ToPointerSlice(list.Items) },
+			func(list *v1beta1.ProxyConfigList, items []*v1beta1.ProxyConfig) {
+				list.Items = gentype.FromPointerSlice(items)
+			},
+		),
+		fake,
 	}
-	return obj.(*v1beta1.ProxyConfig), err
-}
-
-// List takes label and field selectors, and returns the list of ProxyConfigs that match those selectors.
-func (c *FakeProxyConfigs) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.ProxyConfigList, err error) {
-	emptyResult := &v1beta1.ProxyConfigList{}
-	obj, err := c.Fake.
-		Invokes(testing.NewListActionWithOptions(proxyconfigsResource, proxyconfigsKind, c.ns, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-
-	label, _, _ := testing.ExtractFromListOptions(opts)
-	if label == nil {
-		label = labels.Everything()
-	}
-	list := &v1beta1.ProxyConfigList{ListMeta: obj.(*v1beta1.ProxyConfigList).ListMeta}
-	for _, item := range obj.(*v1beta1.ProxyConfigList).Items {
-		if label.Matches(labels.Set(item.Labels)) {
-			list.Items = append(list.Items, item)
-		}
-	}
-	return list, err
-}
-
-// Watch returns a watch.Interface that watches the requested proxyConfigs.
-func (c *FakeProxyConfigs) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
-	return c.Fake.
-		InvokesWatch(testing.NewWatchActionWithOptions(proxyconfigsResource, c.ns, opts))
-
-}
-
-// Create takes the representation of a proxyConfig and creates it.  Returns the server's representation of the proxyConfig, and an error, if there is any.
-func (c *FakeProxyConfigs) Create(ctx context.Context, proxyConfig *v1beta1.ProxyConfig, opts v1.CreateOptions) (result *v1beta1.ProxyConfig, err error) {
-	emptyResult := &v1beta1.ProxyConfig{}
-	obj, err := c.Fake.
-		Invokes(testing.NewCreateActionWithOptions(proxyconfigsResource, c.ns, proxyConfig, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.ProxyConfig), err
-}
-
-// Update takes the representation of a proxyConfig and updates it. Returns the server's representation of the proxyConfig, and an error, if there is any.
-func (c *FakeProxyConfigs) Update(ctx context.Context, proxyConfig *v1beta1.ProxyConfig, opts v1.UpdateOptions) (result *v1beta1.ProxyConfig, err error) {
-	emptyResult := &v1beta1.ProxyConfig{}
-	obj, err := c.Fake.
-		Invokes(testing.NewUpdateActionWithOptions(proxyconfigsResource, c.ns, proxyConfig, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.ProxyConfig), err
-}
-
-// UpdateStatus was generated because the type contains a Status member.
-// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeProxyConfigs) UpdateStatus(ctx context.Context, proxyConfig *v1beta1.ProxyConfig, opts v1.UpdateOptions) (result *v1beta1.ProxyConfig, err error) {
-	emptyResult := &v1beta1.ProxyConfig{}
-	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceActionWithOptions(proxyconfigsResource, "status", c.ns, proxyConfig, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.ProxyConfig), err
-}
-
-// Delete takes name of the proxyConfig and deletes it. Returns an error if one occurs.
-func (c *FakeProxyConfigs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
-	_, err := c.Fake.
-		Invokes(testing.NewDeleteActionWithOptions(proxyconfigsResource, c.ns, name, opts), &v1beta1.ProxyConfig{})
-
-	return err
-}
-
-// DeleteCollection deletes a collection of objects.
-func (c *FakeProxyConfigs) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionActionWithOptions(proxyconfigsResource, c.ns, opts, listOpts)
-
-	_, err := c.Fake.Invokes(action, &v1beta1.ProxyConfigList{})
-	return err
-}
-
-// Patch applies the patch and returns the patched proxyConfig.
-func (c *FakeProxyConfigs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.ProxyConfig, err error) {
-	emptyResult := &v1beta1.ProxyConfig{}
-	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceActionWithOptions(proxyconfigsResource, c.ns, name, pt, data, opts, subresources...), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.ProxyConfig), err
 }
