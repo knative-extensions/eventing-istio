@@ -19,24 +19,24 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	apisnetworkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
 	cache "k8s.io/client-go/tools/cache"
 	versioned "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
 	internalinterfaces "knative.dev/eventing-istio/pkg/client/istio/informers/externalversions/internalinterfaces"
-	v1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
+	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
 )
 
 // ServiceEntryInformer provides access to a shared informer and lister for
 // ServiceEntries.
 type ServiceEntryInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.ServiceEntryLister
+	Lister() networkingv1beta1.ServiceEntryLister
 }
 
 type serviceEntryInformer struct {
@@ -71,7 +71,7 @@ func NewFilteredServiceEntryInformer(client versioned.Interface, namespace strin
 				return client.NetworkingV1beta1().ServiceEntries(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&networkingv1beta1.ServiceEntry{},
+		&apisnetworkingv1beta1.ServiceEntry{},
 		resyncPeriod,
 		indexers,
 	)
@@ -82,9 +82,9 @@ func (f *serviceEntryInformer) defaultInformer(client versioned.Interface, resyn
 }
 
 func (f *serviceEntryInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&networkingv1beta1.ServiceEntry{}, f.defaultInformer)
+	return f.factory.InformerFor(&apisnetworkingv1beta1.ServiceEntry{}, f.defaultInformer)
 }
 
-func (f *serviceEntryInformer) Lister() v1beta1.ServiceEntryLister {
-	return v1beta1.NewServiceEntryLister(f.Informer().GetIndexer())
+func (f *serviceEntryInformer) Lister() networkingv1beta1.ServiceEntryLister {
+	return networkingv1beta1.NewServiceEntryLister(f.Informer().GetIndexer())
 }
