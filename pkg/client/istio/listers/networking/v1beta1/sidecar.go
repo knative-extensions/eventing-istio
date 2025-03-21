@@ -19,10 +19,10 @@ limitations under the License.
 package v1beta1
 
 import (
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/client-go/listers"
-	"k8s.io/client-go/tools/cache"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	labels "k8s.io/apimachinery/pkg/labels"
+	listers "k8s.io/client-go/listers"
+	cache "k8s.io/client-go/tools/cache"
 )
 
 // SidecarLister helps list Sidecars.
@@ -30,7 +30,7 @@ import (
 type SidecarLister interface {
 	// List lists all Sidecars in the indexer.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.Sidecar, err error)
+	List(selector labels.Selector) (ret []*networkingv1beta1.Sidecar, err error)
 	// Sidecars returns an object that can list and get Sidecars.
 	Sidecars(namespace string) SidecarNamespaceLister
 	SidecarListerExpansion
@@ -38,17 +38,17 @@ type SidecarLister interface {
 
 // sidecarLister implements the SidecarLister interface.
 type sidecarLister struct {
-	listers.ResourceIndexer[*v1beta1.Sidecar]
+	listers.ResourceIndexer[*networkingv1beta1.Sidecar]
 }
 
 // NewSidecarLister returns a new SidecarLister.
 func NewSidecarLister(indexer cache.Indexer) SidecarLister {
-	return &sidecarLister{listers.New[*v1beta1.Sidecar](indexer, v1beta1.Resource("sidecar"))}
+	return &sidecarLister{listers.New[*networkingv1beta1.Sidecar](indexer, networkingv1beta1.Resource("sidecar"))}
 }
 
 // Sidecars returns an object that can list and get Sidecars.
 func (s *sidecarLister) Sidecars(namespace string) SidecarNamespaceLister {
-	return sidecarNamespaceLister{listers.NewNamespaced[*v1beta1.Sidecar](s.ResourceIndexer, namespace)}
+	return sidecarNamespaceLister{listers.NewNamespaced[*networkingv1beta1.Sidecar](s.ResourceIndexer, namespace)}
 }
 
 // SidecarNamespaceLister helps list and get Sidecars.
@@ -56,15 +56,15 @@ func (s *sidecarLister) Sidecars(namespace string) SidecarNamespaceLister {
 type SidecarNamespaceLister interface {
 	// List lists all Sidecars in the indexer for a given namespace.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.Sidecar, err error)
+	List(selector labels.Selector) (ret []*networkingv1beta1.Sidecar, err error)
 	// Get retrieves the Sidecar from the indexer for a given namespace and name.
 	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1beta1.Sidecar, error)
+	Get(name string) (*networkingv1beta1.Sidecar, error)
 	SidecarNamespaceListerExpansion
 }
 
 // sidecarNamespaceLister implements the SidecarNamespaceLister
 // interface.
 type sidecarNamespaceLister struct {
-	listers.ResourceIndexer[*v1beta1.Sidecar]
+	listers.ResourceIndexer[*networkingv1beta1.Sidecar]
 }
