@@ -19,10 +19,10 @@ limitations under the License.
 package v1beta1
 
 import (
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/client-go/listers"
-	"k8s.io/client-go/tools/cache"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	labels "k8s.io/apimachinery/pkg/labels"
+	listers "k8s.io/client-go/listers"
+	cache "k8s.io/client-go/tools/cache"
 )
 
 // ProxyConfigLister helps list ProxyConfigs.
@@ -30,7 +30,7 @@ import (
 type ProxyConfigLister interface {
 	// List lists all ProxyConfigs in the indexer.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.ProxyConfig, err error)
+	List(selector labels.Selector) (ret []*networkingv1beta1.ProxyConfig, err error)
 	// ProxyConfigs returns an object that can list and get ProxyConfigs.
 	ProxyConfigs(namespace string) ProxyConfigNamespaceLister
 	ProxyConfigListerExpansion
@@ -38,17 +38,17 @@ type ProxyConfigLister interface {
 
 // proxyConfigLister implements the ProxyConfigLister interface.
 type proxyConfigLister struct {
-	listers.ResourceIndexer[*v1beta1.ProxyConfig]
+	listers.ResourceIndexer[*networkingv1beta1.ProxyConfig]
 }
 
 // NewProxyConfigLister returns a new ProxyConfigLister.
 func NewProxyConfigLister(indexer cache.Indexer) ProxyConfigLister {
-	return &proxyConfigLister{listers.New[*v1beta1.ProxyConfig](indexer, v1beta1.Resource("proxyconfig"))}
+	return &proxyConfigLister{listers.New[*networkingv1beta1.ProxyConfig](indexer, networkingv1beta1.Resource("proxyconfig"))}
 }
 
 // ProxyConfigs returns an object that can list and get ProxyConfigs.
 func (s *proxyConfigLister) ProxyConfigs(namespace string) ProxyConfigNamespaceLister {
-	return proxyConfigNamespaceLister{listers.NewNamespaced[*v1beta1.ProxyConfig](s.ResourceIndexer, namespace)}
+	return proxyConfigNamespaceLister{listers.NewNamespaced[*networkingv1beta1.ProxyConfig](s.ResourceIndexer, namespace)}
 }
 
 // ProxyConfigNamespaceLister helps list and get ProxyConfigs.
@@ -56,15 +56,15 @@ func (s *proxyConfigLister) ProxyConfigs(namespace string) ProxyConfigNamespaceL
 type ProxyConfigNamespaceLister interface {
 	// List lists all ProxyConfigs in the indexer for a given namespace.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.ProxyConfig, err error)
+	List(selector labels.Selector) (ret []*networkingv1beta1.ProxyConfig, err error)
 	// Get retrieves the ProxyConfig from the indexer for a given namespace and name.
 	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1beta1.ProxyConfig, error)
+	Get(name string) (*networkingv1beta1.ProxyConfig, error)
 	ProxyConfigNamespaceListerExpansion
 }
 
 // proxyConfigNamespaceLister implements the ProxyConfigNamespaceLister
 // interface.
 type proxyConfigNamespaceLister struct {
-	listers.ResourceIndexer[*v1beta1.ProxyConfig]
+	listers.ResourceIndexer[*networkingv1beta1.ProxyConfig]
 }
