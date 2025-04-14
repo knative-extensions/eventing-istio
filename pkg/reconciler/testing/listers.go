@@ -25,8 +25,8 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"knative.dev/pkg/reconciler/testing"
 
-	fakeistioclient "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned/fake"
-	networkinglisters "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
+	fakeistioclient "istio.io/client-go/pkg/clientset/versioned/fake"
+	networkinglisters "istio.io/client-go/pkg/listers/networking/v1beta1"
 )
 
 var clientSetSchemes = []func(*runtime.Scheme) error{

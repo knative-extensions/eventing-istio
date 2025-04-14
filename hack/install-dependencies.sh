@@ -45,8 +45,8 @@ kubectl patch deployment \
   --patch-file "${REPO_ROOT_DIR}/hack/eventing-injection-disabled.yaml"
 
 echo "Installing Cert-Manager" # This is only needed, as some eventing e2e tests setup their environment with eventshub.WithTLS() which fails if certmanager isn't installed
-kubectl apply -f "${REPO_ROOT_DIR}/third_party/eventing/third_party/cert-manager/00-namespace.yaml"
-kubectl apply -f "${REPO_ROOT_DIR}/third_party/eventing/third_party/cert-manager/01-cert-manager.yaml"
+kubectl apply -f "${REPO_ROOT_DIR}/third_party/eventing/third_party/cert-manager/01-cert-manager.crds.yaml"
+kubectl apply -f "${REPO_ROOT_DIR}/third_party/eventing/third_party/cert-manager/02-cert-manager.yaml"
 
 echo "Installing Eventing Kafka from ${EVENTING_KAFKA_CONFIG}"
 kubectl apply -Rf "${EVENTING_KAFKA_CONFIG}"
