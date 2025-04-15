@@ -11,10 +11,10 @@
 
 ---
 
-An open platform to connect, manage, and secure microservices.
+Istio is an open source service mesh that layers transparently onto existing distributed applications. Istio’s powerful features provide a uniform and more efficient way to secure, connect, and monitor services. Istio is the path to load balancing, service-to-service authentication, and monitoring – with few or no service code changes.
 
 - For in-depth information about how to use Istio, visit [istio.io](https://istio.io)
-- To ask questions and get assistance from our community, visit [discuss.istio.io](https://discuss.istio.io)
+- To ask questions and get assistance from our community, visit [Github Discussions](https://github.com/istio/istio/discussions)
 - To learn how to participate in our overall community, visit [our community page](https://istio.io/about/community)
 
 In this README:
@@ -79,9 +79,6 @@ core components, install artifacts, and sample programs. It includes:
     - [istioctl](istioctl/). This directory contains code for the
 [_istioctl_](https://istio.io/latest/docs/reference/commands/istioctl/) command line utility.
 
-    - [operator](operator/). This directory contains code for the
-[Istio Operator](https://istio.io/latest/docs/setup/install/operator/).
-
     - [pilot](pilot/). This directory
 contains platform-specific code to populate the
 [abstract service model](https://istio.io/docs/concepts/traffic-management/#pilot), dynamically reconfigure the proxies
@@ -94,6 +91,15 @@ including Citadel (acting as Certificate Authority), citadel agent, etc.
 - [istio/proxy](https://github.com/istio/proxy). The Istio proxy contains
 extensions to the [Envoy proxy](https://github.com/envoyproxy/envoy) (in the form of
 Envoy filters) that support authentication, authorization, and telemetry collection.
+
+- [istio/ztunnel](https://github.com/istio/ztunnel). The repository contains the Rust implementation of the ztunnel
+component of Ambient mesh.
+
+- [istio/client-go](https://github.com/istio/client-go). This repository defines
+  auto-generated Kubernetes clients for interacting with Istio resources programmatically.
+
+> [!NOTE]
+> Only the `istio/api` and `istio/client-go` repositories expose stable interfaces intended for direct usage as libraries.
 
 ## Issue management
 
@@ -108,3 +114,10 @@ think the issue should get addressed.
 - **Priority**. Each issue has a priority which is represented by the column in the [Prioritization](https://github.com/orgs/istio/projects/6) project. Priority can be one of
 P0, P1, P2, or >P2. The priority indicates how important it is to address the issue within the milestone. P0 says that the
 milestone cannot be considered achieved if the issue isn't resolved.
+
+---
+
+<div align="center">
+    <img src="https://raw.githubusercontent.com/cncf/artwork/master/other/cncf/horizontal/color/cncf-color.svg" width="300" alt="Cloud Native Computing Foundation logo"/>
+    <p>Istio is a <a href="https://cncf.io">Cloud Native Computing Foundation</a> project.</p>
+</div>
