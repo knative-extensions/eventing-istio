@@ -27,34 +27,14 @@ export GOFLAGS=-mod=
 
 echo "=== Update Codegen for $MODULE_NAME"
 
-# generate the code with:
-# --output-base    because this script should also be able to run inside the vendor dir of
-#                  k8s.io/kubernetes. The output-base is needed for the generators to output into the vendor dir
-#                  instead of the $GOPATH directly. For normal projects this can be dropped.
-
-group "Kubernetes Codegen"
-
-# Based on: https://github.com/kubernetes/kubernetes/blob/8ddabd0da5cc54761f3216c08e99fa1a9f7ee2c5/hack/lib/init.sh#L116
-# The '-path' is a hack to workaround the lack of portable `-depth 2`.
-K8S_TYPES=$(find ./vendor/k8s.io/api -type d -path '*/*/*/*/*/*' | cut -d'/' -f 5-6 | sort | sed 's@/@:@g' |
-  grep -v "admission:" | grep -v "imagepolicy:" | grep -v "abac:" | grep -v "componentconfig:")
-
-# Generate our own client for istio (otherwise injection won't work)
-kube::codegen::gen_client \
-  --boilerplate "${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt" \
-  --output-dir "${REPO_ROOT_DIR}/pkg/client/istio" \
-  --output-pkg "knative.dev/eventing-istio/pkg/client/istio" \
-  --with-watch \
-  "${REPO_ROOT_DIR}/vendor/istio.io/client-go/pkg/apis"
-
 group "Knative Codegen"
 
 # Knative Injection (for istio)
-"${KNATIVE_CODEGEN_PKG}"/hack/generate-knative.sh "injection" \
-  knative.dev/eventing-istio/pkg/client/istio istio.io/client-go/pkg/apis \
+OUTPUT_PKG="knative.dev/eventing-istio/pkg/client/istio/injection" \
+${KNATIVE_CODEGEN_PKG}/hack/generate-knative.sh "injection" \
+  istio.io/client-go/pkg istio.io/client-go/pkg/apis \
   "networking:v1beta1" \
-  --lister-has-pointer-elem=true \
-  --go-header-file "${REPO_ROOT_DIR}"/hack/boilerplate/boilerplate.go.txt
+  --go-header-file ${REPO_ROOT_DIR}/hack/boilerplate/boilerplate.go.txt
 
 group "Update deps post-codegen"
 

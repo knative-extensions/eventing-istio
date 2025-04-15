@@ -32,10 +32,10 @@ import (
 	"knative.dev/pkg/tracker"
 
 	istionetworking "istio.io/client-go/pkg/apis/networking/v1beta1"
+	istioclientset "istio.io/client-go/pkg/clientset/versioned"
+	istionetworkinglisters "istio.io/client-go/pkg/listers/networking/v1beta1"
 
 	"knative.dev/eventing-istio/pkg/apis/config"
-	istioclientset "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
-	istionetworkinglisters "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
 	servicereconciler "knative.dev/pkg/client/injection/kube/reconciler/core/v1/service"
 )
 
