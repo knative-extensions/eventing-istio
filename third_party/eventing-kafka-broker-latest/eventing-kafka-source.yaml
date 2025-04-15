@@ -17,7 +17,7 @@ metadata:
   name: config-kafka-source-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "938b66d32d93fa5a4f4a8682e4890c852981d78b"
+    app.kubernetes.io/version: "3856dc7692606af2fecbf0d415bb374f8ba26603"
   annotations:
     knative.dev/example-checksum: "8157ecb1"
 data:
@@ -178,7 +178,7 @@ kind: ClusterRole
 metadata:
   name: knative-kafka-source-data-plane
   labels:
-    app.kubernetes.io/version: "938b66d32d93fa5a4f4a8682e4890c852981d78b"
+    app.kubernetes.io/version: "3856dc7692606af2fecbf0d415bb374f8ba26603"
 rules:
   - apiGroups:
       - ""
@@ -215,7 +215,7 @@ metadata:
   name: knative-kafka-source-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "938b66d32d93fa5a4f4a8682e4890c852981d78b"
+    app.kubernetes.io/version: "3856dc7692606af2fecbf0d415bb374f8ba26603"
 
 ---
 # Copyright 2021 The Knative Authors
@@ -236,7 +236,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-kafka-source-data-plane
   labels:
-    app.kubernetes.io/version: "938b66d32d93fa5a4f4a8682e4890c852981d78b"
+    app.kubernetes.io/version: "3856dc7692606af2fecbf0d415bb374f8ba26603"
 subjects:
   - kind: ServiceAccount
     name: knative-kafka-source-data-plane
@@ -267,7 +267,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-source-dispatcher
-    app.kubernetes.io/version: "938b66d32d93fa5a4f4a8682e4890c852981d78b"
+    app.kubernetes.io/version: "3856dc7692606af2fecbf0d415bb374f8ba26603"
     app.kubernetes.io/component: kafka-source-dispatcher
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -281,7 +281,7 @@ spec:
       name: kafka-source-dispatcher
       labels:
         app: kafka-source-dispatcher
-        app.kubernetes.io/version: "938b66d32d93fa5a4f4a8682e4890c852981d78b"
+        app.kubernetes.io/version: "3856dc7692606af2fecbf0d415bb374f8ba26603"
         app.kubernetes.io/component: kafka-channel-dispatcher
         app.kubernetes.io/name: knative-eventing
         app.kubernetes.io/kind: kafka-dispatcher
@@ -308,7 +308,7 @@ spec:
         runAsUser: 1001
       containers:
         - name: kafka-source-dispatcher
-          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher-loom@sha256:5aaed51b9277c340162b234c362ac360912eb649f66dfcbc495c514d0aeb3993
+          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher-loom@sha256:e418a1034a5510a0e90864b9e3dfb637c2c676dd2e268765267019fb2a18659d
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
