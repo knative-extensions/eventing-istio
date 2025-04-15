@@ -13,12 +13,11 @@ spec:
     metadata:
       labels:
         app: skywalking-oap
-      annotations:
         sidecar.istio.io/inject: "false"
     spec:
       containers:
         - name: skywalking-oap
-          image: apache/skywalking-oap-server:9.1.0
+          image: apache/skywalking-oap-server:9.7.0
           env:
             - name: SW_HEALTH_CHECKER
               value: default
