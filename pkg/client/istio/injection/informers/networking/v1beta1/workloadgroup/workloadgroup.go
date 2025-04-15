@@ -21,7 +21,7 @@ package workloadgroup
 import (
 	context "context"
 
-	v1beta1 "knative.dev/eventing-istio/pkg/client/istio/informers/externalversions/networking/v1beta1"
+	v1beta1 "istio.io/client-go/pkg/informers/externalversions/networking/v1beta1"
 	factory "knative.dev/eventing-istio/pkg/client/istio/injection/informers/factory"
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
@@ -46,7 +46,7 @@ func Get(ctx context.Context) v1beta1.WorkloadGroupInformer {
 	untyped := ctx.Value(Key{})
 	if untyped == nil {
 		logging.FromContext(ctx).Panic(
-			"Unable to fetch knative.dev/eventing-istio/pkg/client/istio/informers/externalversions/networking/v1beta1.WorkloadGroupInformer from context.")
+			"Unable to fetch istio.io/client-go/pkg/informers/externalversions/networking/v1beta1.WorkloadGroupInformer from context.")
 	}
 	return untyped.(v1beta1.WorkloadGroupInformer)
 }
