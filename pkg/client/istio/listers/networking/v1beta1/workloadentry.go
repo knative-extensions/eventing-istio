@@ -19,10 +19,10 @@ limitations under the License.
 package v1beta1
 
 import (
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/client-go/listers"
-	"k8s.io/client-go/tools/cache"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	labels "k8s.io/apimachinery/pkg/labels"
+	listers "k8s.io/client-go/listers"
+	cache "k8s.io/client-go/tools/cache"
 )
 
 // WorkloadEntryLister helps list WorkloadEntries.
@@ -30,7 +30,7 @@ import (
 type WorkloadEntryLister interface {
 	// List lists all WorkloadEntries in the indexer.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.WorkloadEntry, err error)
+	List(selector labels.Selector) (ret []*networkingv1beta1.WorkloadEntry, err error)
 	// WorkloadEntries returns an object that can list and get WorkloadEntries.
 	WorkloadEntries(namespace string) WorkloadEntryNamespaceLister
 	WorkloadEntryListerExpansion
@@ -38,17 +38,17 @@ type WorkloadEntryLister interface {
 
 // workloadEntryLister implements the WorkloadEntryLister interface.
 type workloadEntryLister struct {
-	listers.ResourceIndexer[*v1beta1.WorkloadEntry]
+	listers.ResourceIndexer[*networkingv1beta1.WorkloadEntry]
 }
 
 // NewWorkloadEntryLister returns a new WorkloadEntryLister.
 func NewWorkloadEntryLister(indexer cache.Indexer) WorkloadEntryLister {
-	return &workloadEntryLister{listers.New[*v1beta1.WorkloadEntry](indexer, v1beta1.Resource("workloadentry"))}
+	return &workloadEntryLister{listers.New[*networkingv1beta1.WorkloadEntry](indexer, networkingv1beta1.Resource("workloadentry"))}
 }
 
 // WorkloadEntries returns an object that can list and get WorkloadEntries.
 func (s *workloadEntryLister) WorkloadEntries(namespace string) WorkloadEntryNamespaceLister {
-	return workloadEntryNamespaceLister{listers.NewNamespaced[*v1beta1.WorkloadEntry](s.ResourceIndexer, namespace)}
+	return workloadEntryNamespaceLister{listers.NewNamespaced[*networkingv1beta1.WorkloadEntry](s.ResourceIndexer, namespace)}
 }
 
 // WorkloadEntryNamespaceLister helps list and get WorkloadEntries.
@@ -56,15 +56,15 @@ func (s *workloadEntryLister) WorkloadEntries(namespace string) WorkloadEntryNam
 type WorkloadEntryNamespaceLister interface {
 	// List lists all WorkloadEntries in the indexer for a given namespace.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.WorkloadEntry, err error)
+	List(selector labels.Selector) (ret []*networkingv1beta1.WorkloadEntry, err error)
 	// Get retrieves the WorkloadEntry from the indexer for a given namespace and name.
 	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1beta1.WorkloadEntry, error)
+	Get(name string) (*networkingv1beta1.WorkloadEntry, error)
 	WorkloadEntryNamespaceListerExpansion
 }
 
 // workloadEntryNamespaceLister implements the WorkloadEntryNamespaceLister
 // interface.
 type workloadEntryNamespaceLister struct {
-	listers.ResourceIndexer[*v1beta1.WorkloadEntry]
+	listers.ResourceIndexer[*networkingv1beta1.WorkloadEntry]
 }

@@ -19,11 +19,11 @@ limitations under the License.
 package v1beta1
 
 import (
-	"net/http"
+	http "net/http"
 
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	rest "k8s.io/client-go/rest"
-	"knative.dev/eventing-istio/pkg/client/istio/clientset/versioned/scheme"
+	scheme "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned/scheme"
 )
 
 type NetworkingV1beta1Interface interface {
@@ -120,10 +120,10 @@ func New(c rest.Interface) *NetworkingV1beta1Client {
 }
 
 func setConfigDefaults(config *rest.Config) error {
-	gv := v1beta1.SchemeGroupVersion
+	gv := networkingv1beta1.SchemeGroupVersion
 	config.GroupVersion = &gv
 	config.APIPath = "/apis"
-	config.NegotiatedSerializer = scheme.Codecs.WithoutConversion()
+	config.NegotiatedSerializer = rest.CodecFactoryForGeneratedClient(scheme.Scheme, scheme.Codecs).WithoutConversion()
 
 	if config.UserAgent == "" {
 		config.UserAgent = rest.DefaultKubernetesUserAgent()

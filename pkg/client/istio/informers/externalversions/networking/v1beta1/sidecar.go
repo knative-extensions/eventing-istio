@@ -19,24 +19,24 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	apisnetworkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
 	cache "k8s.io/client-go/tools/cache"
 	versioned "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
 	internalinterfaces "knative.dev/eventing-istio/pkg/client/istio/informers/externalversions/internalinterfaces"
-	v1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
+	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
 )
 
 // SidecarInformer provides access to a shared informer and lister for
 // Sidecars.
 type SidecarInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.SidecarLister
+	Lister() networkingv1beta1.SidecarLister
 }
 
 type sidecarInformer struct {
@@ -71,7 +71,7 @@ func NewFilteredSidecarInformer(client versioned.Interface, namespace string, re
 				return client.NetworkingV1beta1().Sidecars(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&networkingv1beta1.Sidecar{},
+		&apisnetworkingv1beta1.Sidecar{},
 		resyncPeriod,
 		indexers,
 	)
@@ -82,9 +82,9 @@ func (f *sidecarInformer) defaultInformer(client versioned.Interface, resyncPeri
 }
 
 func (f *sidecarInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&networkingv1beta1.Sidecar{}, f.defaultInformer)
+	return f.factory.InformerFor(&apisnetworkingv1beta1.Sidecar{}, f.defaultInformer)
 }
 
-func (f *sidecarInformer) Lister() v1beta1.SidecarLister {
-	return v1beta1.NewSidecarLister(f.Informer().GetIndexer())
+func (f *sidecarInformer) Lister() networkingv1beta1.SidecarLister {
+	return networkingv1beta1.NewSidecarLister(f.Informer().GetIndexer())
 }

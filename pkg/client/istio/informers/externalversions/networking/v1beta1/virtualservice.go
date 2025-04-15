@@ -19,24 +19,24 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	apisnetworkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
 	cache "k8s.io/client-go/tools/cache"
 	versioned "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
 	internalinterfaces "knative.dev/eventing-istio/pkg/client/istio/informers/externalversions/internalinterfaces"
-	v1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
+	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
 )
 
 // VirtualServiceInformer provides access to a shared informer and lister for
 // VirtualServices.
 type VirtualServiceInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.VirtualServiceLister
+	Lister() networkingv1beta1.VirtualServiceLister
 }
 
 type virtualServiceInformer struct {
@@ -71,7 +71,7 @@ func NewFilteredVirtualServiceInformer(client versioned.Interface, namespace str
 				return client.NetworkingV1beta1().VirtualServices(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&networkingv1beta1.VirtualService{},
+		&apisnetworkingv1beta1.VirtualService{},
 		resyncPeriod,
 		indexers,
 	)
@@ -82,9 +82,9 @@ func (f *virtualServiceInformer) defaultInformer(client versioned.Interface, res
 }
 
 func (f *virtualServiceInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&networkingv1beta1.VirtualService{}, f.defaultInformer)
+	return f.factory.InformerFor(&apisnetworkingv1beta1.VirtualService{}, f.defaultInformer)
 }
 
-func (f *virtualServiceInformer) Lister() v1beta1.VirtualServiceLister {
-	return v1beta1.NewVirtualServiceLister(f.Informer().GetIndexer())
+func (f *virtualServiceInformer) Lister() networkingv1beta1.VirtualServiceLister {
+	return networkingv1beta1.NewVirtualServiceLister(f.Informer().GetIndexer())
 }

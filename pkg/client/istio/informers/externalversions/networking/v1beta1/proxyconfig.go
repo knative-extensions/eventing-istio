@@ -19,24 +19,24 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	apisnetworkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
 	cache "k8s.io/client-go/tools/cache"
 	versioned "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
 	internalinterfaces "knative.dev/eventing-istio/pkg/client/istio/informers/externalversions/internalinterfaces"
-	v1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
+	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
 )
 
 // ProxyConfigInformer provides access to a shared informer and lister for
 // ProxyConfigs.
 type ProxyConfigInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.ProxyConfigLister
+	Lister() networkingv1beta1.ProxyConfigLister
 }
 
 type proxyConfigInformer struct {
@@ -71,7 +71,7 @@ func NewFilteredProxyConfigInformer(client versioned.Interface, namespace string
 				return client.NetworkingV1beta1().ProxyConfigs(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&networkingv1beta1.ProxyConfig{},
+		&apisnetworkingv1beta1.ProxyConfig{},
 		resyncPeriod,
 		indexers,
 	)
@@ -82,9 +82,9 @@ func (f *proxyConfigInformer) defaultInformer(client versioned.Interface, resync
 }
 
 func (f *proxyConfigInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&networkingv1beta1.ProxyConfig{}, f.defaultInformer)
+	return f.factory.InformerFor(&apisnetworkingv1beta1.ProxyConfig{}, f.defaultInformer)
 }
 
-func (f *proxyConfigInformer) Lister() v1beta1.ProxyConfigLister {
-	return v1beta1.NewProxyConfigLister(f.Informer().GetIndexer())
+func (f *proxyConfigInformer) Lister() networkingv1beta1.ProxyConfigLister {
+	return networkingv1beta1.NewProxyConfigLister(f.Informer().GetIndexer())
 }

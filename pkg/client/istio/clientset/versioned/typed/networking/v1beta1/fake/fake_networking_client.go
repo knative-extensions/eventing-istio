@@ -29,35 +29,35 @@ type FakeNetworkingV1beta1 struct {
 }
 
 func (c *FakeNetworkingV1beta1) DestinationRules(namespace string) v1beta1.DestinationRuleInterface {
-	return &FakeDestinationRules{c, namespace}
+	return newFakeDestinationRules(c, namespace)
 }
 
 func (c *FakeNetworkingV1beta1) Gateways(namespace string) v1beta1.GatewayInterface {
-	return &FakeGateways{c, namespace}
+	return newFakeGateways(c, namespace)
 }
 
 func (c *FakeNetworkingV1beta1) ProxyConfigs(namespace string) v1beta1.ProxyConfigInterface {
-	return &FakeProxyConfigs{c, namespace}
+	return newFakeProxyConfigs(c, namespace)
 }
 
 func (c *FakeNetworkingV1beta1) ServiceEntries(namespace string) v1beta1.ServiceEntryInterface {
-	return &FakeServiceEntries{c, namespace}
+	return newFakeServiceEntries(c, namespace)
 }
 
 func (c *FakeNetworkingV1beta1) Sidecars(namespace string) v1beta1.SidecarInterface {
-	return &FakeSidecars{c, namespace}
+	return newFakeSidecars(c, namespace)
 }
 
 func (c *FakeNetworkingV1beta1) VirtualServices(namespace string) v1beta1.VirtualServiceInterface {
-	return &FakeVirtualServices{c, namespace}
+	return newFakeVirtualServices(c, namespace)
 }
 
 func (c *FakeNetworkingV1beta1) WorkloadEntries(namespace string) v1beta1.WorkloadEntryInterface {
-	return &FakeWorkloadEntries{c, namespace}
+	return newFakeWorkloadEntries(c, namespace)
 }
 
 func (c *FakeNetworkingV1beta1) WorkloadGroups(namespace string) v1beta1.WorkloadGroupInterface {
-	return &FakeWorkloadGroups{c, namespace}
+	return newFakeWorkloadGroups(c, namespace)
 }
 
 // RESTClient returns a RESTClient that is used to communicate

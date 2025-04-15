@@ -19,9 +19,9 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -37,33 +37,34 @@ type ProxyConfigsGetter interface {
 
 // ProxyConfigInterface has methods to work with ProxyConfig resources.
 type ProxyConfigInterface interface {
-	Create(ctx context.Context, proxyConfig *v1beta1.ProxyConfig, opts v1.CreateOptions) (*v1beta1.ProxyConfig, error)
-	Update(ctx context.Context, proxyConfig *v1beta1.ProxyConfig, opts v1.UpdateOptions) (*v1beta1.ProxyConfig, error)
+	Create(ctx context.Context, proxyConfig *networkingv1beta1.ProxyConfig, opts v1.CreateOptions) (*networkingv1beta1.ProxyConfig, error)
+	Update(ctx context.Context, proxyConfig *networkingv1beta1.ProxyConfig, opts v1.UpdateOptions) (*networkingv1beta1.ProxyConfig, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, proxyConfig *v1beta1.ProxyConfig, opts v1.UpdateOptions) (*v1beta1.ProxyConfig, error)
+	UpdateStatus(ctx context.Context, proxyConfig *networkingv1beta1.ProxyConfig, opts v1.UpdateOptions) (*networkingv1beta1.ProxyConfig, error)
 	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.ProxyConfig, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1beta1.ProxyConfigList, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*networkingv1beta1.ProxyConfig, error)
+	List(ctx context.Context, opts v1.ListOptions) (*networkingv1beta1.ProxyConfigList, error)
 	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.ProxyConfig, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *networkingv1beta1.ProxyConfig, err error)
 	ProxyConfigExpansion
 }
 
 // proxyConfigs implements ProxyConfigInterface
 type proxyConfigs struct {
-	*gentype.ClientWithList[*v1beta1.ProxyConfig, *v1beta1.ProxyConfigList]
+	*gentype.ClientWithList[*networkingv1beta1.ProxyConfig, *networkingv1beta1.ProxyConfigList]
 }
 
 // newProxyConfigs returns a ProxyConfigs
 func newProxyConfigs(c *NetworkingV1beta1Client, namespace string) *proxyConfigs {
 	return &proxyConfigs{
-		gentype.NewClientWithList[*v1beta1.ProxyConfig, *v1beta1.ProxyConfigList](
+		gentype.NewClientWithList[*networkingv1beta1.ProxyConfig, *networkingv1beta1.ProxyConfigList](
 			"proxyconfigs",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *v1beta1.ProxyConfig { return &v1beta1.ProxyConfig{} },
-			func() *v1beta1.ProxyConfigList { return &v1beta1.ProxyConfigList{} }),
+			func() *networkingv1beta1.ProxyConfig { return &networkingv1beta1.ProxyConfig{} },
+			func() *networkingv1beta1.ProxyConfigList { return &networkingv1beta1.ProxyConfigList{} },
+		),
 	}
 }

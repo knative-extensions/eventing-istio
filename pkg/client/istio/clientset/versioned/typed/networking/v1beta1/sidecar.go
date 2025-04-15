@@ -19,9 +19,9 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -37,33 +37,34 @@ type SidecarsGetter interface {
 
 // SidecarInterface has methods to work with Sidecar resources.
 type SidecarInterface interface {
-	Create(ctx context.Context, sidecar *v1beta1.Sidecar, opts v1.CreateOptions) (*v1beta1.Sidecar, error)
-	Update(ctx context.Context, sidecar *v1beta1.Sidecar, opts v1.UpdateOptions) (*v1beta1.Sidecar, error)
+	Create(ctx context.Context, sidecar *networkingv1beta1.Sidecar, opts v1.CreateOptions) (*networkingv1beta1.Sidecar, error)
+	Update(ctx context.Context, sidecar *networkingv1beta1.Sidecar, opts v1.UpdateOptions) (*networkingv1beta1.Sidecar, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, sidecar *v1beta1.Sidecar, opts v1.UpdateOptions) (*v1beta1.Sidecar, error)
+	UpdateStatus(ctx context.Context, sidecar *networkingv1beta1.Sidecar, opts v1.UpdateOptions) (*networkingv1beta1.Sidecar, error)
 	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.Sidecar, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1beta1.SidecarList, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*networkingv1beta1.Sidecar, error)
+	List(ctx context.Context, opts v1.ListOptions) (*networkingv1beta1.SidecarList, error)
 	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.Sidecar, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *networkingv1beta1.Sidecar, err error)
 	SidecarExpansion
 }
 
 // sidecars implements SidecarInterface
 type sidecars struct {
-	*gentype.ClientWithList[*v1beta1.Sidecar, *v1beta1.SidecarList]
+	*gentype.ClientWithList[*networkingv1beta1.Sidecar, *networkingv1beta1.SidecarList]
 }
 
 // newSidecars returns a Sidecars
 func newSidecars(c *NetworkingV1beta1Client, namespace string) *sidecars {
 	return &sidecars{
-		gentype.NewClientWithList[*v1beta1.Sidecar, *v1beta1.SidecarList](
+		gentype.NewClientWithList[*networkingv1beta1.Sidecar, *networkingv1beta1.SidecarList](
 			"sidecars",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *v1beta1.Sidecar { return &v1beta1.Sidecar{} },
-			func() *v1beta1.SidecarList { return &v1beta1.SidecarList{} }),
+			func() *networkingv1beta1.Sidecar { return &networkingv1beta1.Sidecar{} },
+			func() *networkingv1beta1.SidecarList { return &networkingv1beta1.SidecarList{} },
+		),
 	}
 }

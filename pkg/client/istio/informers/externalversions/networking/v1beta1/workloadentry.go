@@ -19,24 +19,24 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	apisnetworkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
 	cache "k8s.io/client-go/tools/cache"
 	versioned "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
 	internalinterfaces "knative.dev/eventing-istio/pkg/client/istio/informers/externalversions/internalinterfaces"
-	v1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
+	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
 )
 
 // WorkloadEntryInformer provides access to a shared informer and lister for
 // WorkloadEntries.
 type WorkloadEntryInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.WorkloadEntryLister
+	Lister() networkingv1beta1.WorkloadEntryLister
 }
 
 type workloadEntryInformer struct {
@@ -71,7 +71,7 @@ func NewFilteredWorkloadEntryInformer(client versioned.Interface, namespace stri
 				return client.NetworkingV1beta1().WorkloadEntries(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&networkingv1beta1.WorkloadEntry{},
+		&apisnetworkingv1beta1.WorkloadEntry{},
 		resyncPeriod,
 		indexers,
 	)
@@ -82,9 +82,9 @@ func (f *workloadEntryInformer) defaultInformer(client versioned.Interface, resy
 }
 
 func (f *workloadEntryInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&networkingv1beta1.WorkloadEntry{}, f.defaultInformer)
+	return f.factory.InformerFor(&apisnetworkingv1beta1.WorkloadEntry{}, f.defaultInformer)
 }
 
-func (f *workloadEntryInformer) Lister() v1beta1.WorkloadEntryLister {
-	return v1beta1.NewWorkloadEntryLister(f.Informer().GetIndexer())
+func (f *workloadEntryInformer) Lister() networkingv1beta1.WorkloadEntryLister {
+	return networkingv1beta1.NewWorkloadEntryLister(f.Informer().GetIndexer())
 }

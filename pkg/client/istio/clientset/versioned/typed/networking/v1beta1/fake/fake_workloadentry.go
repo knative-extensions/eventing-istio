@@ -19,129 +19,34 @@ limitations under the License.
 package fake
 
 import (
-	"context"
-
 	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	labels "k8s.io/apimachinery/pkg/labels"
-	types "k8s.io/apimachinery/pkg/types"
-	watch "k8s.io/apimachinery/pkg/watch"
-	testing "k8s.io/client-go/testing"
+	gentype "k8s.io/client-go/gentype"
+	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned/typed/networking/v1beta1"
 )
 
-// FakeWorkloadEntries implements WorkloadEntryInterface
-type FakeWorkloadEntries struct {
+// fakeWorkloadEntries implements WorkloadEntryInterface
+type fakeWorkloadEntries struct {
+	*gentype.FakeClientWithList[*v1beta1.WorkloadEntry, *v1beta1.WorkloadEntryList]
 	Fake *FakeNetworkingV1beta1
-	ns   string
 }
 
-var workloadentriesResource = v1beta1.SchemeGroupVersion.WithResource("workloadentries")
-
-var workloadentriesKind = v1beta1.SchemeGroupVersion.WithKind("WorkloadEntry")
-
-// Get takes name of the workloadEntry, and returns the corresponding workloadEntry object, and an error if there is any.
-func (c *FakeWorkloadEntries) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.WorkloadEntry, err error) {
-	emptyResult := &v1beta1.WorkloadEntry{}
-	obj, err := c.Fake.
-		Invokes(testing.NewGetActionWithOptions(workloadentriesResource, c.ns, name, options), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
+func newFakeWorkloadEntries(fake *FakeNetworkingV1beta1, namespace string) networkingv1beta1.WorkloadEntryInterface {
+	return &fakeWorkloadEntries{
+		gentype.NewFakeClientWithList[*v1beta1.WorkloadEntry, *v1beta1.WorkloadEntryList](
+			fake.Fake,
+			namespace,
+			v1beta1.SchemeGroupVersion.WithResource("workloadentries"),
+			v1beta1.SchemeGroupVersion.WithKind("WorkloadEntry"),
+			func() *v1beta1.WorkloadEntry { return &v1beta1.WorkloadEntry{} },
+			func() *v1beta1.WorkloadEntryList { return &v1beta1.WorkloadEntryList{} },
+			func(dst, src *v1beta1.WorkloadEntryList) { dst.ListMeta = src.ListMeta },
+			func(list *v1beta1.WorkloadEntryList) []*v1beta1.WorkloadEntry {
+				return gentype.ToPointerSlice(list.Items)
+			},
+			func(list *v1beta1.WorkloadEntryList, items []*v1beta1.WorkloadEntry) {
+				list.Items = gentype.FromPointerSlice(items)
+			},
+		),
+		fake,
 	}
-	return obj.(*v1beta1.WorkloadEntry), err
-}
-
-// List takes label and field selectors, and returns the list of WorkloadEntries that match those selectors.
-func (c *FakeWorkloadEntries) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.WorkloadEntryList, err error) {
-	emptyResult := &v1beta1.WorkloadEntryList{}
-	obj, err := c.Fake.
-		Invokes(testing.NewListActionWithOptions(workloadentriesResource, workloadentriesKind, c.ns, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-
-	label, _, _ := testing.ExtractFromListOptions(opts)
-	if label == nil {
-		label = labels.Everything()
-	}
-	list := &v1beta1.WorkloadEntryList{ListMeta: obj.(*v1beta1.WorkloadEntryList).ListMeta}
-	for _, item := range obj.(*v1beta1.WorkloadEntryList).Items {
-		if label.Matches(labels.Set(item.Labels)) {
-			list.Items = append(list.Items, item)
-		}
-	}
-	return list, err
-}
-
-// Watch returns a watch.Interface that watches the requested workloadEntries.
-func (c *FakeWorkloadEntries) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
-	return c.Fake.
-		InvokesWatch(testing.NewWatchActionWithOptions(workloadentriesResource, c.ns, opts))
-
-}
-
-// Create takes the representation of a workloadEntry and creates it.  Returns the server's representation of the workloadEntry, and an error, if there is any.
-func (c *FakeWorkloadEntries) Create(ctx context.Context, workloadEntry *v1beta1.WorkloadEntry, opts v1.CreateOptions) (result *v1beta1.WorkloadEntry, err error) {
-	emptyResult := &v1beta1.WorkloadEntry{}
-	obj, err := c.Fake.
-		Invokes(testing.NewCreateActionWithOptions(workloadentriesResource, c.ns, workloadEntry, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.WorkloadEntry), err
-}
-
-// Update takes the representation of a workloadEntry and updates it. Returns the server's representation of the workloadEntry, and an error, if there is any.
-func (c *FakeWorkloadEntries) Update(ctx context.Context, workloadEntry *v1beta1.WorkloadEntry, opts v1.UpdateOptions) (result *v1beta1.WorkloadEntry, err error) {
-	emptyResult := &v1beta1.WorkloadEntry{}
-	obj, err := c.Fake.
-		Invokes(testing.NewUpdateActionWithOptions(workloadentriesResource, c.ns, workloadEntry, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.WorkloadEntry), err
-}
-
-// UpdateStatus was generated because the type contains a Status member.
-// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeWorkloadEntries) UpdateStatus(ctx context.Context, workloadEntry *v1beta1.WorkloadEntry, opts v1.UpdateOptions) (result *v1beta1.WorkloadEntry, err error) {
-	emptyResult := &v1beta1.WorkloadEntry{}
-	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceActionWithOptions(workloadentriesResource, "status", c.ns, workloadEntry, opts), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.WorkloadEntry), err
-}
-
-// Delete takes name of the workloadEntry and deletes it. Returns an error if one occurs.
-func (c *FakeWorkloadEntries) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
-	_, err := c.Fake.
-		Invokes(testing.NewDeleteActionWithOptions(workloadentriesResource, c.ns, name, opts), &v1beta1.WorkloadEntry{})
-
-	return err
-}
-
-// DeleteCollection deletes a collection of objects.
-func (c *FakeWorkloadEntries) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionActionWithOptions(workloadentriesResource, c.ns, opts, listOpts)
-
-	_, err := c.Fake.Invokes(action, &v1beta1.WorkloadEntryList{})
-	return err
-}
-
-// Patch applies the patch and returns the patched workloadEntry.
-func (c *FakeWorkloadEntries) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.WorkloadEntry, err error) {
-	emptyResult := &v1beta1.WorkloadEntry{}
-	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceActionWithOptions(workloadentriesResource, c.ns, name, pt, data, opts, subresources...), emptyResult)
-
-	if obj == nil {
-		return emptyResult, err
-	}
-	return obj.(*v1beta1.WorkloadEntry), err
 }

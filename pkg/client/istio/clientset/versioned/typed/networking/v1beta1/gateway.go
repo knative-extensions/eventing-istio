@@ -19,9 +19,9 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -37,33 +37,34 @@ type GatewaysGetter interface {
 
 // GatewayInterface has methods to work with Gateway resources.
 type GatewayInterface interface {
-	Create(ctx context.Context, gateway *v1beta1.Gateway, opts v1.CreateOptions) (*v1beta1.Gateway, error)
-	Update(ctx context.Context, gateway *v1beta1.Gateway, opts v1.UpdateOptions) (*v1beta1.Gateway, error)
+	Create(ctx context.Context, gateway *networkingv1beta1.Gateway, opts v1.CreateOptions) (*networkingv1beta1.Gateway, error)
+	Update(ctx context.Context, gateway *networkingv1beta1.Gateway, opts v1.UpdateOptions) (*networkingv1beta1.Gateway, error)
 	// Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-	UpdateStatus(ctx context.Context, gateway *v1beta1.Gateway, opts v1.UpdateOptions) (*v1beta1.Gateway, error)
+	UpdateStatus(ctx context.Context, gateway *networkingv1beta1.Gateway, opts v1.UpdateOptions) (*networkingv1beta1.Gateway, error)
 	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.Gateway, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1beta1.GatewayList, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*networkingv1beta1.Gateway, error)
+	List(ctx context.Context, opts v1.ListOptions) (*networkingv1beta1.GatewayList, error)
 	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.Gateway, err error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *networkingv1beta1.Gateway, err error)
 	GatewayExpansion
 }
 
 // gateways implements GatewayInterface
 type gateways struct {
-	*gentype.ClientWithList[*v1beta1.Gateway, *v1beta1.GatewayList]
+	*gentype.ClientWithList[*networkingv1beta1.Gateway, *networkingv1beta1.GatewayList]
 }
 
 // newGateways returns a Gateways
 func newGateways(c *NetworkingV1beta1Client, namespace string) *gateways {
 	return &gateways{
-		gentype.NewClientWithList[*v1beta1.Gateway, *v1beta1.GatewayList](
+		gentype.NewClientWithList[*networkingv1beta1.Gateway, *networkingv1beta1.GatewayList](
 			"gateways",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,
-			func() *v1beta1.Gateway { return &v1beta1.Gateway{} },
-			func() *v1beta1.GatewayList { return &v1beta1.GatewayList{} }),
+			func() *networkingv1beta1.Gateway { return &networkingv1beta1.Gateway{} },
+			func() *networkingv1beta1.GatewayList { return &networkingv1beta1.GatewayList{} },
+		),
 	}
 }

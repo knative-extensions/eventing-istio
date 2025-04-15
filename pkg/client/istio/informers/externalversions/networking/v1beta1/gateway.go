@@ -19,24 +19,24 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	apisnetworkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
 	cache "k8s.io/client-go/tools/cache"
 	versioned "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
 	internalinterfaces "knative.dev/eventing-istio/pkg/client/istio/informers/externalversions/internalinterfaces"
-	v1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
+	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
 )
 
 // GatewayInformer provides access to a shared informer and lister for
 // Gateways.
 type GatewayInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.GatewayLister
+	Lister() networkingv1beta1.GatewayLister
 }
 
 type gatewayInformer struct {
@@ -71,7 +71,7 @@ func NewFilteredGatewayInformer(client versioned.Interface, namespace string, re
 				return client.NetworkingV1beta1().Gateways(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&networkingv1beta1.Gateway{},
+		&apisnetworkingv1beta1.Gateway{},
 		resyncPeriod,
 		indexers,
 	)
@@ -82,9 +82,9 @@ func (f *gatewayInformer) defaultInformer(client versioned.Interface, resyncPeri
 }
 
 func (f *gatewayInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&networkingv1beta1.Gateway{}, f.defaultInformer)
+	return f.factory.InformerFor(&apisnetworkingv1beta1.Gateway{}, f.defaultInformer)
 }
 
-func (f *gatewayInformer) Lister() v1beta1.GatewayLister {
-	return v1beta1.NewGatewayLister(f.Informer().GetIndexer())
+func (f *gatewayInformer) Lister() networkingv1beta1.GatewayLister {
+	return networkingv1beta1.NewGatewayLister(f.Informer().GetIndexer())
 }

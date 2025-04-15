@@ -19,10 +19,10 @@ limitations under the License.
 package v1beta1
 
 import (
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/client-go/listers"
-	"k8s.io/client-go/tools/cache"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	labels "k8s.io/apimachinery/pkg/labels"
+	listers "k8s.io/client-go/listers"
+	cache "k8s.io/client-go/tools/cache"
 )
 
 // ServiceEntryLister helps list ServiceEntries.
@@ -30,7 +30,7 @@ import (
 type ServiceEntryLister interface {
 	// List lists all ServiceEntries in the indexer.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.ServiceEntry, err error)
+	List(selector labels.Selector) (ret []*networkingv1beta1.ServiceEntry, err error)
 	// ServiceEntries returns an object that can list and get ServiceEntries.
 	ServiceEntries(namespace string) ServiceEntryNamespaceLister
 	ServiceEntryListerExpansion
@@ -38,17 +38,17 @@ type ServiceEntryLister interface {
 
 // serviceEntryLister implements the ServiceEntryLister interface.
 type serviceEntryLister struct {
-	listers.ResourceIndexer[*v1beta1.ServiceEntry]
+	listers.ResourceIndexer[*networkingv1beta1.ServiceEntry]
 }
 
 // NewServiceEntryLister returns a new ServiceEntryLister.
 func NewServiceEntryLister(indexer cache.Indexer) ServiceEntryLister {
-	return &serviceEntryLister{listers.New[*v1beta1.ServiceEntry](indexer, v1beta1.Resource("serviceentry"))}
+	return &serviceEntryLister{listers.New[*networkingv1beta1.ServiceEntry](indexer, networkingv1beta1.Resource("serviceentry"))}
 }
 
 // ServiceEntries returns an object that can list and get ServiceEntries.
 func (s *serviceEntryLister) ServiceEntries(namespace string) ServiceEntryNamespaceLister {
-	return serviceEntryNamespaceLister{listers.NewNamespaced[*v1beta1.ServiceEntry](s.ResourceIndexer, namespace)}
+	return serviceEntryNamespaceLister{listers.NewNamespaced[*networkingv1beta1.ServiceEntry](s.ResourceIndexer, namespace)}
 }
 
 // ServiceEntryNamespaceLister helps list and get ServiceEntries.
@@ -56,15 +56,15 @@ func (s *serviceEntryLister) ServiceEntries(namespace string) ServiceEntryNamesp
 type ServiceEntryNamespaceLister interface {
 	// List lists all ServiceEntries in the indexer for a given namespace.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.ServiceEntry, err error)
+	List(selector labels.Selector) (ret []*networkingv1beta1.ServiceEntry, err error)
 	// Get retrieves the ServiceEntry from the indexer for a given namespace and name.
 	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1beta1.ServiceEntry, error)
+	Get(name string) (*networkingv1beta1.ServiceEntry, error)
 	ServiceEntryNamespaceListerExpansion
 }
 
 // serviceEntryNamespaceLister implements the ServiceEntryNamespaceLister
 // interface.
 type serviceEntryNamespaceLister struct {
-	listers.ResourceIndexer[*v1beta1.ServiceEntry]
+	listers.ResourceIndexer[*networkingv1beta1.ServiceEntry]
 }

@@ -19,10 +19,10 @@ limitations under the License.
 package v1beta1
 
 import (
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
-	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/client-go/listers"
-	"k8s.io/client-go/tools/cache"
+	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	labels "k8s.io/apimachinery/pkg/labels"
+	listers "k8s.io/client-go/listers"
+	cache "k8s.io/client-go/tools/cache"
 )
 
 // WorkloadGroupLister helps list WorkloadGroups.
@@ -30,7 +30,7 @@ import (
 type WorkloadGroupLister interface {
 	// List lists all WorkloadGroups in the indexer.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.WorkloadGroup, err error)
+	List(selector labels.Selector) (ret []*networkingv1beta1.WorkloadGroup, err error)
 	// WorkloadGroups returns an object that can list and get WorkloadGroups.
 	WorkloadGroups(namespace string) WorkloadGroupNamespaceLister
 	WorkloadGroupListerExpansion
@@ -38,17 +38,17 @@ type WorkloadGroupLister interface {
 
 // workloadGroupLister implements the WorkloadGroupLister interface.
 type workloadGroupLister struct {
-	listers.ResourceIndexer[*v1beta1.WorkloadGroup]
+	listers.ResourceIndexer[*networkingv1beta1.WorkloadGroup]
 }
 
 // NewWorkloadGroupLister returns a new WorkloadGroupLister.
 func NewWorkloadGroupLister(indexer cache.Indexer) WorkloadGroupLister {
-	return &workloadGroupLister{listers.New[*v1beta1.WorkloadGroup](indexer, v1beta1.Resource("workloadgroup"))}
+	return &workloadGroupLister{listers.New[*networkingv1beta1.WorkloadGroup](indexer, networkingv1beta1.Resource("workloadgroup"))}
 }
 
 // WorkloadGroups returns an object that can list and get WorkloadGroups.
 func (s *workloadGroupLister) WorkloadGroups(namespace string) WorkloadGroupNamespaceLister {
-	return workloadGroupNamespaceLister{listers.NewNamespaced[*v1beta1.WorkloadGroup](s.ResourceIndexer, namespace)}
+	return workloadGroupNamespaceLister{listers.NewNamespaced[*networkingv1beta1.WorkloadGroup](s.ResourceIndexer, namespace)}
 }
 
 // WorkloadGroupNamespaceLister helps list and get WorkloadGroups.
@@ -56,15 +56,15 @@ func (s *workloadGroupLister) WorkloadGroups(namespace string) WorkloadGroupName
 type WorkloadGroupNamespaceLister interface {
 	// List lists all WorkloadGroups in the indexer for a given namespace.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1beta1.WorkloadGroup, err error)
+	List(selector labels.Selector) (ret []*networkingv1beta1.WorkloadGroup, err error)
 	// Get retrieves the WorkloadGroup from the indexer for a given namespace and name.
 	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1beta1.WorkloadGroup, error)
+	Get(name string) (*networkingv1beta1.WorkloadGroup, error)
 	WorkloadGroupNamespaceListerExpansion
 }
 
 // workloadGroupNamespaceLister implements the WorkloadGroupNamespaceLister
 // interface.
 type workloadGroupNamespaceLister struct {
-	listers.ResourceIndexer[*v1beta1.WorkloadGroup]
+	listers.ResourceIndexer[*networkingv1beta1.WorkloadGroup]
 }

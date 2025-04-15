@@ -19,24 +19,24 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	networkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	apisnetworkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
 	cache "k8s.io/client-go/tools/cache"
 	versioned "knative.dev/eventing-istio/pkg/client/istio/clientset/versioned"
 	internalinterfaces "knative.dev/eventing-istio/pkg/client/istio/informers/externalversions/internalinterfaces"
-	v1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
+	networkingv1beta1 "knative.dev/eventing-istio/pkg/client/istio/listers/networking/v1beta1"
 )
 
 // DestinationRuleInformer provides access to a shared informer and lister for
 // DestinationRules.
 type DestinationRuleInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.DestinationRuleLister
+	Lister() networkingv1beta1.DestinationRuleLister
 }
 
 type destinationRuleInformer struct {
@@ -71,7 +71,7 @@ func NewFilteredDestinationRuleInformer(client versioned.Interface, namespace st
 				return client.NetworkingV1beta1().DestinationRules(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&networkingv1beta1.DestinationRule{},
+		&apisnetworkingv1beta1.DestinationRule{},
 		resyncPeriod,
 		indexers,
 	)
@@ -82,9 +82,9 @@ func (f *destinationRuleInformer) defaultInformer(client versioned.Interface, re
 }
 
 func (f *destinationRuleInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&networkingv1beta1.DestinationRule{}, f.defaultInformer)
+	return f.factory.InformerFor(&apisnetworkingv1beta1.DestinationRule{}, f.defaultInformer)
 }
 
-func (f *destinationRuleInformer) Lister() v1beta1.DestinationRuleLister {
-	return v1beta1.NewDestinationRuleLister(f.Informer().GetIndexer())
+func (f *destinationRuleInformer) Lister() networkingv1beta1.DestinationRuleLister {
+	return networkingv1beta1.NewDestinationRuleLister(f.Informer().GetIndexer())
 }
