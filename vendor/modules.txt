@@ -1011,7 +1011,7 @@ k8s.io/utils/net
 k8s.io/utils/pointer
 k8s.io/utils/ptr
 k8s.io/utils/trace
-# knative.dev/eventing v0.44.1-0.20250417013619-7c466cb12fb7
+# knative.dev/eventing v0.44.1-0.20250417160803-a7b2f1c9f66f
 ## explicit; go 1.23.0
 knative.dev/eventing/pkg/apis/feature
 # knative.dev/hack v0.0.0-20250331013814-c577ed9f7775
