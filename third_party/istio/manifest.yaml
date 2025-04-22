@@ -12,23 +12,25 @@ dashboards:
 dependencies:
   api:
     goversionenabled: true
-    sha: 43afb8563706aedd946e6cbc0c4b3083ab5d17e5
+    sha: 84c271001f683c5bb3ee32a533f22dfb03eb7f64
   client-go:
     goversionenabled: true
-    sha: 3892aa679051cb85250c1898fd3c589cc30fab4b
+    sha: e5f6074bc228e6c89a8c5853358edb1214095519
+  envoy:
+    sha: abc32af61f354196bc8d1a011faf8dacc4dc12d7
   istio:
-    sha: 7754674f65d38523e49b692cbb95a5bb1e2a93b8
+    sha: 0d83506c28834f5f12553ee11d76a18e7ea75f20
   proxy:
-    sha: 1ed7d44031746a2ad74707202464b4bfdcb38e82
+    sha: 8d14f6fc8fe9703ff17d4377d9053b3cbbe85dea
   release-builder:
-    sha: 2dddd6c4e477a47ba2f85cc3f82a5d643384e1cd
+    sha: 3b35023a77ea2af34e6437c78b2431addc7118dc
   test-infra:
-    sha: 7b35d6b8f1352fd06ddfa9d5542ae1840508b0bd
+    sha: 0b217e08b8defc490049dd4ba716c02ee7d62f4c
   tools:
-    sha: 5f3b0558c7d9b03ef0b4b2b78e1f0ee83b203c26
+    sha: cbdd1cd9f2667c250bdd3e2d0a547ae562964121
   ztunnel:
-    sha: 1a299847ed4fb99a099a081589dce93119df3ce0
+    sha: b8527fc5f2a27c0cdc463420f87db67373eac2d8
 docker: docker.io/istio
 dockerOutput: tar
 skipGenerateBillOfMaterials: false
-version: 1.24.2
+version: 1.25.2

@@ -6,13 +6,12 @@ metadata:
   name: kiali
   namespace: "istio-system"
   labels:
-    helm.sh/chart: kiali-server-2.0.0
+    helm.sh/chart: kiali-server-2.5.0
     app: kiali
     app.kubernetes.io/name: kiali
     app.kubernetes.io/instance: kiali
-    version: "v2.0.0"
-    app.kubernetes.io/version: "v2.0.0"
-    app.kubernetes.io/managed-by: Helm
+    version: "v2.5.0"
+    app.kubernetes.io/version: "v2.5.0"
     app.kubernetes.io/part-of: "kiali"
 ...
 ---
@@ -23,13 +22,12 @@ metadata:
   name: kiali
   namespace: "istio-system"
   labels:
-    helm.sh/chart: kiali-server-2.0.0
+    helm.sh/chart: kiali-server-2.5.0
     app: kiali
     app.kubernetes.io/name: kiali
     app.kubernetes.io/instance: kiali
-    version: "v2.0.0"
-    app.kubernetes.io/version: "v2.0.0"
-    app.kubernetes.io/managed-by: Helm
+    version: "v2.5.0"
+    app.kubernetes.io/version: "v2.5.0"
     app.kubernetes.io/part-of: "kiali"
 data:
   config.yaml: |
@@ -68,7 +66,7 @@ data:
       image_name: quay.io/kiali/kiali
       image_pull_policy: IfNotPresent
       image_pull_secrets: []
-      image_version: v2.0
+      image_version: v2.5
       ingress:
         additional_labels: {}
         class_name: nginx
@@ -87,6 +85,18 @@ data:
       pod_labels:
         sidecar.istio.io/inject: "false"
       priority_class_name: ""
+      probes:
+        liveness:
+          initial_delay_seconds: 5
+          period_seconds: 30
+        readiness:
+          initial_delay_seconds: 5
+          period_seconds: 30
+        startup:
+          failure_threshold: 6
+          initial_delay_seconds: 30
+          period_seconds: 10
+      remote_cluster_resources_only: false
       replicas: 1
       resources:
         limits:
@@ -99,7 +109,8 @@ data:
       service_annotations: {}
       service_type: ""
       tolerations: []
-      version_label: v2.0.0
+      topology_spread_constraints: []
+      version_label: v2.5.0
       view_only_mode: false
     external_services:
       custom_dashboards:
@@ -134,13 +145,12 @@ kind: ClusterRole
 metadata:
   name: kiali
   labels:
-    helm.sh/chart: kiali-server-2.0.0
+    helm.sh/chart: kiali-server-2.5.0
     app: kiali
     app.kubernetes.io/name: kiali
     app.kubernetes.io/instance: kiali
-    version: "v2.0.0"
-    app.kubernetes.io/version: "v2.0.0"
-    app.kubernetes.io/managed-by: Helm
+    version: "v2.5.0"
+    app.kubernetes.io/version: "v2.5.0"
     app.kubernetes.io/part-of: "kiali"
 rules:
 - apiGroups: [""]
@@ -248,13 +258,12 @@ kind: ClusterRoleBinding
 metadata:
   name: kiali
   labels:
-    helm.sh/chart: kiali-server-2.0.0
+    helm.sh/chart: kiali-server-2.5.0
     app: kiali
     app.kubernetes.io/name: kiali
     app.kubernetes.io/instance: kiali
-    version: "v2.0.0"
-    app.kubernetes.io/version: "v2.0.0"
-    app.kubernetes.io/managed-by: Helm
+    version: "v2.5.0"
+    app.kubernetes.io/version: "v2.5.0"
     app.kubernetes.io/part-of: "kiali"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -273,13 +282,12 @@ metadata:
   name: kiali
   namespace: "istio-system"
   labels:
-    helm.sh/chart: kiali-server-2.0.0
+    helm.sh/chart: kiali-server-2.5.0
     app: kiali
     app.kubernetes.io/name: kiali
     app.kubernetes.io/instance: kiali
-    version: "v2.0.0"
-    app.kubernetes.io/version: "v2.0.0"
-    app.kubernetes.io/managed-by: Helm
+    version: "v2.5.0"
+    app.kubernetes.io/version: "v2.5.0"
     app.kubernetes.io/part-of: "kiali"
   annotations:
 spec:
@@ -304,13 +312,12 @@ metadata:
   name: kiali
   namespace: "istio-system"
   labels:
-    helm.sh/chart: kiali-server-2.0.0
+    helm.sh/chart: kiali-server-2.5.0
     app: kiali
     app.kubernetes.io/name: kiali
     app.kubernetes.io/instance: kiali
-    version: "v2.0.0"
-    app.kubernetes.io/version: "v2.0.0"
-    app.kubernetes.io/managed-by: Helm
+    version: "v2.5.0"
+    app.kubernetes.io/version: "v2.5.0"
     app.kubernetes.io/part-of: "kiali"
 spec:
   replicas: 1
@@ -327,30 +334,30 @@ spec:
     metadata:
       name: kiali
       labels:
-        helm.sh/chart: kiali-server-2.0.0
+        helm.sh/chart: kiali-server-2.5.0
         app: kiali
         app.kubernetes.io/name: kiali
         app.kubernetes.io/instance: kiali
-        version: "v2.0.0"
-        app.kubernetes.io/version: "v2.0.0"
-        app.kubernetes.io/managed-by: Helm
+        version: "v2.5.0"
+        app.kubernetes.io/version: "v2.5.0"
         app.kubernetes.io/part-of: "kiali"
         sidecar.istio.io/inject: "false"
       annotations:
-        checksum/config: 03a677accc379d7d5b7b3c74464dc72867b31f794e5beaa98221ba19c5735016
+        checksum/config: 65c7b043159d831b0922a3224c0d004a136c4c01b0f1b8d7ec1aff9db88019d3
         prometheus.io/scrape: "true"
         prometheus.io/port: "9090"
         kiali.io/dashboards: go,kiali
     spec:
       serviceAccountName: kiali
       containers:
-      - image: "quay.io/kiali/kiali:v2.0"
+      - image: "quay.io/kiali/kiali:v2.5"
         imagePullPolicy: IfNotPresent
         name: kiali
         command:
         - "/opt/kiali/kiali"
         - "-config"
         - "/kiali-configuration/config.yaml"
+        terminationMessagePolicy: FallbackToLogsOnError
         securityContext:
           allowPrivilegeEscalation: false
           privileged: false
@@ -378,6 +385,14 @@ spec:
             scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 30
+        startupProbe:
+          httpGet:
+            path: /kiali/healthz
+            port: api-port
+            scheme: HTTP
+          failureThreshold: 6
+          initialDelaySeconds: 30
+          periodSeconds: 10
         env:
         - name: ACTIVE_NAMESPACE
           valueFrom:
