@@ -120,6 +120,9 @@ spec:
         {{- if .Values.global.logAsJson }}
         - --log_as_json
         {{- end }}
+        {{- if .Values.global.proxy.outlierLogPath }}
+        - --outlierLogPath={{ .Values.global.proxy.outlierLogPath }}
+        {{- end}}
         env:
         - name: ISTIO_META_SERVICE_ACCOUNT
           valueFrom:
@@ -197,6 +200,10 @@ spec:
         {{- else if (valueOrDefault .MeshConfig.TrustDomain .Values.global.trustDomain) }}
         - name: ISTIO_META_MESH_ID
           value: "{{ (valueOrDefault .MeshConfig.TrustDomain .Values.global.trustDomain) }}"
+        {{- end }}
+        {{- with (valueOrDefault .MeshConfig.TrustDomain .Values.global.trustDomain) }}
+        - name: TRUST_DOMAIN
+          value: "{{ . }}"
         {{- end }}
         {{- if .Values.global.waypoint.resources }}
         resources:

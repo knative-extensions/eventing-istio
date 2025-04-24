@@ -22,6 +22,7 @@ istioctl x precheck
 istioctl install \
   -y \
   --set profile=default \
+  --set components.cni.enabled=false \
   --set meshConfig.outboundTrafficPolicy.mode=REGISTRY_ONLY
 
 kubectl apply -f "${ISTIO_CONFIG_DIR}/samples/addons"

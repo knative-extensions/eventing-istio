@@ -104,6 +104,8 @@ _internal_defaults_do_not_set:
   # If unset, `istiod` will assume the trusted node proxy ztunnel resides
   # in the same namespace as itself.
   trustedZtunnelNamespace: ""
+  # Set this if you install ztunnel with a name different from the default.
+  trustedZtunnelName: ""
 
   sidecarInjectorWebhook:
     # You can use the field called alwaysInjectSelector and neverInjectSelector which will always inject the sidecar or
@@ -242,7 +244,7 @@ _internal_defaults_do_not_set:
     # Dev builds from prow are on gcr.io
     hub: docker.io/istio
     # Default tag for Istio images.
-    tag: 1.24.2
+    tag: 1.25.2
     # Variant of the image to use.
     # Currently supported are: [debug, distroless]
     variant: ""

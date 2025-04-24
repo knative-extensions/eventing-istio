@@ -6,6 +6,8 @@ _internal_defaults_do_not_set:
   gateways:
     istio-ingressgateway:
       name: istio-ingressgateway
+      # NOTE that these labels will get encoded implicitly into selectorLabels
+      # if this is a problem, consider using the `gateway` chart instead
       labels:
         app: istio-ingressgateway
         istio: ingressgateway
@@ -160,7 +162,7 @@ _internal_defaults_do_not_set:
     hub: docker.io/istio
 
     # Default tag for Istio images.
-    tag: 1.24.2
+    tag: 1.25.2
 
     # Variant of the image to use.
     # Currently supported are: [debug, distroless]
