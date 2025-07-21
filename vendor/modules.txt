@@ -363,8 +363,8 @@ golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
-# golang.org/x/time v0.10.0
-## explicit; go 1.18
+# golang.org/x/time v0.12.0
+## explicit; go 1.23.0
 golang.org/x/time/rate
 # golang.org/x/tools v0.34.0
 ## explicit; go 1.23.0
@@ -1131,13 +1131,13 @@ k8s.io/utils/net
 k8s.io/utils/pointer
 k8s.io/utils/ptr
 k8s.io/utils/trace
-# knative.dev/eventing v0.45.1-0.20250711181006-6e5cb3a209fd
+# knative.dev/eventing v0.45.1-0.20250721133507-aef77d7ba3e1
 ## explicit; go 1.24.0
 knative.dev/eventing/pkg/apis/feature
 # knative.dev/hack v0.0.0-20250708013849-70d4b00da6ba
 ## explicit; go 1.21
 knative.dev/hack
-# knative.dev/pkg v0.0.0-20250710001404-a4cc1bdef5b2
+# knative.dev/pkg v0.0.0-20250716115900-19d3cc2da0b9
 ## explicit; go 1.24.0
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
