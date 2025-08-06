@@ -41,7 +41,6 @@ import (
 	fakeistioclient "knative.dev/eventing-istio/pkg/client/istio/injection/client/fake"
 	fakekubeclient "knative.dev/pkg/client/injection/kube/client/fake"
 
-	_ "knative.dev/pkg/metrics/testing"
 	. "knative.dev/pkg/reconciler/testing"
 )
 
