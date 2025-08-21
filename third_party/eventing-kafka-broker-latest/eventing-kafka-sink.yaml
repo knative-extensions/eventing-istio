@@ -17,7 +17,7 @@ metadata:
   name: config-kafka-sink-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "7639d6cf4416356d413ac995cacb75127851a8db"
+    app.kubernetes.io/version: "7caf9b0873c001ba250a838f5b0a080ed7e881e6"
   annotations:
     knative.dev/example-checksum: "a8ce4acb"
 data:
@@ -111,7 +111,7 @@ kind: ClusterRole
 metadata:
   name: knative-kafka-sink-data-plane
   labels:
-    app.kubernetes.io/version: "7639d6cf4416356d413ac995cacb75127851a8db"
+    app.kubernetes.io/version: "7caf9b0873c001ba250a838f5b0a080ed7e881e6"
 rules:
   - apiGroups:
       - ""
@@ -152,7 +152,7 @@ metadata:
   name: knative-kafka-sink-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "7639d6cf4416356d413ac995cacb75127851a8db"
+    app.kubernetes.io/version: "7caf9b0873c001ba250a838f5b0a080ed7e881e6"
 
 ---
 # Copyright 2020 The Knative Authors
@@ -173,7 +173,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-kafka-sink-data-plane
   labels:
-    app.kubernetes.io/version: "7639d6cf4416356d413ac995cacb75127851a8db"
+    app.kubernetes.io/version: "7caf9b0873c001ba250a838f5b0a080ed7e881e6"
 subjects:
   - kind: ServiceAccount
     name: knative-kafka-sink-data-plane
@@ -204,7 +204,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-sink-receiver
-    app.kubernetes.io/version: "7639d6cf4416356d413ac995cacb75127851a8db"
+    app.kubernetes.io/version: "7caf9b0873c001ba250a838f5b0a080ed7e881e6"
     app.kubernetes.io/component: kafka-sink-receiver
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -216,7 +216,7 @@ spec:
       name: kafka-sink-receiver
       labels:
         app: kafka-sink-receiver
-        app.kubernetes.io/version: "7639d6cf4416356d413ac995cacb75127851a8db"
+        app.kubernetes.io/version: "7caf9b0873c001ba250a838f5b0a080ed7e881e6"
         app.kubernetes.io/component: kafka-sink-receiver
         app.kubernetes.io/name: knative-eventing
     spec:
@@ -242,7 +242,7 @@ spec:
         runAsUser: 1001
       containers:
         - name: kafka-sink-receiver
-          image: gcr.io/knative-nightly/knative-kafka-broker-receiver-loom@sha256:1b1ffca772e0781920e17eb451be1343dffd0cc28cb60163fc6abb20e1a5993e
+          image: gcr.io/knative-nightly/knative-kafka-broker-receiver-loom@sha256:9857a4e45951fb3d052790b2626782ee44f59b313425307e48254207cbb71ed8
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
@@ -381,7 +381,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-sink-receiver
-    app.kubernetes.io/version: "7639d6cf4416356d413ac995cacb75127851a8db"
+    app.kubernetes.io/version: "7caf9b0873c001ba250a838f5b0a080ed7e881e6"
     app.kubernetes.io/component: kafka-sink-receiver
     app.kubernetes.io/name: knative-eventing
 spec:
