@@ -17,7 +17,7 @@ metadata:
   name: config-kafka-broker-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "7b37a956abed40085408347ae01346e34dbf5127"
+    app.kubernetes.io/version: "20250827-9c04b617e"
   annotations:
     knative.dev/example-checksum: "57a32008"
 data:
@@ -198,7 +198,7 @@ kind: ClusterRole
 metadata:
   name: knative-kafka-broker-data-plane
   labels:
-    app.kubernetes.io/version: "7b37a956abed40085408347ae01346e34dbf5127"
+    app.kubernetes.io/version: "20250827-9c04b617e"
 rules:
   - apiGroups:
       - ""
@@ -245,7 +245,7 @@ metadata:
   name: knative-kafka-broker-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "7b37a956abed40085408347ae01346e34dbf5127"
+    app.kubernetes.io/version: "20250827-9c04b617e"
 
 ---
 # Copyright 2020 The Knative Authors
@@ -266,7 +266,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-kafka-broker-data-plane
   labels:
-    app.kubernetes.io/version: "7b37a956abed40085408347ae01346e34dbf5127"
+    app.kubernetes.io/version: "20250827-9c04b617e"
 subjects:
   - kind: ServiceAccount
     name: knative-kafka-broker-data-plane
@@ -297,7 +297,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-dispatcher
-    app.kubernetes.io/version: "7b37a956abed40085408347ae01346e34dbf5127"
+    app.kubernetes.io/version: "20250827-9c04b617e"
     app.kubernetes.io/component: kafka-broker-dispatcher
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -311,7 +311,7 @@ spec:
       name: kafka-broker-dispatcher
       labels:
         app: kafka-broker-dispatcher
-        app.kubernetes.io/version: "7b37a956abed40085408347ae01346e34dbf5127"
+        app.kubernetes.io/version: "20250827-9c04b617e"
         app.kubernetes.io/component: kafka-broker-dispatcher
         app.kubernetes.io/name: knative-eventing
         app.kubernetes.io/kind: kafka-dispatcher
@@ -338,7 +338,7 @@ spec:
         runAsUser: 1001
       containers:
         - name: kafka-broker-dispatcher
-          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher-loom@sha256:150806b513385a6f39e1736b86964f2d625060443e9fcf8f73f51f54385b0fb6
+          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher-loom@sha256:70ef4532183da8d90a59dafb0b379704f8740447f6c38fe95c5c8a3320cac30f
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
@@ -352,8 +352,8 @@ spec:
             - mountPath: /etc/logging
               name: kafka-config-logging
               readOnly: true
-            - mountPath: /etc/tracing
-              name: config-tracing
+            - mountPath: /etc/observability
+              name: config-observability
               readOnly: true
           ports:
             - containerPort: 9090
@@ -380,16 +380,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.uid
-            - name: METRICS_PATH
-              value: /metrics
-            - name: METRICS_PORT
-              value: "9090"
             - name: METRICS_PUBLISH_QUANTILES
               value: "false"
             - name: METRICS_JVM_ENABLED
               value: "false"
-            - name: CONFIG_TRACING_PATH
-              value: "/etc/tracing"
+            - name: CONFIG_OBSERVABILITY_PATH
+              value: "/etc/observability"
             # https://github.com/fabric8io/kubernetes-client/issues/2212
             - name: HTTP2_DISABLE
               value: "true"
@@ -408,18 +404,21 @@ spec:
               memory: 1000Mi
           livenessProbe:
             failureThreshold: 3
-            tcpSocket:
-              port: 9090
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "ls /proc/1"
             initialDelaySeconds: 10
             periodSeconds: 3
             successThreshold: 1
             timeoutSeconds: 1
           readinessProbe:
             failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /metrics
-              scheme: HTTP
+            exec:
+              command:
+                - cat
+                - /tmp/healthy
             initialDelaySeconds: 10
             periodSeconds: 3
             successThreshold: 1
@@ -443,9 +442,9 @@ spec:
         - name: kafka-config-logging
           configMap:
             name: kafka-config-logging
-        - name: config-tracing
+        - name: config-observability
           configMap:
-            name: config-tracing
+            name: config-observability
       restartPolicy: Always
       dnsConfig:
         options:
@@ -472,7 +471,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-receiver
-    app.kubernetes.io/version: "7b37a956abed40085408347ae01346e34dbf5127"
+    app.kubernetes.io/version: "20250827-9c04b617e"
     app.kubernetes.io/component: kafka-broker-receiver
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -484,7 +483,7 @@ spec:
       name: kafka-broker-receiver
       labels:
         app: kafka-broker-receiver
-        app.kubernetes.io/version: "7b37a956abed40085408347ae01346e34dbf5127"
+        app.kubernetes.io/version: "20250827-9c04b617e"
         app.kubernetes.io/component: kafka-broker-receiver
         app.kubernetes.io/name: knative-eventing
     spec:
@@ -510,7 +509,7 @@ spec:
         runAsUser: 1001
       containers:
         - name: kafka-broker-receiver
-          image: gcr.io/knative-nightly/knative-kafka-broker-receiver-loom@sha256:4032679dd569c32d1bb7bb2b1510905138480ea4d408bb518c353ad6ea8e897b
+          image: gcr.io/knative-nightly/knative-kafka-broker-receiver-loom@sha256:902c4f310f4b507df90e8c9f06b405009be1b1990c2d702b14c72e1600b5ca66
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
@@ -524,8 +523,8 @@ spec:
             - mountPath: /etc/logging
               name: kafka-broker-config-logging
               readOnly: true
-            - mountPath: /etc/tracing
-              name: config-tracing
+            - mountPath: /etc/observability
+              name: config-observability
               readOnly: true
             - mountPath: /etc/features
               name: config-features
@@ -564,16 +563,12 @@ spec:
               value: /healthz
             - name: READINESS_PROBE_PATH
               value: /readyz
-            - name: METRICS_PATH
-              value: /metrics
-            - name: METRICS_PORT
-              value: "9090"
             - name: METRICS_PUBLISH_QUANTILES
               value: "false"
             - name: METRICS_JVM_ENABLED
               value: "false"
-            - name: CONFIG_TRACING_PATH
-              value: "/etc/tracing"
+            - name: CONFIG_OBSERVABILITY_PATH
+              value: "/etc/observability"
             - name: CONFIG_FEATURES_PATH
               value: "/etc/features"
             # https://github.com/fabric8io/kubernetes-client/issues/2212
@@ -630,9 +625,9 @@ spec:
         - name: kafka-broker-config-logging
           configMap:
             name: kafka-config-logging
-        - name: config-tracing
+        - name: config-observability
           configMap:
-            name: config-tracing
+            name: config-observability
         - name: config-features
           configMap:
             name: config-features
@@ -649,7 +644,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-receiver
-    app.kubernetes.io/version: "7b37a956abed40085408347ae01346e34dbf5127"
+    app.kubernetes.io/version: "20250827-9c04b617e"
     app.kubernetes.io/component: kafka-broker-receiver
     app.kubernetes.io/name: knative-eventing
 spec:
