@@ -17,7 +17,7 @@ metadata:
   name: config-kafka-broker-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "20250909-20212a58b"
+    app.kubernetes.io/version: "20250914-99fb81481"
   annotations:
     knative.dev/example-checksum: "57a32008"
 data:
@@ -198,7 +198,7 @@ kind: ClusterRole
 metadata:
   name: knative-kafka-broker-data-plane
   labels:
-    app.kubernetes.io/version: "20250909-20212a58b"
+    app.kubernetes.io/version: "20250914-99fb81481"
 rules:
   - apiGroups:
       - ""
@@ -245,7 +245,7 @@ metadata:
   name: knative-kafka-broker-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "20250909-20212a58b"
+    app.kubernetes.io/version: "20250914-99fb81481"
 
 ---
 # Copyright 2020 The Knative Authors
@@ -266,7 +266,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-kafka-broker-data-plane
   labels:
-    app.kubernetes.io/version: "20250909-20212a58b"
+    app.kubernetes.io/version: "20250914-99fb81481"
 subjects:
   - kind: ServiceAccount
     name: knative-kafka-broker-data-plane
@@ -297,7 +297,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-dispatcher
-    app.kubernetes.io/version: "20250909-20212a58b"
+    app.kubernetes.io/version: "20250914-99fb81481"
     app.kubernetes.io/component: kafka-broker-dispatcher
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -311,7 +311,7 @@ spec:
       name: kafka-broker-dispatcher
       labels:
         app: kafka-broker-dispatcher
-        app.kubernetes.io/version: "20250909-20212a58b"
+        app.kubernetes.io/version: "20250914-99fb81481"
         app.kubernetes.io/component: kafka-broker-dispatcher
         app.kubernetes.io/name: knative-eventing
         app.kubernetes.io/kind: kafka-dispatcher
@@ -338,7 +338,7 @@ spec:
         runAsUser: 1001
       containers:
         - name: kafka-broker-dispatcher
-          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher-loom@sha256:019226bc93242e4dd0c3ec024e1043d9dd44b20b2a608df53a39649cfb450eb6
+          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher-loom@sha256:cfa24f8d28cf822e0f65f5d7b6e849824ce0bd3ef9a47fbadd3b09af0cd5f183
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
@@ -471,7 +471,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-receiver
-    app.kubernetes.io/version: "20250909-20212a58b"
+    app.kubernetes.io/version: "20250914-99fb81481"
     app.kubernetes.io/component: kafka-broker-receiver
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -483,7 +483,7 @@ spec:
       name: kafka-broker-receiver
       labels:
         app: kafka-broker-receiver
-        app.kubernetes.io/version: "20250909-20212a58b"
+        app.kubernetes.io/version: "20250914-99fb81481"
         app.kubernetes.io/component: kafka-broker-receiver
         app.kubernetes.io/name: knative-eventing
     spec:
@@ -509,7 +509,7 @@ spec:
         runAsUser: 1001
       containers:
         - name: kafka-broker-receiver
-          image: gcr.io/knative-nightly/knative-kafka-broker-receiver-loom@sha256:0ecf41e32b182a2f387cb412347cff2a0492d4fa3e93b03c36dd821da1e23cb3
+          image: gcr.io/knative-nightly/knative-kafka-broker-receiver-loom@sha256:67167747e67a83bf9a933cbc0ff2f58adde4765538d3af6f6641b138dce58cdd
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
@@ -644,7 +644,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-broker-receiver
-    app.kubernetes.io/version: "20250909-20212a58b"
+    app.kubernetes.io/version: "20250914-99fb81481"
     app.kubernetes.io/component: kafka-broker-receiver
     app.kubernetes.io/name: knative-eventing
 spec:
