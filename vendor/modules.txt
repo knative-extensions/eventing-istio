@@ -1102,7 +1102,7 @@ knative.dev/eventing/pkg/apis/feature
 # knative.dev/hack v0.0.0-20251117013754-67a5b048bc27
 ## explicit; go 1.24
 knative.dev/hack
-# knative.dev/pkg v0.0.0-20251119125415-ab67eb7f8660
+# knative.dev/pkg v0.0.0-20251124074720-83e0e80187ed
 ## explicit; go 1.24.0
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
