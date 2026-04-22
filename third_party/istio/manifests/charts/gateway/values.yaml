@@ -42,6 +42,10 @@ _internal_defaults_do_not_set:
   service:
     # Type of service. Set to "None" to disable the service entirely
     type: LoadBalancer
+    # Set to a specific ClusterIP, or "" for automatic assignment
+    clusterIP: ""
+    # Additional labels to add to the service selector
+    selectorLabels: {}
     ports:
     - name: status-port
       port: 15021
@@ -64,6 +68,8 @@ _internal_defaults_do_not_set:
     ipFamilies: []
     ## Whether to automatically allocate NodePorts (only for LoadBalancers).
     # allocateLoadBalancerNodePorts: false
+    ## Set LoadBalancer class (only for LoadBalancers).
+    # loadBalancerClass: ""
 
   resources:
     requests:
@@ -83,6 +89,18 @@ _internal_defaults_do_not_set:
 
   # Pod environment variables
   env: {}
+
+  # Use envVarFrom to define full environment variable entries with complex sources,
+  # such as valueFrom.secretKeyRef, valueFrom.configMapKeyRef. Each item must include a `name` and `valueFrom`.
+  #
+  # Example:
+  # envVarFrom:
+  #   - name: EXAMPLE_SECRET
+  #     valueFrom:
+  #       secretKeyRef:
+  #         name: example-name
+  #         key: example-key
+  envVarFrom: []
 
   # Deployment Update strategy
   strategy: {}
@@ -125,6 +143,9 @@ _internal_defaults_do_not_set:
   # By default, the `podDisruptionBudget` is disabled (set to `{}`),
   # which means that no PodDisruptionBudget resource will be created.
   #
+  # The PodDisruptionBudget can be only enabled if autoscaling is enabled
+  # with minReplicas > 1 or if autoscaling is disabled but replicaCount > 1.
+  #
   # To enable the PodDisruptionBudget, configure it by specifying the
   # `minAvailable` or `maxUnavailable`. For example, to set the
   # minimum number of available replicas to 1, you can update this value as follows:
@@ -161,8 +182,23 @@ _internal_defaults_do_not_set:
   # https://kubernetes.io/docs/concepts/storage/volumes/.
   volumeMounts: []
 
+  # Inject initContainers into the Gateway Pods.
+  initContainers: []
+
+  # Inject additional containers into the Gateway Pods.
+  additionalContainers: []
+
   # Configure this to a higher priority class in order to make sure your Istio gateway pods
   # will not be killed because of low priority class.
   # Refer to https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
   # for more detail.
   priorityClassName: ""
+
+  # Configure the lifecycle hooks for the gateway. See
+  # https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/.
+  lifecycle: {}
+
+  # When enabled, a default NetworkPolicy for gateways will be created
+  global:
+    networkPolicy:
+      enabled: false

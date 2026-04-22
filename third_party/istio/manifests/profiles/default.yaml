@@ -4,7 +4,7 @@ metadata:
   namespace: istio-system
 spec:
   hub: docker.io/istio
-  tag: 1.25.2
+  tag: 1.29.2
 
   # Turn on default components: base, pilot, and ingress gateway
   components:
