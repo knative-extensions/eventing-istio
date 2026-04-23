@@ -14,10 +14,23 @@ source "${repo_root_dir}"/vendor/knative.dev/hack/e2e-tests.sh
 
 function knative_setup() {
   git submodule update --init --recursive
+  apply_patches
   "${repo_root_dir}"/hack/install-dependencies.sh || return $?
   "${repo_root_dir}"/hack/install.sh || return $?
 
   wait_until_pods_running "knative-eventing" || return $?
+}
+
+function apply_patches() {
+  local patches_dir="${repo_root_dir}/hack/patches"
+  if [ ! -d "${patches_dir}" ]; then
+    return
+  fi
+  for patch in "${patches_dir}"/*.patch; do
+    [ -f "${patch}" ] || continue
+    echo "Applying patch: $(basename "${patch}")"
+    git -C "${repo_root_dir}/third_party/eventing-kafka-broker" apply "${patch}" || return $?
+  done
 }
 
 function run_eventing_core_tests() {

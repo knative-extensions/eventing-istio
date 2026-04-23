@@ -1,0 +1,99 @@
+diff --git a/vendor/knative.dev/reconciler-test/pkg/eventshub/options.go b/vendor/knative.dev/reconciler-test/pkg/eventshub/options.go
+index f34b4dc27..1d4c31f28 100644
+--- a/vendor/knative.dev/reconciler-test/pkg/eventshub/options.go
++++ b/vendor/knative.dev/reconciler-test/pkg/eventshub/options.go
+@@ -86,13 +86,14 @@ func StartSenderToResource(gvr schema.GroupVersionResource, name string) EventsH
+ 	}
+ }
+ 
+-// StartSenderToNamespacedResource starts the sender in the eventshub pointing to the provided resource
++// StartSenderToNamespacedResource starts the sender in the eventshub pointing to the provided resource.
++// It polls until the resource becomes addressable rather than doing a single point-in-time lookup.
+ // This can be used together with InputEvent, AddTracing, EnableIncrementalId, InputEncoding and InputHeader options
+ func StartSenderToNamespacedResource(gvr schema.GroupVersionResource, name, namespace string) EventsHubOption {
+ 	return func(ctx context.Context, envs map[string]string) error {
+-		u, err := k8s.NamespacedAddress(ctx, gvr, name, namespace)
++		u, err := k8s.WaitForAddress(ctx, gvr, name)
+ 		if err != nil {
+-			return err
++			return fmt.Errorf("timed out waiting for resource %v named %s to become addressable: %w", gvr, name, err)
+ 		}
+ 		if u == nil {
+ 			return fmt.Errorf("resource %v named %s is not addressable", gvr, name)
+@@ -117,13 +118,14 @@ func StartSenderToResourceTLS(gvr schema.GroupVersionResource, name string, caCe
+ }
+ 
+ // StartSenderToNamespacedResourceTLS starts the sender in the eventshub pointing to the provided namespaced resource.
++// It polls until the resource becomes addressable rather than doing a single point-in-time lookup.
+ // `caCerts` parameter is optional, if nil, it will fall back to use the addressable CA certs.
+ // This can be used together with InputEvent, AddTracing, EnableIncrementalId, InputEncoding and InputHeader options
+ func StartSenderToNamespacedResourceTLS(gvr schema.GroupVersionResource, name, namespace string, caCerts *string) EventsHubOption {
+ 	return func(ctx context.Context, m map[string]string) error {
+-		u, err := k8s.NamespacedAddress(ctx, gvr, name, namespace)
++		u, err := k8s.WaitForAddress(ctx, gvr, name)
+ 		if err != nil {
+-			return err
++			return fmt.Errorf("timed out waiting for resource %v named %s to become addressable: %w", gvr, name, err)
+ 		}
+ 		if u == nil {
+ 			return fmt.Errorf("resource %v named %s is not addressable", gvr, name)
+diff --git a/vendor/knative.dev/reconciler-test/pkg/eventshub/resources.go b/vendor/knative.dev/reconciler-test/pkg/eventshub/resources.go
+index 79b42c0c5..d21b4371c 100644
+--- a/vendor/knative.dev/reconciler-test/pkg/eventshub/resources.go
++++ b/vendor/knative.dev/reconciler-test/pkg/eventshub/resources.go
+@@ -30,7 +30,6 @@ import (
+ 	"k8s.io/apimachinery/pkg/runtime/schema"
+ 	"k8s.io/utils/pointer"
+ 	kubeclient "knative.dev/pkg/client/injection/kube/client"
+-	"knative.dev/pkg/logging"
+ 	"knative.dev/pkg/network"
+ 	"knative.dev/pkg/observability"
+ 
+@@ -85,12 +84,11 @@ func Install(name string, options ...EventsHubOption) feature.StepFn {
+ 		}
+ 		env := environment.FromContext(ctx)
+ 		namespace := env.Namespace()
+-		log := logging.FromContext(ctx)
+ 
+ 		// Compute the user provided envs
+ 		envs := make(map[string]string)
+ 		if err := compose(options...)(ctx, envs); err != nil {
+-			log.Fatalf("Error while computing environment variables for eventshub: %s", err)
++			t.Fatalf("Error while computing environment variables for eventshub: %s", err)
+ 		}
+ 
+ 		// eventshub needs observability and logging config
+@@ -177,13 +175,13 @@ func Install(name string, options ...EventsHubOption) feature.StepFn {
+ 
+ 		if isEnforceTLS && isReceiver {
+ 			if _, err := manifest.InstallYamlFS(ctx, serviceTLSCertificate, cfg); err != nil {
+-				log.Fatal(err)
++				t.Fatal(err)
+ 			}
+ 		}
+ 
+ 		// Deploy Service/Pod
+ 		if _, err := manifest.InstallYamlFS(ctx, servicePodTemplates, cfg); err != nil {
+-			log.Fatal(err)
++			t.Fatal(err)
+ 		}
+ 
+ 		k8s.WaitForPodReadyOrSucceededOrFail(ctx, t, name)
+@@ -201,7 +199,7 @@ func Install(name string, options ...EventsHubOption) feature.StepFn {
+ 		if withForwarder {
+ 			sinkURL, err := service.Address(ctx, serviceName)
+ 			if err != nil {
+-				log.Fatal(err)
++				t.Fatal(err)
+ 			}
+ 			// At this point env contains "receiver" so we need to override it.
+ 			envs[EventGeneratorsEnv] = "forwarder"
+@@ -223,7 +221,7 @@ func Install(name string, options ...EventsHubOption) feature.StepFn {
+ 
+ 			// Deploy Forwarder
+ 			if _, err := manifest.InstallYamlFS(ctx, forwarderTemplates, cfg); err != nil {
+-				log.Fatal(err)
++				t.Fatal(err)
+ 			}
+ 			knativeservice.IsReady(name)(ctx, t)
+ 		}
