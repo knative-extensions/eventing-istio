@@ -12,6 +12,10 @@ function update_istio() {
   curl -L https://istio.io/downloadIstio | sh -
   rm -rf "${target_dir}"
   mv "istio-${ISTIO_VERSION}" "${target_dir}"
+
+  echo "Updating Istio api and client-go modules"
+  go get -u istio.io/api@v${version}
+  go get -u istio.io/client-go@v${version}
 }
 
 update_istio "$(cat $(dirname $0)/../third_party/istio_version.txt)" "third_party/istio"
