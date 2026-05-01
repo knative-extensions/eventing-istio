@@ -29,7 +29,7 @@ import (
 //
 // <!-- crd generation tags
 // +cue-gen:AuthorizationPolicy:groupName:security.istio.io
-// +cue-gen:AuthorizationPolicy:versions:v1beta1,v1
+// +cue-gen:AuthorizationPolicy:versions:v1,v1beta1
 // +cue-gen:AuthorizationPolicy:storageVersion
 // +cue-gen:AuthorizationPolicy:annotations:helm.sh/resource-policy=keep
 // +cue-gen:AuthorizationPolicy:labels:app=istio-pilot,chart=istio,istio=security,heritage=Tiller,release=istio
@@ -60,7 +60,7 @@ type AuthorizationPolicy struct {
 	// +optional
 	Spec securityv1beta1.AuthorizationPolicy `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
 
-	Status v1alpha1.IstioStatus `json:"status"`
+	Status v1alpha1.IstioStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -78,7 +78,7 @@ type AuthorizationPolicyList struct {
 
 // <!-- crd generation tags
 // +cue-gen:PeerAuthentication:groupName:security.istio.io
-// +cue-gen:PeerAuthentication:versions:v1beta1,v1
+// +cue-gen:PeerAuthentication:versions:v1,v1beta1
 // +cue-gen:PeerAuthentication:storageVersion
 // +cue-gen:PeerAuthentication:annotations:helm.sh/resource-policy=keep
 // +cue-gen:PeerAuthentication:labels:app=istio-pilot,chart=istio,istio=security,heritage=Tiller,release=istio
@@ -109,7 +109,7 @@ type PeerAuthentication struct {
 	// +optional
 	Spec securityv1beta1.PeerAuthentication `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
 
-	Status v1alpha1.IstioStatus `json:"status"`
+	Status v1alpha1.IstioStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -127,7 +127,7 @@ type PeerAuthenticationList struct {
 
 // <!-- crd generation tags
 // +cue-gen:RequestAuthentication:groupName:security.istio.io
-// +cue-gen:RequestAuthentication:versions:v1beta1,v1
+// +cue-gen:RequestAuthentication:versions:v1,v1beta1
 // +cue-gen:RequestAuthentication:storageVersion
 // +cue-gen:RequestAuthentication:annotations:helm.sh/resource-policy=keep
 // +cue-gen:RequestAuthentication:labels:app=istio-pilot,chart=istio,istio=security,heritage=Tiller,release=istio
@@ -153,7 +153,7 @@ type RequestAuthentication struct {
 	// +optional
 	Spec securityv1beta1.RequestAuthentication `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
 
-	Status v1alpha1.IstioStatus `json:"status"`
+	Status v1alpha1.IstioStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
