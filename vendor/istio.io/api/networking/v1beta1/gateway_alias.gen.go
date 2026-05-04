@@ -8,7 +8,7 @@ import "istio.io/api/networking/v1alpha3"
 //
 // <!-- crd generation tags
 // +cue-gen:Gateway:groupName:networking.istio.io
-// +cue-gen:Gateway:versions:v1beta1,v1alpha3,v1
+// +cue-gen:Gateway:versions:v1,v1beta1,v1alpha3
 // +cue-gen:Gateway:annotations:helm.sh/resource-policy=keep
 // +cue-gen:Gateway:labels:app=istio-pilot,chart=istio,heritage=Tiller,release=istio
 // +cue-gen:Gateway:subresource:status
@@ -101,7 +101,14 @@ type Server = v1alpha3.Server
 
 // Port describes the properties of a specific port of a service.
 type Port = v1alpha3.Port
+
+// +kubebuilder:validation:XValidation:message="only one of credentialNames or tlsCertificates can be set",rule="oneof(self.tlsCertificates, self.credentialNames)"
+// +kubebuilder:validation:XValidation:message="only one of credentialName or credentialNames can be set",rule="oneof(self.credentialName, self.credentialNames)"
+// +kubebuilder:validation:XValidation:message="only one of credentialName or tlsCertificates can be set",rule="oneof(self.credentialNames, self.tlsCertificates)"
 type ServerTLSSettings = v1alpha3.ServerTLSSettings
+
+// TLSCertificate describes the server's TLS certificate.
+type ServerTLSSettings_TLSCertificate = v1alpha3.ServerTLSSettings_TLSCertificate
 
 // TLS modes enforced by the proxy
 type ServerTLSSettings_TLSmode = v1alpha3.ServerTLSSettings_TLSmode
