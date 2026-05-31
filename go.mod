@@ -15,7 +15,7 @@ require (
 	k8s.io/utils v0.0.0-20251219084037-98d557b7f1e7
 	knative.dev/eventing v0.49.0
 	knative.dev/hack v0.0.0-20260421155212-aeb7b4a9bf96
-	knative.dev/pkg v0.0.0-20260422015212-ec452872dcc1
+	knative.dev/pkg v0.0.0-20260531000007-52dbd5ece63f
 )
 
 require (
