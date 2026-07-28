@@ -17,7 +17,7 @@ metadata:
   name: config-kafka-source-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "20260722-be8757253"
+    app.kubernetes.io/version: "20260728-2b80eabac"
   annotations:
     knative.dev/example-checksum: "8157ecb1"
 data:
@@ -177,7 +177,7 @@ kind: ClusterRole
 metadata:
   name: knative-kafka-source-data-plane
   labels:
-    app.kubernetes.io/version: "20260722-be8757253"
+    app.kubernetes.io/version: "20260728-2b80eabac"
 rules:
   - apiGroups:
       - ""
@@ -214,7 +214,7 @@ metadata:
   name: knative-kafka-source-data-plane
   namespace: knative-eventing
   labels:
-    app.kubernetes.io/version: "20260722-be8757253"
+    app.kubernetes.io/version: "20260728-2b80eabac"
 
 ---
 # Copyright 2021 The Knative Authors
@@ -235,7 +235,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-kafka-source-data-plane
   labels:
-    app.kubernetes.io/version: "20260722-be8757253"
+    app.kubernetes.io/version: "20260728-2b80eabac"
 subjects:
   - kind: ServiceAccount
     name: knative-kafka-source-data-plane
@@ -266,7 +266,7 @@ metadata:
   namespace: knative-eventing
   labels:
     app: kafka-source-dispatcher
-    app.kubernetes.io/version: "20260722-be8757253"
+    app.kubernetes.io/version: "20260728-2b80eabac"
     app.kubernetes.io/component: kafka-source-dispatcher
     app.kubernetes.io/name: knative-eventing
 spec:
@@ -280,7 +280,7 @@ spec:
       name: kafka-source-dispatcher
       labels:
         app: kafka-source-dispatcher
-        app.kubernetes.io/version: "20260722-be8757253"
+        app.kubernetes.io/version: "20260728-2b80eabac"
         app.kubernetes.io/component: kafka-channel-dispatcher
         app.kubernetes.io/name: knative-eventing
         app.kubernetes.io/kind: kafka-dispatcher
@@ -307,7 +307,7 @@ spec:
         runAsUser: 1001
       containers:
         - name: kafka-source-dispatcher
-          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher-loom@sha256:2f5175e6983ae5bc61d05685b5402e62e17b0cd56389eb6ffd1bf39cc140c334
+          image: gcr.io/knative-nightly/knative-kafka-broker-dispatcher-loom@sha256:dab4b61df97b2da8eb0c996e714c7144e1a1aa9330ac2a3c1cd0f5ae6d096147
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /etc/config
